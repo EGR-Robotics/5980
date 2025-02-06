@@ -5,9 +5,11 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -16,11 +18,14 @@ public class Robot extends TimedRobot {
   // private Command m_autonomousCommand;
 
   // private final RobotContainer m_robotContainer;
-  private DigitalInput limitSwitch = new DigitalInput(0);
+  private DigitalInput limitSwitch;
   private SparkMax motor;
+
+  private final CommandXboxController joystick = new CommandXboxController(0);
 
   public Robot() {
     motor = new SparkMax(2, MotorType.kBrushless);
+    limitSwitch = new DigitalInput(9);
     // m_robotContainer = new RobotContainer();
   }
 
@@ -60,7 +65,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-
     // if (m_autonomousCommand != null) {
     //   m_autonomousCommand.cancel();  
     // }
@@ -68,11 +72,13 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopPeriodic() {
-    motor.set(0.1);
-
-    // if(limitSwitch.get()) {
-    //   motor.set(0);
-    // }
+    if(limitSwitch.get()) {
+      motor.set(-1.0);
+    }
+    else {
+      motor.set(0);
+    }
+    // motor.set(joystick.getLeftY());
   }
 
   @Override
