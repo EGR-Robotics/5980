@@ -57,8 +57,16 @@ public class RobotContainer {
         //     )
         // );
 
-        joystick.a().whileTrue(claw.move());
-        // joystick.a().onFalse(claw.stop());
+        joystick.a().whileTrue(claw.level1());
+        joystick.a().onFalse(claw.hold());
+
+        joystick.leftBumper().whileTrue(claw.moveUp());
+        joystick.leftBumper().onFalse(claw.hold());
+        
+        joystick.rightBumper().whileTrue(claw.moveDown());
+        joystick.rightBumper().onFalse(claw.hold());
+
+        joystick.b().onTrue(claw.dropCommand());
 
         // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
