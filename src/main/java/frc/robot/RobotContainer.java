@@ -57,16 +57,24 @@ public class RobotContainer {
         //     )
         // );
 
-        joystick.a().whileTrue(claw.level1());
-        joystick.a().onFalse(claw.hold());
+        joystick.a().whileTrue(claw.goToLevel1Command());
+        joystick.a().onFalse(claw.holdCommand());
 
-        joystick.leftBumper().whileTrue(claw.moveUp());
-        joystick.leftBumper().onFalse(claw.hold());
+        joystick.leftBumper().whileTrue(claw.moveArmUpCommand());
+        joystick.leftBumper().onFalse(claw.holdArmPositionCommand());
         
-        joystick.rightBumper().whileTrue(claw.moveDown());
-        joystick.rightBumper().onFalse(claw.hold());
+        joystick.rightBumper().whileTrue(claw.moveArmDownCommand());
+        joystick.rightBumper().onFalse(claw.holdArmPositionCommand());
 
-        joystick.b().onTrue(claw.dropCommand());
+
+
+        joystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
+        joystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
+        
+        joystick.rightTrigger().whileTrue(claw.moveElevatorDownCommand());
+        joystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
+
+        joystick.b().onTrue(claw.dropCoralCommand());
 
         // joystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         // joystick.b().whileTrue(drivetrain.applyRequest(() ->
