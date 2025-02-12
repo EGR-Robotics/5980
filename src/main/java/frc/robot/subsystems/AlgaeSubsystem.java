@@ -18,10 +18,8 @@ import com.revrobotics.spark.SparkBase.ResetMode;
 
 import edu.wpi.first.wpilibj.Servo;
 
-public class ClawSubsystem implements Subsystem {
+public class AlgaeSubsystem implements Subsystem {
     private SparkMax armMotor;
-    private RelativeEncoder armEncoder;
-    private SparkClosedLoopController armController;
 
     private SparkMax elevatorMotor;
     private RelativeEncoder elevatorEncoder;
@@ -30,33 +28,14 @@ public class ClawSubsystem implements Subsystem {
     // Limit switches for elevator
     private DigitalInput upElevatorLimitSwitch;
     private DigitalInput lowerElevatorLimitSwitch;
-
-    // Limit switches for arm
-    private DigitalInput upArmLimitSwitch;
-    private DigitalInput lowerArmLimitSwitch;
-
-    // Actuator to push out the coral
-    private Servo push;
-
-    private double curArmPos;
     private double curElevatorPos;
 
-    public ClawSubsystem() {
-        // Initialize actuator
-        push = new Servo(1);
-        push.setAlwaysHighMode();
-
+    public AlgaeSubsystem() {
         // Initialize arm motors
-        armMotor = new SparkMax(2, MotorType.kBrushless);
-        armEncoder = armMotor.getEncoder();
-
-        armController = armMotor.getClosedLoopController();
-        armEncoder.setPosition(0);
-      
-        curArmPos = armEncoder.getPosition();
+        armMotor = new SparkMax(-1, MotorType.kBrushless);
 
         // Initialize elevator motor
-        elevatorMotor = new SparkMax(1, MotorType.kBrushless);
+        elevatorMotor = new SparkMax(2, MotorType.kBrushless);
         elevatorEncoder = elevatorMotor.getEncoder();
 
         elevatorController = elevatorMotor.getClosedLoopController();
@@ -100,23 +79,15 @@ public class ClawSubsystem implements Subsystem {
     }
 
     public void goToLevel1() {
-        armController.setReference(5, ControlType.kMAXMotionPositionControl);
-        curArmPos = armEncoder.getPosition();
+        elevatorController.setReference(5, ControlType.kMAXMotionPositionControl);
+        curElevatorPos = elevatorEncoder.getPosition();
     }
 
-    public void moveArm(boolean up) {
-        if(up) {
-            armMotor.set(0.3);
-        }
-        else {
-            armMotor.set(-0.3);
-        }
-
-        curArmPos = armEncoder.getPosition();
+    public void moveArm() {
+        armMotor.set(-0.3);
     }
 
     public void moveElevator(boolean up) {
-        System.out.println(curElevatorPos);
         if(up) {
             elevatorMotor.set(1);
         }
@@ -127,21 +98,12 @@ public class ClawSubsystem implements Subsystem {
         curElevatorPos = elevatorEncoder.getPosition();
     }
 
-    public void drop() {
-        System.out.println(push.getAngle());
-        push.setAngle(0);
-    }
-
     public Command goToLevel1Command() {
         return run(() -> goToLevel1());
     }   
 
-    public Command moveArmUpCommand() {
-        return run(() -> moveArm(true));
-    }
-
-    public Command moveArmDownCommand() {
-        return run(() -> moveArm(false));
+    public Command moveArmCommand() {
+        return run(() -> moveArm());
     }
 
     public Command moveElevatorUpCommand() {
@@ -151,23 +113,12 @@ public class ClawSubsystem implements Subsystem {
     public Command moveElevatorDownCommand() {
         return run(() -> moveElevator(false));
     }
-
-    public Command holdArmPositionCommand() {
-        return run(() -> armController.setReference(curArmPos, ControlType.kMAXMotionPositionControl));
-    }
     
     public Command holdElevatorPositionCommand() {
         return run(() -> elevatorController.setReference(curElevatorPos, ControlType.kMAXMotionPositionControl));
     }
 
-    public Command holdCommand() {
-        return run(() -> {
-            elevatorController.setReference(curElevatorPos, ControlType.kMAXMotionPositionControl);
-            armController.setReference(curArmPos, ControlType.kMAXMotionPositionControl);
-        });
-    }
-
-    public Command dropCoralCommand() {
-        return run(() -> drop());
+    public Command stopArm() {
+        return run(() -> armMotor.set(0));
     }
 }
