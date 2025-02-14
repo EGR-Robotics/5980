@@ -14,10 +14,13 @@ import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.StructTopic;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -60,6 +63,8 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
     private final NetworkTable driveStateTable = inst.getTable("DriveState");
     private final StructTopic<Pose2d> drivePose = driveStateTable.getStructTopic("Pose", Pose2d.struct);
+
+    private final StructArrayPublisher<SwerveModuleState> driveModuleStates = driveStateTable.getStructArrayTopic("ModuleStates", SwerveModuleState.struct).publish();
 
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
@@ -143,50 +148,47 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
 
-        // RobotConfig config;
+        RobotConfig config;
 
-        // try{
-        //     config = RobotConfig.fromGUISettings();
+        try{
+            config = RobotConfig.fromGUISettings();
 
-        //     AutoBuilder.configure(
-        //         this::getPose, // Robot pose supplier
-        //         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        //         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        //         (speeds, feedforwards) -> {
-        //             // if (enableFeedforward)
-        //             // {
-        //             //     swerveDrive.drive(
-        //             //         speedsRobotRelative,
-        //             //         swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
-        //             //         moduleFeedForwards.linearForces()
-        //             //                     );
-        //             // } else
-        //             // {
-        //             //     swerveDrive.setChassisSpeeds(speedsRobotRelative);
-        //             // }
-        //         }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-        //         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-        //                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-        //                 new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-        //         ),
-        //         config, // The robot configuration
-        //         () -> {
-        //         // Boolean supplier that controls when the path will be mirrored for the red alliance
-        //         // This will flip the path being followed to the red side of the field.
-        //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+            AutoBuilder.configure(
+                this::getPose, // Robot pose supplier
+                this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
+                this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE The
+                (speeds, feedforwards) -> {
+                    var driveStates =  driveModuleStates.getTopic().subscribe(new SwerveModuleState[0]); 
 
-        //         var alliance = DriverStation.getAlliance();
-        //         if (alliance.isPresent()) {
-        //             return alliance.get() == DriverStation.Alliance.Red;
-        //         }
-        //         return false;
-        //         },
-        //         this // Reference to this subsystem to set requirements
-        //     );
-        // } catch (Exception e) {
-        //     // Handle exception as needed
-        //     e.printStackTrace();
-        // }
+                    SwerveModuleState[] moduleStates = driveStates.get();
+
+                    moduleStates[0].speedMetersPerSecond = speeds.omegaRadiansPerSecond;
+                    moduleStates[1].speedMetersPerSecond = speeds.omegaRadiansPerSecond;
+                    moduleStates[2].speedMetersPerSecond = speeds.omegaRadiansPerSecond;
+                    moduleStates[3].speedMetersPerSecond = speeds.omegaRadiansPerSecond;
+                }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+                new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
+                        new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+                        new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
+                ),
+                config, // The robot configuration
+                () -> {
+                // Boolean supplier that controls when the path will be mirrored for the red alliance
+                // This will flip the path being followed to the red side of the field.
+                // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                var alliance = DriverStation.getAlliance();
+                if (alliance.isPresent()) {
+                    return alliance.get() == DriverStation.Alliance.Red;
+                }
+                return false;
+                },
+                this // Reference to this subsystem to set requirements
+            );
+        } catch (Exception e) {
+            // Handle exception as needed
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -254,9 +256,18 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         }
     }
 
-    // public ChassisSpeeds getRobotRelativeSpeeds() {
-        
-    // }
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        // Retrieve robot's current pose (position and orientation) in the field
+        Pose2d currentPose = getPose();
+
+        // The translation velocities are already robot-relative, but we might need to adjust based on the current pose
+        double adjustedTranslationX = currentPose.getX(); // Adjust if needed based on currentPose or other conditions
+        double adjustedTranslationY = currentPose.getY(); // Adjust if needed based on currentPose or other conditions
+        double adjustedRotation = currentPose.getRotation().getRadians(); // Adjust if needed based on currentPose or other conditions
+
+        // Return the chassis speeds, assuming robot-relative input
+        return new ChassisSpeeds(adjustedTranslationX, adjustedTranslationY, adjustedRotation);
+    }
 
     /**
      * Returns a command that applies the specified control request to this swerve
