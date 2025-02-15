@@ -19,14 +19,16 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Checks if the Limelight has a valid target.
+     * 
      * @return true if a target is detected, false otherwise.
-     */
+     */  
     public boolean hasTarget() {
         return limelightTable.getEntry("tv").getDouble(0) == 1;
     }
 
     /**
      * Gets the horizontal offset (tx) from the crosshair to the target.
+     * 
      * @return Horizontal offset in degrees.
      */
     public double getHorizontalOffset() {
@@ -35,6 +37,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Gets the vertical offset (ty) from the crosshair to the target.
+     * 
      * @return Vertical offset in degrees.
      */
     public double getVerticalOffset() {
@@ -43,6 +46,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Estimates distance to the target using the camera angle and target height.
+     * 
      * @return Estimated distance in meters.
      */
     public double getEstimatedDistance() {
@@ -56,6 +60,7 @@ public class VisionSubsystem extends SubsystemBase {
     /**
      * Sets the LED mode of the Limelight.
      * 0 = Pipeline default, 1 = Force off, 2 = Force blink, 3 = Force on
+     * 
      * @param mode LED mode value.
      */
     public void setLedMode(int mode) {
@@ -64,6 +69,7 @@ public class VisionSubsystem extends SubsystemBase {
 
     /**
      * Sets the Limelight pipeline.
+     * 
      * @param pipeline Pipeline index (0-9).
      */
     public void setPipeline(int pipeline) {

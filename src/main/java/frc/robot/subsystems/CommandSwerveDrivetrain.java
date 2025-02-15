@@ -13,13 +13,13 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.StructTopic;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.Notifier;
@@ -27,12 +27,6 @@ import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import frc.robot.Telemetry;
-
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.config.RobotConfig;
-import com.pathplanner.lib.config.PIDConstants;
-import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import frc.robot.generated.TunerConstants.TunerSwerveDrivetrain;
 
@@ -57,9 +51,9 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
     private final SwerveRequest.SysIdSwerveSteerGains m_steerCharacterization = new SwerveRequest.SysIdSwerveSteerGains();
     private final SwerveRequest.SysIdSwerveRotation m_rotationCharacterization = new SwerveRequest.SysIdSwerveRotation();
 
-    private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
-    private final NetworkTable driveStateTable = inst.getTable("DriveState");
-    private final StructTopic<Pose2d> drivePose = driveStateTable.getStructTopic("Pose", Pose2d.struct);
+    // private final NetworkTableInstance inst = NetworkTableInstance.getDefault();
+    // private final NetworkTable driveStateTable = inst.getTable("DriveState");
+    // private final StructTopic<Pose2d> drivePose = driveStateTable.getStructTopic("Pose", Pose2d.struct);
 
     /*
      * SysId routine for characterizing translation. This is used to find PID gains
@@ -142,51 +136,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
         if (Utils.isSimulation()) {
             startSimThread();
         }
-
-        // RobotConfig config;
-
-        // try{
-        //     config = RobotConfig.fromGUISettings();
-
-        //     AutoBuilder.configure(
-        //         this::getPose, // Robot pose supplier
-        //         this::resetPose, // Method to reset odometry (will be called if your auto has a starting pose)
-        //         this::getRobotRelativeSpeeds, // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
-        //         (speeds, feedforwards) -> {
-        //             // if (enableFeedforward)
-        //             // {
-        //             //     swerveDrive.drive(
-        //             //         speedsRobotRelative,
-        //             //         swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
-        //             //         moduleFeedForwards.linearForces()
-        //             //                     );
-        //             // } else
-        //             // {
-        //             //     swerveDrive.setChassisSpeeds(speedsRobotRelative);
-        //             // }
-        //         }, // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-        //         new PPHolonomicDriveController( // PPHolonomicController is the built in path following controller for holonomic drive trains
-        //                 new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-        //                 new PIDConstants(5.0, 0.0, 0.0) // Rotation PID constants
-        //         ),
-        //         config, // The robot configuration
-        //         () -> {
-        //         // Boolean supplier that controls when the path will be mirrored for the red alliance
-        //         // This will flip the path being followed to the red side of the field.
-        //         // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
-
-        //         var alliance = DriverStation.getAlliance();
-        //         if (alliance.isPresent()) {
-        //             return alliance.get() == DriverStation.Alliance.Red;
-        //         }
-        //         return false;
-        //         },
-        //         this // Reference to this subsystem to set requirements
-        //     );
-        // } catch (Exception e) {
-        //     // Handle exception as needed
-        //     e.printStackTrace();
-        // }
     }
 
     /**
@@ -253,10 +202,6 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
             startSimThread();
         }
     }
-
-    // public ChassisSpeeds getRobotRelativeSpeeds() {
-        
-    // }
 
     /**
      * Returns a command that applies the specified control request to this swerve
@@ -372,13 +317,13 @@ public class CommandSwerveDrivetrain extends TunerSwerveDrivetrain implements Su
                 visionMeasurementStdDevs);
     }
 
-    /**
-     * Gets the current pose (position and rotation) of the robot, as reported by
-     * odometry.
-     *
-     * @return The robot's pose
-     */
-    public Pose2d getPose() {
-        return drivePose.subscribe(new Pose2d()).get();
-    }
+    // /**
+    //  * Gets the current pose (position and rotation) of the robot, as reported by
+    //  * odometry.
+    //  *
+    //  * @return The robot's pose
+    //  */
+    // public Pose2d getPose() {
+    //     return drivePose.subscribe(new Pose2d()).get();
+    // }
 }

@@ -52,7 +52,7 @@ public class ClawSubsystem implements Subsystem {
 
         armController = armMotor.getClosedLoopController();
         armEncoder.setPosition(0);
-      
+
         curArmPos = armEncoder.getPosition();
 
         // Initialize elevator motor
@@ -61,42 +61,38 @@ public class ClawSubsystem implements Subsystem {
 
         elevatorController = elevatorMotor.getClosedLoopController();
         elevatorEncoder.setPosition(0);
-    
+
         curElevatorPos = elevatorEncoder.getPosition();
 
         // Create configuration for sparks
         SparkMaxConfig config = new SparkMaxConfig();
         config.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
-        
+
         /*
-       * Configure the closed loop controller. We want to make sure we set the
-       * feedback sensor as the primary encoder.
-       */
-        config
-            .closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            // Set PID values for position control
-            .p(0.1)
-            .outputRange(-1, 1)
-            .maxMotion
-            // Set MAXMotion parameters for position control
-            .maxVelocity(2000)
-            .maxAcceleration(10000)
-            .allowedClosedLoopError(0.25);
+         * Configure the closed loop controller. We want to make sure we set the
+         * feedback sensor as the primary encoder.
+         */
+        config.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                // Set PID values for position control
+                .p(0.1)
+                .outputRange(-1, 1).maxMotion
+                // Set MAXMotion parameters for position control
+                .maxVelocity(2000)
+                .maxAcceleration(10000)
+                .allowedClosedLoopError(0.25);
 
         // Configure motors to use the config
 
         armMotor.configure(
-            config,
-            ResetMode.kResetSafeParameters,
-            PersistMode.kPersistParameters
-        );
+                config,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
 
         elevatorMotor.configure(
-            config,
-            ResetMode.kResetSafeParameters,
-            PersistMode.kPersistParameters
-        );
+                config,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
     }
 
     public void goToLevel1() {
@@ -105,10 +101,9 @@ public class ClawSubsystem implements Subsystem {
     }
 
     public void moveArm(boolean up) {
-        if(up) {
+        if (up) {
             armMotor.set(0.3);
-        }
-        else {
+        } else {
             armMotor.set(-0.3);
         }
 
@@ -117,10 +112,9 @@ public class ClawSubsystem implements Subsystem {
 
     public void moveElevator(boolean up) {
         System.out.println(curElevatorPos);
-        if(up) {
+        if (up) {
             elevatorMotor.set(1);
-        }
-        else {
+        } else {
             elevatorMotor.set(-1);
         }
 
@@ -134,7 +128,7 @@ public class ClawSubsystem implements Subsystem {
 
     public Command goToLevel1Command() {
         return run(() -> goToLevel1());
-    }   
+    }
 
     public Command moveArmUpCommand() {
         return run(() -> moveArm(true));
@@ -155,7 +149,7 @@ public class ClawSubsystem implements Subsystem {
     public Command holdArmPositionCommand() {
         return run(() -> armController.setReference(curArmPos, ControlType.kMAXMotionPositionControl));
     }
-    
+
     public Command holdElevatorPositionCommand() {
         return run(() -> elevatorController.setReference(curElevatorPos, ControlType.kMAXMotionPositionControl));
     }

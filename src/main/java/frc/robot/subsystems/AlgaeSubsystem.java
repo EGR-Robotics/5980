@@ -16,8 +16,6 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-import edu.wpi.first.wpilibj.Servo;
-
 public class AlgaeSubsystem implements Subsystem {
     private SparkMax armMotor;
 
@@ -35,47 +33,36 @@ public class AlgaeSubsystem implements Subsystem {
         armMotor = new SparkMax(-1, MotorType.kBrushless);
 
         // Initialize elevator motor
-        elevatorMotor = new SparkMax(2, MotorType.kBrushless);
+        elevatorMotor = new SparkMax(8, MotorType.kBrushless);
         elevatorEncoder = elevatorMotor.getEncoder();
 
         elevatorController = elevatorMotor.getClosedLoopController();
         elevatorEncoder.setPosition(0);
-    
+
         curElevatorPos = elevatorEncoder.getPosition();
 
         // Create configuration for sparks
         SparkMaxConfig config = new SparkMaxConfig();
         config.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
-        
+
         /*
-       * Configure the closed loop controller. We want to make sure we set the
-       * feedback sensor as the primary encoder.
-       */
-        config
-            .closedLoop
-            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-            // Set PID values for position control
-            .p(0.1)
-            .outputRange(-1, 1)
-            .maxMotion
-            // Set MAXMotion parameters for position control
-            .maxVelocity(2000)
-            .maxAcceleration(10000)
-            .allowedClosedLoopError(0.25);
-
-        // Configure motors to use the config
-
-        armMotor.configure(
-            config,
-            ResetMode.kResetSafeParameters,
-            PersistMode.kPersistParameters
-        );
+         * Configure the closed loop controller. We want to make sure we set the
+         * feedback sensor as the primary encoder.
+         */
+        config.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                // Set PID values for position control
+                .p(0.1)
+                .outputRange(-1, 1).maxMotion
+                // Set MAXMotion parameters for position control
+                .maxVelocity(2000)
+                .maxAcceleration(10000)
+                .allowedClosedLoopError(0.25);
 
         elevatorMotor.configure(
-            config,
-            ResetMode.kResetSafeParameters,
-            PersistMode.kPersistParameters
-        );
+                config,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
     }
 
     public void goToLevel1() {
@@ -88,10 +75,9 @@ public class AlgaeSubsystem implements Subsystem {
     }
 
     public void moveElevator(boolean up) {
-        if(up) {
+        if (up) {
             elevatorMotor.set(1);
-        }
-        else {
+        } else {
             elevatorMotor.set(-1);
         }
 
@@ -100,7 +86,7 @@ public class AlgaeSubsystem implements Subsystem {
 
     public Command goToLevel1Command() {
         return run(() -> goToLevel1());
-    }   
+    }
 
     public Command moveArmCommand() {
         return run(() -> moveArm());
@@ -113,7 +99,7 @@ public class AlgaeSubsystem implements Subsystem {
     public Command moveElevatorDownCommand() {
         return run(() -> moveElevator(false));
     }
-    
+
     public Command holdElevatorPositionCommand() {
         return run(() -> elevatorController.setReference(curElevatorPos, ControlType.kMAXMotionPositionControl));
     }
