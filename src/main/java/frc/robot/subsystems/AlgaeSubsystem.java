@@ -28,6 +28,8 @@ public class AlgaeSubsystem implements Subsystem {
     private DigitalInput lowerElevatorLimitSwitch;
     private double curElevatorPos;
 
+    private double currentVelocity = 0;
+
     public AlgaeSubsystem() {
         // Initialize arm motors
         armMotor = new SparkMax(-1, MotorType.kBrushless);
@@ -74,11 +76,42 @@ public class AlgaeSubsystem implements Subsystem {
         armMotor.set(-0.3);
     }
 
+    public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
+        new Thread(() -> {
+            while (Math.abs(targetVelocity - currentVelocity) > 0.1) { // Small threshold to stop ramping
+                if(up){
+                    if (targetVelocity > currentVelocity) {
+                        currentVelocity += rampRate;// Change in speed per cycle
+                    } else {
+                        currentVelocity -= rampRate;
+                    }
+                }
+                else{
+                    if (targetVelocity < currentVelocity) {
+                        currentVelocity -= rampRate;// Change in speed per cycle
+                    } else {
+                        currentVelocity += rampRate;
+                    }
+
+                }
+
+                motor.set(currentVelocity / 5676.0); // currentVelocity/ Max RPM
+                
+                try {
+                    Thread.sleep(50); // Small delay for smooth ramping
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            motor.set(targetVelocity / 5676.0); // Final adjustment
+        }).start();
+    }
+
     public void moveElevator(boolean up) {
         if (up) {
-            elevatorMotor.set(1);
+            setVelocity(1, 0.05, elevatorMotor, true);
         } else {
-            elevatorMotor.set(-1);
+            setVelocity(-1, 0.05, elevatorMotor, false);
         }
 
         curElevatorPos = elevatorEncoder.getPosition();
@@ -105,6 +138,8 @@ public class AlgaeSubsystem implements Subsystem {
     }
 
     public Command stopArm() {
+        currentVelocity = 0;
+
         return run(() -> armMotor.set(0));
     }
 }
