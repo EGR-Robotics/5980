@@ -18,10 +18,10 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 
-import frc.robot.subsystems.VisionSubsystem;
+// import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.AlgaeSubsystem;
-import frc.robot.subsystems.ClawSubsystem;
+// import frc.robot.subsystems.AlgaeSubsystem;
+// import frc.robot.subsystems.ClawSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -39,7 +39,7 @@ public class RobotContainer {
 
     // Initialize controllers
     private final CommandXboxController driverJoystick = new CommandXboxController(0);
-    private final CommandXboxController controllerJoystick = new CommandXboxController(1);
+    // private final CommandXboxController controllerJoystick = new CommandXboxController(1);
 
     // Initialize subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -80,7 +80,7 @@ public class RobotContainer {
         // controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
         // controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
 
-        // Elevator movement setup
+        // // Elevator movement setup
         // controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
         // controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
 
@@ -91,8 +91,7 @@ public class RobotContainer {
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driverJoystick.b().whileTrue(
-                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(-driverJoystick.getLeftY(),
-                        -driverJoystick.getLeftX()))));
+                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0,0))));
 
         // // Run SysId routines when holding back/start and X/Y.
         // // Note that each routine should be run exactly once in a single log.
