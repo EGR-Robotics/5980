@@ -21,7 +21,7 @@ import frc.robot.generated.TunerConstants;
 // import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 // import frc.robot.subsystems.AlgaeSubsystem;
-// import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ClawSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -39,12 +39,12 @@ public class RobotContainer {
 
     // Initialize controllers
     private final CommandXboxController driverJoystick = new CommandXboxController(0);
-    // private final CommandXboxController controllerJoystick = new CommandXboxController(1);
+    private final CommandXboxController controllerJoystick = new CommandXboxController(1);
 
     // Initialize subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    // public final ClawSubsystem claw = new ClawSubsystem();
+    public final ClawSubsystem claw = new ClawSubsystem();
     // public final AlgaeSubsystem algae = new AlgaeSubsystem();
     // public final VisionSubsystem vision = new VisionSubsystem();
 
@@ -71,23 +71,23 @@ public class RobotContainer {
         // controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
 
         // Claw Movement Setup
-        // controllerJoystick.a().whileTrue(claw.goToLevel1Command());
-        // controllerJoystick.a().onFalse(claw.holdCommand());
+        controllerJoystick.a().whileTrue(claw.goToLevel1Command());
+        controllerJoystick.a().onFalse(claw.holdCommand());
 
-        // controllerJoystick.leftBumper().whileTrue(claw.moveArmUpCommand());
-        // controllerJoystick.leftBumper().onFalse(claw.holdArmPositionCommand());
+        controllerJoystick.leftBumper().whileTrue(claw.moveArmUpCommand());
+        controllerJoystick.leftBumper().onFalse(claw.holdArmPositionCommand());
 
-        // controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
-        // controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
+        controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
+        controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
 
         // // Elevator movement setup
-        // controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
-        // controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
+        controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
+        controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
 
-        // controllerJoystick.rightTrigger().whileTrue(claw.moveElevatorDownCommand());
-        // controllerJoystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
+        controllerJoystick.rightTrigger().whileTrue(claw.moveElevatorDownCommand());
+        controllerJoystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
 
-        // controllerJoystick.b().onTrue(claw.dropCoralCommand());
+        controllerJoystick.b().onTrue(claw.dropCoralCommand());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
         driverJoystick.b().whileTrue(
@@ -107,6 +107,6 @@ public class RobotContainer {
     }
 
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Example Auto");
+        return new PathPlannerAuto("New Auto");
     }
 }
