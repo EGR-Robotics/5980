@@ -3,6 +3,7 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkFlex;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -17,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import com.revrobotics.spark.SparkBase.ResetMode;
 
 public class AlgaeSubsystem implements Subsystem {
-    private SparkMax armMotor;
+    private SparkFlex armMotor;
 
     private SparkMax elevatorMotor;
     private RelativeEncoder elevatorEncoder;
@@ -32,10 +33,10 @@ public class AlgaeSubsystem implements Subsystem {
 
     public AlgaeSubsystem() {
         // Initialize arm motors
-        armMotor = new SparkMax(-1, MotorType.kBrushless);
+        armMotor = new SparkFlex(16, MotorType.kBrushless);
 
         // Initialize elevator motor
-        elevatorMotor = new SparkMax(8, MotorType.kBrushless);
+        elevatorMotor = new SparkMax(15, MotorType.kBrushless);
         elevatorEncoder = elevatorMotor.getEncoder();
 
         elevatorController = elevatorMotor.getClosedLoopController();
@@ -95,7 +96,7 @@ public class AlgaeSubsystem implements Subsystem {
 
                 }
 
-                motor.set(currentVelocity / 5676.0); // currentVelocity/ Max RPM
+                motor.set(currentVelocity); // currentVelocity/ Max RPM
                 
                 try {
                     Thread.sleep(50); // Small delay for smooth ramping
@@ -103,16 +104,22 @@ public class AlgaeSubsystem implements Subsystem {
                     e.printStackTrace();
                 }
             }
-            motor.set(targetVelocity / 5676.0); // Final adjustment
+
+            motor.set(targetVelocity); // Final adjustment
         }).start();
     }
 
     public void moveElevator(boolean up) {
+        System.out.println("cur elevator position " + elevatorEncoder.getVelocity());
+        System.out.println("cur elevator voltage " + elevatorMotor.getBusVoltage());
+
         if (up) {
-            setVelocity(1, 0.05, elevatorMotor, true);
+            setVelocity(0.5, 0.05, elevatorMotor, true);
         } else {
-            setVelocity(-1, 0.05, elevatorMotor, false);
+            setVelocity(-0.5, 0.05, elevatorMotor, false);
         }
+
+        // elevatorController.setReference(1, ControlType.kMAXMotionPositionControl);
 
         curElevatorPos = elevatorEncoder.getPosition();
     }

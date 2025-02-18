@@ -49,7 +49,7 @@ public class ClawSubsystem implements Subsystem {
         push.setAlwaysHighMode();
 
         // Initialize arm motors
-        armMotor = new SparkMax(2, MotorType.kBrushless);
+        armMotor = new SparkMax(14, MotorType.kBrushless);
         armEncoder = armMotor.getEncoder();
 
         armController = armMotor.getClosedLoopController();
