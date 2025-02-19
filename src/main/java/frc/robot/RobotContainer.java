@@ -4,24 +4,21 @@ import static edu.wpi.first.units.Units.*;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-
+import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-import edu.wpi.first.wpilibj.DriverStation;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 
-// import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.AlgaeSubsystem;
-// import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ClawSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -44,11 +41,13 @@ public class RobotContainer {
     // Initialize subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    // public final ClawSubsystem claw = new ClawSubsystem();
+    public final ClawSubsystem claw = new ClawSubsystem();
     public final AlgaeSubsystem algae = new AlgaeSubsystem();
-    // public final VisionSubsystem vision = new VisionSubsystem();
+    public final VisionSubsystem vision = new VisionSubsystem();
 
     public RobotContainer() {
+        NamedCommands.registerCommand("level1", claw.goToLevel1Command());
+
         configureBindings();
     }
 
@@ -66,26 +65,41 @@ public class RobotContainer {
                                                                                           // negative X (left)
                 ));
 
+        // Limelight Align
+        // controllerJoystick.a().onTrue(
+        //     vision.alignCommand(drivetrain)
+        // );
+
+
         // Algae bar movement
-        controllerJoystick.a().whileTrue(algae.moveElevatorDownCommand());
+        // controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
         // controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
 
+        // controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
+        // controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
+
+        // controllerJoystick.x().whileTrue(algae.moveArmCommand());
+        // controllerJoystick.x().onFalse(algae.stopArm());
+
+        // controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
+        // controllerJoystick.y().onFalse(algae.stopArm());
+
         // Claw Movement Setup
-        // controllerJoystick.a().whileTrue(claw.goToLevel1Command());
-        // controllerJoystick.a().onFalse(claw.holdCommand());
+        controllerJoystick.a().whileTrue(claw.goToLevel1Command());
+        controllerJoystick.a().onFalse(claw.holdCommand());
 
-        // controllerJoystick.leftBumper().whileTrue(claw.moveArmUpCommand());
-        // controllerJoystick.leftBumper().onFalse(claw.holdArmPositionCommand());
+        controllerJoystick.leftBumper().whileTrue(claw.moveArmUpCommand());
+        controllerJoystick.leftBumper().onFalse(claw.holdArmPositionCommand());
 
-        // controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
-        // controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
+        controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
+        controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
 
         // // Elevator movement setup
-        // controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
-        // controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
+        controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
+        controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
 
-        // controllerJoystick.rightTrigger().whileTrue(claw.moveElevatorDownCommand());
-        // controllerJoystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
+        controllerJoystick.rightTrigger().whileTrue(claw.moveElevatorDownCommand());
+        controllerJoystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
 
         // controllerJoystick.b().onTrue(claw.dropCoralCommand());
 

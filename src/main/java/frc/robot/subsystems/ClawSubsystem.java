@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -8,6 +9,7 @@ import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -20,11 +22,11 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class ClawSubsystem implements Subsystem {
     private SparkMax armMotor;
-    private RelativeEncoder armEncoder;
+    private AbsoluteEncoder armEncoder;
     private SparkClosedLoopController armController;
 
     private SparkMax elevatorMotor;
-    private RelativeEncoder elevatorEncoder;
+    private AbsoluteEncoder elevatorEncoder;
     private SparkClosedLoopController elevatorController;
 
     // Limit switches for elevator
@@ -49,52 +51,32 @@ public class ClawSubsystem implements Subsystem {
         push.setAlwaysHighMode();
 
         // Initialize arm motors
-        armMotor = new SparkMax(14, MotorType.kBrushless);
-        armEncoder = armMotor.getEncoder();
+        armMotor = new SparkMax(20, MotorType.kBrushless);
+        armEncoder = armMotor.getAbsoluteEncoder();
 
         armController = armMotor.getClosedLoopController();
-        armEncoder.setPosition(0);
-
-        curArmPos = armEncoder.getPosition();
 
         // Initialize elevator motor
-        elevatorMotor = new SparkMax(1, MotorType.kBrushless);
-        elevatorEncoder = elevatorMotor.getEncoder();
+        elevatorMotor = new SparkMax(15, MotorType.kBrushless);
+        elevatorEncoder = elevatorMotor.getAbsoluteEncoder();
 
         elevatorController = elevatorMotor.getClosedLoopController();
-        elevatorEncoder.setPosition(0);
 
         curElevatorPos = elevatorEncoder.getPosition();
 
         // Create configuration for sparks
         SparkMaxConfig config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
-
-        /*
-         * Configure the closed loop controller. We want to make sure we set the
-         * feedback sensor as the primary encoder.
-         */
-        config.closedLoop
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                // Set PID values for position control
-                .p(0.1)
-                .outputRange(-1, 1).maxMotion
-                // Set MAXMotion parameters for position control
-                .maxVelocity(2000)
-                .maxAcceleration(10000)
-                .allowedClosedLoopError(0.25);
+        
+        config
+            .smartCurrentLimit(40)
+            .closedLoopRampRate(0.1)
+            .closedLoop
+            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+            .outputRange(-1, 1);
 
         // Configure motors to use the config
-
-        armMotor.configure(
-                config,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
-
-        elevatorMotor.configure(
-                config,
-                ResetMode.kResetSafeParameters,
-                PersistMode.kPersistParameters);
+        armMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
     
     public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
@@ -116,7 +98,7 @@ public class ClawSubsystem implements Subsystem {
 
                 }
 
-                motor.set(currentVelocity / 5676.0); // currentVelocity/ Max RPM
+                motor.set(currentVelocity); // currentVelocity/ Max RPM
                 
                 try {
                     Thread.sleep(50); // Small delay for smooth ramping
@@ -124,13 +106,16 @@ public class ClawSubsystem implements Subsystem {
                     e.printStackTrace();
                 }
             }
-            motor.set(targetVelocity / 5676.0); // Final adjustment
+            motor.set(targetVelocity); // Final adjustment
         }).start();
     }
 
     public void goToLevel1() {
-        armController.setReference(5, ControlType.kMAXMotionPositionControl);
+        armController.setReference(0.509, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         curArmPos = armEncoder.getPosition();
+
+        elevatorController.setReference(0.792, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        curElevatorPos = elevatorEncoder.getPosition();
     }
 
     public void moveArm(boolean up) {
@@ -139,23 +124,23 @@ public class ClawSubsystem implements Subsystem {
         } else {
             setVelocity(-.3, .05, armMotor, false);
         }
-
+        
         curArmPos = armEncoder.getPosition();
+        System.out.println("arm pos: " + curArmPos);
     }
 
     public void moveElevator(boolean up) {
-        System.out.println(curElevatorPos);
         if (up) {
-            elevatorMotor.set(1);
+            setVelocity(.3, .05, elevatorMotor, true);
         } else {
-            elevatorMotor.set(-1);
+            setVelocity(-.3, .05, elevatorMotor, false);
         }
-
+        
         curElevatorPos = elevatorEncoder.getPosition();
+        System.out.println("moved elevator pos: " + curElevatorPos);
     }
 
     public void drop() {
-        System.out.println(push.getAngle());
         push.setAngle(0);
     }
 
@@ -180,17 +165,20 @@ public class ClawSubsystem implements Subsystem {
     }
 
     public Command holdArmPositionCommand() {
-        return run(() -> armController.setReference(curArmPos, ControlType.kMAXMotionPositionControl));
+        return run(() -> armController.setReference(curArmPos, ControlType.kPosition, ClosedLoopSlot.kSlot0));
     }
 
     public Command holdElevatorPositionCommand() {
-        return run(() -> elevatorController.setReference(curElevatorPos, ControlType.kMAXMotionPositionControl));
+        return run(() -> {
+            elevatorController.setReference(curElevatorPos, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            System.out.println("holding elevator pos: " + curElevatorPos);
+        });
     }
 
     public Command holdCommand() {
         return run(() -> {
-            elevatorController.setReference(curElevatorPos, ControlType.kMAXMotionPositionControl);
-            armController.setReference(curArmPos, ControlType.kMAXMotionPositionControl);
+            elevatorController.setReference(curElevatorPos, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+            armController.setReference(curArmPos, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         });
     }
 

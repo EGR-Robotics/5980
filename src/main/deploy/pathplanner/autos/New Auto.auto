@@ -9,6 +9,18 @@
           "data": {
             "pathName": "SimplePath"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "level1"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New Path"
+          }
         }
       ]
     }
