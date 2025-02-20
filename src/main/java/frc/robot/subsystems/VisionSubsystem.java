@@ -120,7 +120,7 @@ public class VisionSubsystem extends SubsystemBase {
         // tx ranges from (-hfov/2) to (hfov/2) in degrees. If your target is on the
         // rightmost edge of
         // your limelight 3 feed, tx should return roughly 31 degrees.
-        double targetingAngularVelocity = getVerticalOffset() * kP;
+        double targetingAngularVelocity = getHorizontalOffset() * kP;
 
         // convert to radians per second for our drive method
         targetingAngularVelocity *= RotationsPerSecond.of(0.75).in(RadiansPerSecond);
@@ -162,13 +162,10 @@ public class VisionSubsystem extends SubsystemBase {
                 .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
-        drivetrain.applyRequest(() -> drive.withVelocityX(-0.3 * MaxSpeed) // Drive
-                                                                                                 // forward with
-                                                                                                 // negative Y
-                                                                                                 // (forward)
-                .withVelocityY(-0.3 * MaxSpeed) // Drive left with negative X (left)
-                .withRotationalRate(-0.3 * MaxAngularRate) // Drive counterclockwise with
-                                                                                  // negative X (left)
+        drivetrain
+            .applyRequest(() -> drive.withVelocityX(-0.3 * MaxSpeed) // Drive forward with negative Y (forward)
+            .withVelocityY(-0.3 * MaxSpeed) // Drive left with negative X (left)
+            .withRotationalRate(-0.3 * MaxAngularRate) // Drive counterclockwise with negative X (left)
         );
     }
 

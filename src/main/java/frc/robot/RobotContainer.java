@@ -19,6 +19,7 @@ import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClawSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -44,6 +45,7 @@ public class RobotContainer {
     public final ClawSubsystem claw = new ClawSubsystem();
     public final AlgaeSubsystem algae = new AlgaeSubsystem();
     public final VisionSubsystem vision = new VisionSubsystem();
+    public final ClimberSubsystem climber = new ClimberSubsystem();
 
     public RobotContainer() {
         NamedCommands.registerCommand("level1", claw.goToLevel1Command());
@@ -69,6 +71,10 @@ public class RobotContainer {
         // controllerJoystick.a().onTrue(
         //     vision.alignCommand(drivetrain)
         // );
+
+        // Climber System
+        controllerJoystick.b().whileTrue(climber.moveWenchUp());
+        controllerJoystick.b().onFalse(climber.stopWenchCommand());
 
 
         // Algae bar movement

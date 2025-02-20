@@ -73,7 +73,13 @@ public class ClawSubsystem implements Subsystem {
             .closedLoop
             .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
             .outputRange(-1, 1);
-
+        // config
+        //     .closedLoop
+        //     .p(0.1)
+        //     .i(0)
+        //     .d(0)
+        //     .outputRange(-1, 1);
+        
         // Configure motors to use the config
         armMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
@@ -106,23 +112,24 @@ public class ClawSubsystem implements Subsystem {
                     e.printStackTrace();
                 }
             }
+            
             motor.set(targetVelocity); // Final adjustment
         }).start();
     }
 
     public void goToLevel1() {
-        armController.setReference(0.509, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        armController.setReference(0.4, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         curArmPos = armEncoder.getPosition();
 
-        elevatorController.setReference(0.792, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        curElevatorPos = elevatorEncoder.getPosition();
+        // elevatorController.setReference(0.792, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        // curElevatorPos = elevatorEncoder.getPosition();
     }
 
     public void moveArm(boolean up) {
         if (up) {
-            setVelocity(.3, .05, armMotor, true);
+            setVelocity(.15, .05, armMotor, true);
         } else {
-            setVelocity(-.3, .05, armMotor, false);
+            setVelocity(-.15, .05, armMotor, false);
         }
         
         curArmPos = armEncoder.getPosition();
@@ -165,7 +172,10 @@ public class ClawSubsystem implements Subsystem {
     }
 
     public Command holdArmPositionCommand() {
-        return run(() -> armController.setReference(curArmPos, ControlType.kPosition, ClosedLoopSlot.kSlot0));
+        return run(() -> {
+            System.out.println(curArmPos);
+            armController.setReference(curArmPos, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        });
     }
 
     public Command holdElevatorPositionCommand() {
