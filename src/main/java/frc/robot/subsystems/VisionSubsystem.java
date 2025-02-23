@@ -163,9 +163,9 @@ public class VisionSubsystem extends SubsystemBase {
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
         drivetrain
-            .applyRequest(() -> drive.withVelocityX(-0.3 * MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(-0.3 * MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-0.3 * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            .applyRequest(() -> drive.withVelocityX(0) // Drive forward with negative Y (forward)
+            .withVelocityY(rot * .5) // Drive left with negative X (left)
+            .withRotationalRate(-0.3 * MaxAngularRate * (Math.signum(rot))) // Drive counterclockwise with negative X (left)
         );
     }
 
