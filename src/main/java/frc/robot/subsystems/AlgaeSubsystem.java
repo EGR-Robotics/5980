@@ -74,11 +74,11 @@ public class AlgaeSubsystem implements Subsystem {
     }
        
     public void moveArm() {
-        armMotor.set(-0.3);
+        armMotor.set(-0.15);
     }
 
     public void drop() {
-        armMotor.set(0.3);
+        armMotor.set(0.15);
     }
 
     public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
@@ -114,13 +114,10 @@ public class AlgaeSubsystem implements Subsystem {
     }
 
     public void moveElevator(boolean up) {
-        System.out.println("cur elevator position " + elevatorEncoder.getVelocity());
-        System.out.println("cur elevator voltage " + elevatorMotor.getBusVoltage());
-
         if (up) {
-            setVelocity(0.1, 0.05, elevatorMotor, true);
+            setVelocity(0.12, 0.05, elevatorMotor, true);
         } else {
-            setVelocity(-0.1, 0.05, elevatorMotor, false);
+            setVelocity(-0.12, 0.05, elevatorMotor, false);
         }
 
         // elevatorController.setReference(1, ControlType.kMAXMotionPositionControl);

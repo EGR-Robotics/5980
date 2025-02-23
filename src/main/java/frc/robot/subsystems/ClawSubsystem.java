@@ -6,11 +6,13 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.LimitSwitchConfig.Type;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkLimitSwitch;
 
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,12 +24,16 @@ import edu.wpi.first.wpilibj.Servo;
 
 public class ClawSubsystem implements Subsystem {
     private SparkMax armMotor;
-    private AbsoluteEncoder armEncoder;
+    private RelativeEncoder armEncoder;
     private SparkClosedLoopController armController;
+    private SparkLimitSwitch forwardArmLimit;
+    private SparkLimitSwitch reverseArmLimit;
 
     private SparkMax elevatorMotor;
-    private AbsoluteEncoder elevatorEncoder;
+    private RelativeEncoder elevatorEncoder;
     private SparkClosedLoopController elevatorController;
+    private SparkLimitSwitch forwardElevatorLimit;
+    private SparkLimitSwitch reverseElevatorLimit;
 
     // Limit switches for elevator
     private DigitalInput upElevatorLimitSwitch;
@@ -47,18 +53,22 @@ public class ClawSubsystem implements Subsystem {
 
     public ClawSubsystem() {
         // Initialize actuator
-        push = new Servo(1);
+        push = new Servo(7);
         push.setAlwaysHighMode();
 
         // Initialize arm motors
         armMotor = new SparkMax(20, MotorType.kBrushless);
-        armEncoder = armMotor.getAbsoluteEncoder();
+        armEncoder = armMotor.getEncoder();
+        forwardArmLimit = armMotor.getForwardLimitSwitch();
+        reverseArmLimit = armMotor.getReverseLimitSwitch();
 
         armController = armMotor.getClosedLoopController();
 
         // Initialize elevator motor
         elevatorMotor = new SparkMax(15, MotorType.kBrushless);
-        elevatorEncoder = elevatorMotor.getAbsoluteEncoder();
+        elevatorEncoder = elevatorMotor.getEncoder();
+        forwardElevatorLimit = elevatorMotor.getForwardLimitSwitch();
+        reverseElevatorLimit = elevatorMotor.getReverseLimitSwitch();
 
         elevatorController = elevatorMotor.getClosedLoopController();
 
@@ -66,13 +76,40 @@ public class ClawSubsystem implements Subsystem {
 
         // Create configuration for sparks
         SparkMaxConfig config = new SparkMaxConfig();
+
+        // config.limitSwitch
+        //     .forwardLimitSwitchType(Type.kNormallyOpen)
+        //     .forwardLimitSwitchEnabled(true)
+        //     .reverseLimitSwitchType(Type.kNormallyOpen)
+        //     .reverseLimitSwitchEnabled(true);
+
+        // config.softLimit
+        //     .forwardSoftLimit(-20)
+        //     .forwardSoftLimitEnabled(true)
+        //     .reverseSoftLimit(0.1)
+        //     .reverseSoftLimitEnabled(true);
         
+
         config
-            .smartCurrentLimit(40)
-            .closedLoopRampRate(0.1)
             .closedLoop
-            .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
-            .outputRange(-1, 1);
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .p(0.1)
+            .i(0)
+            .d(0)
+            .outputRange(-1, 1)
+            .p(0.0001, ClosedLoopSlot.kSlot1)
+            .i(0, ClosedLoopSlot.kSlot1)
+            .d(0, ClosedLoopSlot.kSlot1)
+            .velocityFF(1.0 / 5767, ClosedLoopSlot.kSlot1)
+            .outputRange(-1, 1, ClosedLoopSlot.kSlot1);
+
+
+        // config
+        //     .smartCurrentLimit(40)
+        //     .closedLoopRampRate(0.1)
+        //     .closedLoop
+        //     .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
+        //     .outputRange(-1, 1);
         // config
         //     .closedLoop
         //     .p(0.1)
@@ -83,6 +120,9 @@ public class ClawSubsystem implements Subsystem {
         // Configure motors to use the config
         armMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
         elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    
+        armEncoder.setPosition(0);
+        elevatorEncoder.setPosition(0);
     }
     
     public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
@@ -118,11 +158,13 @@ public class ClawSubsystem implements Subsystem {
     }
 
     public void goToLevel1() {
-        armController.setReference(0.4, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        curArmPos = armEncoder.getPosition();
+        double elevatorPos = 120;
+        elevatorController.setReference(elevatorPos, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+        curElevatorPos = elevatorPos;
 
-        // elevatorController.setReference(0.792, ControlType.kPosition, ClosedLoopSlot.kSlot0);
-        // curElevatorPos = elevatorEncoder.getPosition();
+        double armPos = -15;
+        armController.setReference(armPos, ControlType.kPosition, ClosedLoopSlot.kSlot1);
+        curArmPos = armPos;
     }
 
     public void moveArm(boolean up) {
@@ -138,9 +180,9 @@ public class ClawSubsystem implements Subsystem {
 
     public void moveElevator(boolean up) {
         if (up) {
-            setVelocity(.3, .05, elevatorMotor, true);
+            setVelocity(.45, .05, elevatorMotor, true);
         } else {
-            setVelocity(-.3, .05, elevatorMotor, false);
+            setVelocity(-.45, .05, elevatorMotor, false);
         }
         
         curElevatorPos = elevatorEncoder.getPosition();
@@ -173,7 +215,7 @@ public class ClawSubsystem implements Subsystem {
 
     public Command holdArmPositionCommand() {
         return run(() -> {
-            System.out.println(curArmPos);
+            System.out.println("holding arm pos: " + curArmPos);
             armController.setReference(curArmPos, ControlType.kPosition, ClosedLoopSlot.kSlot0);
         });
     }

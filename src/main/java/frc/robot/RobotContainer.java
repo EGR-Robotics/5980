@@ -73,32 +73,39 @@ public class RobotContainer {
         // );
 
         // Climber System
-        controllerJoystick.b().whileTrue(climber.moveWenchUp());
-        controllerJoystick.b().onFalse(climber.stopWenchCommand());
+        driverJoystick.x().whileTrue(climber.moveWenchUp());
+        driverJoystick.x().onFalse(climber.stopWenchCommand());
+        driverJoystick.y().whileTrue(climber.moveWenchDown());
+        driverJoystick.y().onFalse(climber.stopWenchCommand());
+
+        //autoalign
+        // driverJoystick.povDown().whileFalse()
 
 
         // Algae bar movement
-        // controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
-        // controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
+         controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
+        controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
 
-        // controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
-        // controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
+        controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
+        controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
 
-        // controllerJoystick.x().whileTrue(algae.moveArmCommand());
-        // controllerJoystick.x().onFalse(algae.stopArm());
+        controllerJoystick.x().whileTrue(algae.moveArmCommand());
+        controllerJoystick.x().onFalse(algae.stopArm());
 
-        // controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
-        // controllerJoystick.y().onFalse(algae.stopArm());
+        controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
+        controllerJoystick.y().onFalse(algae.stopArm());
 
         // Claw Movement Setup
-        controllerJoystick.a().whileTrue(claw.goToLevel1Command());
-        controllerJoystick.a().onFalse(claw.holdCommand());
+        // controllerJoystick.a().whileTrue(claw.goToLevel1Command());
+        // controllerJoystick.a().onFalse(claw.holdCommand());
 
         controllerJoystick.leftBumper().whileTrue(claw.moveArmUpCommand());
         controllerJoystick.leftBumper().onFalse(claw.holdArmPositionCommand());
 
         controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
         controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
+
+        //controllerJoystick.x().whileTrue(claw.dropCoralCommand());
 
         // // Elevator movement setup
         controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());

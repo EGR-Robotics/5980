@@ -97,4 +97,7 @@ public class ClimberSubsystem implements Subsystem {
     public Command moveWenchUp() {
         return run(() -> moveWench(true));
     }
+    public Command moveWenchDown() {
+        return run(() -> moveWench(false));
+    }
 }

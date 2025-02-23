@@ -11,15 +11,21 @@
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "level1"
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "New Path"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.5
           }
         }
       ]
