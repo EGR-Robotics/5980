@@ -18,8 +18,10 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.AlgaeSubsystem;
-import frc.robot.subsystems.ClawSubsystem;
+// import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
+
+import frc.robot.subsystems.Elevator;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -30,6 +32,7 @@ public class RobotContainer {
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
             .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -42,13 +45,16 @@ public class RobotContainer {
     // Initialize subsystems
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    public final ClawSubsystem claw = new ClawSubsystem();
+    // public final ClawSubsystem claw = new ClawSubsystem();
     public final AlgaeSubsystem algae = new AlgaeSubsystem();
     public final VisionSubsystem vision = new VisionSubsystem();
     public final ClimberSubsystem climber = new ClimberSubsystem();
 
+    public static final Elevator elevator = new Elevator();
+
     public RobotContainer() {
-        NamedCommands.registerCommand("level1", claw.goToLevel1Command());
+        // Register named commands for auto
+        // NamedCommands.registerCommand("level1", claw.goToLevel1Command());
 
         configureBindings();
     }
@@ -67,23 +73,20 @@ public class RobotContainer {
                                                                                           // negative X (left)
                 ));
 
-        // Limelight Align
+
+        // Limelight Align Commands
         // controllerJoystick.a().onTrue(
-        //     vision.alignCommand(drivetrain)
+        // vision.alignCommand(drivetrain)
         // );
 
-        // Climber System
+        // Climber Commands
         driverJoystick.x().whileTrue(climber.moveWenchUp());
         driverJoystick.x().onFalse(climber.stopWenchCommand());
         driverJoystick.y().whileTrue(climber.moveWenchDown());
         driverJoystick.y().onFalse(climber.stopWenchCommand());
 
-        //autoalign
-        // driverJoystick.povDown().whileFalse()
-
-
-        // Algae bar movement
-         controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
+        // Algae Bar Commands
+        controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
         controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
 
         controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
@@ -95,39 +98,56 @@ public class RobotContainer {
         controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
         controllerJoystick.y().onFalse(algae.stopArm());
 
-        // Claw Movement Setup
+        // Claw Commands
         // controllerJoystick.a().whileTrue(claw.goToLevel1Command());
         // controllerJoystick.a().onFalse(claw.holdCommand());
 
-        controllerJoystick.leftBumper().whileTrue(claw.moveArmUpCommand());
-        controllerJoystick.leftBumper().onFalse(claw.holdArmPositionCommand());
+        // controllerJoystick.leftBumper().whileTrue(claw.moveArmUpCommand());
+        // controllerJoystick.leftBumper().onFalse(claw.holdArmPositionCommand());
 
-        controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
-        controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
+        // controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
+        // controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
 
-        //controllerJoystick.x().whileTrue(claw.dropCoralCommand());
+        // controllerJoystick.x().whileTrue(claw.dropCoralCommand());
 
-        // // Elevator movement setup
-        controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
-        controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
 
-        controllerJoystick.rightTrigger().whileTrue(claw.moveElevatorDownCommand());
-        controllerJoystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
+
+
+
+        // Elevator Commands
+
+        controllerJoystick.leftTrigger().whileTrue(
+            
+        );
+
+
+        // controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
+        // controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
+
+        // controllerJoystick.rightTrigger().whileTrue(claw.moveElevatorDownCommand());
+        // controllerJoystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
 
         // controllerJoystick.b().onTrue(claw.dropCoralCommand());
 
-        driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        driverJoystick.b().whileTrue(
-                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0,0))));
 
-        // // Run SysId routines when holding back/start and X/Y.
-        // // Note that each routine should be run exactly once in a single log.
+
+
+
+        // Init Drivetrain commands
+        driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+
+        // Zero out
+        driverJoystick.b().onTrue(
+                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0, 0))));
+
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
         driverJoystick.back().and(driverJoystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
         driverJoystick.back().and(driverJoystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
         driverJoystick.start().and(driverJoystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
         driverJoystick.start().and(driverJoystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
 
-        // // reset the field-centric heading on left bumper press
+        // reset the field-centric heading on left bumper press
         driverJoystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
