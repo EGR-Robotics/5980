@@ -1,4 +1,4 @@
-package frc.robot.commands;
+package frc.robot.commands.elevator;
 
 import frc.robot.RobotContainer;
 
@@ -9,11 +9,17 @@ public class MoveElevator extends Command {
 
     public MoveElevator(boolean direction) {
         m_direction = direction;
+        addRequirements(RobotContainer.elevator);
     }
 
     @Override
     public void execute() {
         RobotContainer.elevator.setSpeed(m_direction ? 15 : -15);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
     @Override

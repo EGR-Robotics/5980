@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 import frc.robot.generated.TunerConstants;
 
+// Subsystems
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 import frc.robot.subsystems.AlgaeSubsystem;
@@ -22,6 +23,11 @@ import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 
 import frc.robot.subsystems.Elevator;
+import frc.robot.Constants.SCORING;
+// Commands
+import frc.robot.commands.elevator.MoveElevator;
+import frc.robot.commands.elevator.SetElevatorDistance;
+import frc.robot.commands.elevator.StopElevator;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -60,6 +66,18 @@ public class RobotContainer {
     }
 
     private void configureBindings() {
+        // Elevator Commands
+
+        controllerJoystick.leftTrigger().whileTrue(new MoveElevator(false));
+        controllerJoystick.leftTrigger().onFalse(new StopElevator());
+
+        controllerJoystick.rightTrigger().whileTrue(new MoveElevator(true));
+        controllerJoystick.rightTrigger().onFalse(new StopElevator());
+
+        controllerJoystick.a().onTrue(new SetElevatorDistance(SCORING.L4_HEIGHT)); 
+
+        // Drive Commands
+
         // Note that X is defined as forward according to WPILib convention,
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
@@ -72,6 +90,27 @@ public class RobotContainer {
                         .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with
                                                                                           // negative X (left)
                 ));
+
+        driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+
+        // Zero out
+        driverJoystick.b().onTrue(
+                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0, 0))));
+
+        // Run SysId routines when holding back/start and X/Y.
+        // Note that each routine should be run exactly once in a single log.
+        driverJoystick.back().and(driverJoystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
+        driverJoystick.back().and(driverJoystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
+        driverJoystick.start().and(driverJoystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
+        driverJoystick.start().and(driverJoystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
+
+        // reset the field-centric heading on left bumper press
+        driverJoystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
+
+        drivetrain.registerTelemetry(logger::telemeterize);
+
+
+
 
 
         // Limelight Align Commands
@@ -110,17 +149,6 @@ public class RobotContainer {
 
         // controllerJoystick.x().whileTrue(claw.dropCoralCommand());
 
-
-
-
-
-        // Elevator Commands
-
-        controllerJoystick.leftTrigger().whileTrue(
-            
-        );
-
-
         // controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
         // controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
 
@@ -128,29 +156,6 @@ public class RobotContainer {
         // controllerJoystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
 
         // controllerJoystick.b().onTrue(claw.dropCoralCommand());
-
-
-
-
-
-        // Init Drivetrain commands
-        driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-
-        // Zero out
-        driverJoystick.b().onTrue(
-                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0, 0))));
-
-        // Run SysId routines when holding back/start and X/Y.
-        // Note that each routine should be run exactly once in a single log.
-        driverJoystick.back().and(driverJoystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
-        driverJoystick.back().and(driverJoystick.x()).whileTrue(drivetrain.sysIdDynamic(Direction.kReverse));
-        driverJoystick.start().and(driverJoystick.y()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kForward));
-        driverJoystick.start().and(driverJoystick.x()).whileTrue(drivetrain.sysIdQuasistatic(Direction.kReverse));
-
-        // reset the field-centric heading on left bumper press
-        driverJoystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
-
-        drivetrain.registerTelemetry(logger::telemeterize);
     }
 
     public Command getAutonomousCommand() {

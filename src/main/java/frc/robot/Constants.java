@@ -8,6 +8,10 @@ import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Distance;
 
 public class Constants {
+    public class SCORING {
+        public static final Distance L4_HEIGHT = Units.Feet.of(3);
+    }
+
     public class ELEVATOR {
         public static final int CAN_ID = 15;
 
@@ -29,5 +33,7 @@ public class Constants {
         public static final double OUTPUT_PULLEY_NUMBER_OF_TEETH = 28;
         public static final Distance OUTPUT_PULLEY_CIRCUMFERENCE = HTD5_PULLEY_PITCH
                 .times(OUTPUT_PULLEY_NUMBER_OF_TEETH);
+
+        public static final double MAX_MOTION_ALLOWED_ERROR_PERCENT = 0.03;
     }
 }

@@ -1,7 +1,6 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
@@ -12,17 +11,14 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.filter.Debouncer;
-
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.ELEVATOR;
 
 public class Elevator extends SubsystemBase {
@@ -107,6 +103,16 @@ public class Elevator extends SubsystemBase {
     public Distance getDistance() {
         return (ELEVATOR.OUTPUT_PULLEY_CIRCUMFERENCE.times(
                 getRotations().div(ELEVATOR.GEAR_RATIO).in(Units.Rotations)));
+    }
+
+    private boolean isAtTargetRotations() {
+        return m_targetRotations.isNear(
+                getRotations(),
+                ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT);
+    }
+
+    public boolean isAtTarget() {
+        return isAtTargetRotations();
     }
 
     public boolean isAtZero() {
