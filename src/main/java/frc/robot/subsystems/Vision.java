@@ -6,24 +6,6 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.ClosedLoopSlot;
-import com.revrobotics.spark.SparkBase.ControlType;
-import com.revrobotics.spark.SparkBase.PersistMode;
-import com.revrobotics.spark.SparkBase.ResetMode;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-
-import edu.wpi.first.math.filter.Debouncer;
-import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.units.measure.MutAngle;
-import edu.wpi.first.units.measure.MutAngularVelocity;
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VISION;
@@ -31,22 +13,6 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class Vision extends SubsystemBase {
-    private DigitalInput m_hall_effect;
-    private Debouncer m_debouncer;
-
-    private SparkMax m_motor;
-
-    private SparkClosedLoopController m_PIDController;
-    private RelativeEncoder m_encoder;
-
-    private MutAngle m_targetRotations = Units.Rotations.mutable(Double.NaN);
-    private MutAngularVelocity m_currentAngularVelocityHolder = Units.RPM.mutable(
-            Double.NaN);
-    private MutAngle m_currentRotationsHolder = Units.Rotations.mutable(
-            Double.NaN);
-
-    
-
     private final NetworkTable limelightTable;
 
     public Vision() {
@@ -158,7 +124,7 @@ public class Vision extends SubsystemBase {
         double kP = .1;
         double targetingForwardSpeed = getVerticalOffset() * kP;
 
-        targetingForwardSpeed *= VISION.MaxSpeed;
+        targetingForwardSpeed *= VISION.MAX_SPEED;
         targetingForwardSpeed *= -1.0;
 
         return targetingForwardSpeed;
@@ -177,13 +143,13 @@ public class Vision extends SubsystemBase {
         double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
 
         final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                .withDeadband(VISION.MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+                .withDeadband(VISION.MAX_SPEED * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
         drivetrain
-            .applyRequest(() -> drive.withVelocityX(-0.3 * VISION.MaxSpeed) // Drive forward with negative Y (forward)
-            .withVelocityY(-0.3 * VISION.MaxSpeed) // Drive left with negative X (left)
-            .withRotationalRate(-0.3 * MaxAngularRate) // Drive counterclockwise with negative X (left)
+            .applyRequest(() -> drive.withVelocityX(-0.3 * VISION.MAX_SPEED) // Drive forward with negative Y (forward)
+            .withVelocityY(-0.3 * rot) // Drive left with negative X (left)
+            .withRotationalRate(-0.3 * MaxAngularRate * Math.signum(rot)) // Drive counterclockwise with negative X (left)
         );
     }
 }

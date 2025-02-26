@@ -45,7 +45,7 @@ public class Constants {
         public static final double TARGET_HEIGHT = 2.64; // Target height in meters
         public static final double CAMERA_HEIGHT = 0.90; // Camera height in meters
 
-        public static final double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+        public static final double MAX_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
     }
 
     public class ALGAE {
