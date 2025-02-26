@@ -18,7 +18,8 @@ import frc.robot.generated.TunerConstants;
 // Subsystems
 import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.Algae;
+// import frc.robot.subsystems.AlgaeSubsystem;
 // import frc.robot.subsystems.ClawSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
 
@@ -52,10 +53,10 @@ public class RobotContainer {
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
     // public final ClawSubsystem claw = new ClawSubsystem();
-    public final AlgaeSubsystem algae = new AlgaeSubsystem();
     public final VisionSubsystem vision = new VisionSubsystem();
     public final ClimberSubsystem climber = new ClimberSubsystem();
-
+    
+    public static final Algae algae = new Algae();
     public static final Elevator elevator = new Elevator();
 
     public RobotContainer() {
@@ -125,17 +126,17 @@ public class RobotContainer {
         driverJoystick.y().onFalse(climber.stopWenchCommand());
 
         // Algae Bar Commands
-        controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
-        controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
+        // controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
+        // controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
 
-        controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
-        controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
+        // controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
+        // controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
 
-        controllerJoystick.x().whileTrue(algae.moveArmCommand());
-        controllerJoystick.x().onFalse(algae.stopArm());
+        // controllerJoystick.x().whileTrue(algae.moveArmCommand());
+        // controllerJoystick.x().onFalse(algae.stopArm());
 
-        controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
-        controllerJoystick.y().onFalse(algae.stopArm());
+        // controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
+        // controllerJoystick.y().onFalse(algae.stopArm());
 
         // Claw Commands
         // controllerJoystick.a().whileTrue(claw.goToLevel1Command());

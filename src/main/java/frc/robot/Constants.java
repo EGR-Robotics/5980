@@ -36,4 +36,20 @@ public class Constants {
 
         public static final double MAX_MOTION_ALLOWED_ERROR_PERCENT = 0.03;
     }
+
+    public class ALGAE {
+        public static final int CAN_ID = 17;
+
+        public static final SparkBaseConfig MOTOR_CONFIG = new SparkMaxConfig()
+                .idleMode(IdleMode.kBrake)
+                .inverted(false)
+                .openLoopRampRate(.25)
+                .smartCurrentLimit(40, 40)
+                .voltageCompensation(12);
+
+        public static final double AXIS_MAX_SPEED = 0.25;
+        public static final double MOTOR_ARB_F = 0.05;
+
+        public static final double GEAR_RATIO = 3.2142857143;
+    }
 }
