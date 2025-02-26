@@ -1,126 +1,87 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.filter.Debouncer;
+import edu.wpi.first.units.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.MutAngle;
+import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-import com.revrobotics.spark.SparkBase.ResetMode;
+import frc.robot.Constants.ALGAE;
 
 public class Algae extends SubsystemBase {
-    private SparkFlex armMotor;
+    private DigitalInput m_hall_effect;
+    private Debouncer m_debouncer;
 
-    private SparkMax elevatorMotor;
-    private RelativeEncoder elevatorEncoder;
-    private SparkClosedLoopController elevatorController;
+    private SparkMax m_motor;
 
-    // Limit switches for elevator
-    private DigitalInput upElevatorLimitSwitch;
-    private DigitalInput lowerElevatorLimitSwitch;
-    private double curElevatorPos;
+    private SparkClosedLoopController m_PIDController;
+    private RelativeEncoder m_encoder;
 
-    private double currentVelocity = 0;
+    private MutAngle m_targetRotations = Units.Rotations.mutable(Double.NaN);
+    private MutAngularVelocity m_currentAngularVelocityHolder = Units.RPM.mutable(
+            Double.NaN);
 
     public Algae() {
-        // Initialize arm motors
-        armMotor = new SparkFlex(16, MotorType.kBrushless);
+        m_motor = new SparkMax(
+                ALGAE.CAN_ID,
+                MotorType.kBrushless);
 
-        // Initialize elevator motor
-        elevatorMotor = new SparkMax(17, MotorType.kBrushless);
-        elevatorEncoder = elevatorMotor.getEncoder();
+        m_motor.configure(
+                ALGAE.MOTOR_CONFIG,
+                ResetMode.kResetSafeParameters,
+                PersistMode.kPersistParameters);
 
-        elevatorController = elevatorMotor.getClosedLoopController();
-        elevatorEncoder.setPosition(0);
+        m_PIDController = m_motor.getClosedLoopController();
 
-        curElevatorPos = elevatorEncoder.getPosition();
-
-        // // Create configuration for sparks
-        // config.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
-
-        // /*
-        //  * Configure the closed loop controller. We want to make sure we set the
-        //  * feedback sensor as the primary encoder.
-        //  */
-        // config.closedLoop
-        //         .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-        //         // Set PID values for position control
-        //         .p(0.1)
-        //         .outputRange(-1, 1).maxMotion
-        //         // Set MAXMotion parameters for position control
-        //         .maxVelocity(2000)
-        //         .maxAcceleration(10000)
-        //         .allowedClosedLoopError(0.25);
-
-        // elevatorMotor.configure(
-        //         config,
-        //         ResetMode.kResetSafeParameters,
-        //         PersistMode.kPersistParameters);
+        m_encoder = m_motor.getEncoder();
     }
 
-    public void goToLevel1() {
-        elevatorController.setReference(5, ControlType.kMAXMotionPositionControl);
-        curElevatorPos = elevatorEncoder.getPosition();
-    }
-       
-    public void moveArm(Boolean up) {
-        if(up){
-            armMotor.set(-0.15);
-        }
-        else{
-            armMotor.set(0.15);
-        }
+    public void setSpeed(double percentOutput) {
+        m_motor.set(percentOutput);
+        m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
     }
 
-    public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
-        new Thread(() -> {
-            while (Math.abs(targetVelocity - currentVelocity) > 0.1) { // Small threshold to stop ramping
-                if(up){
-                    if (targetVelocity > currentVelocity) {
-                        currentVelocity += rampRate;// Change in speed per cycle
-                    } else {
-                        currentVelocity -= rampRate;
-                    }
-                }
-                else{
-                    if (targetVelocity < currentVelocity) {
-                        currentVelocity -= rampRate;// Change in speed per cycle
-                    } else {
-                        currentVelocity += rampRate;
-                    }
-
-                }
-
-                motor.set(currentVelocity); // currentVelocity/ Max RPM
-                
-                try {
-                    Thread.sleep(50); // Small delay for smooth ramping
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            motor.set(targetVelocity); // Final adjustment
-        }).start();
+    public void setAxisSpeed(double speed) {
+        speed *= ALGAE.AXIS_MAX_SPEED;
+        m_motor.set(speed);
+        m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
     }
 
-    public void moveElevator(boolean up) {
-        if (up) {
-            setVelocity(0.12, 0.05, elevatorMotor, true);
-        } else {
-            setVelocity(-0.12, 0.05, elevatorMotor, false);
-        }
+    public void stop() {
+        m_motor.stopMotor();
+        m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
+    }
 
-        // elevatorController.setReference(1, ControlType.kMAXMotionPositionControl);
+    public AngularVelocity getVelocity() {
+        m_currentAngularVelocityHolder.mut_replace(
+                m_encoder.getVelocity(),
+                Units.RPM);
+        return m_currentAngularVelocityHolder;
+    }
 
-        curElevatorPos = elevatorEncoder.getPosition();
+    public boolean isAtZero() {
+        return m_debouncer.calculate(m_hall_effect.get());
+    }
+
+    public void setZero() {
+        m_encoder.setPosition(0);
+    }
+
+    @Override
+    public void periodic() {
+        // SmartDashboard.putNumber("ALGAE RPM", m_encoder.getVelocity());
     }
 }
