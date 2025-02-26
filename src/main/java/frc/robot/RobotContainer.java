@@ -1,33 +1,42 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.*;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-
+import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-
+import frc.robot.Constants.ACTUATOR;
+// Constants
+import frc.robot.Constants.SCORING;
 import frc.robot.generated.TunerConstants;
 
-// Subsystems
-import frc.robot.subsystems.VisionSubsystem;
-import frc.robot.subsystems.CommandSwerveDrivetrain;
-import frc.robot.subsystems.AlgaeSubsystem;
-// import frc.robot.subsystems.ClawSubsystem;
-import frc.robot.subsystems.ClimberSubsystem;
-
-import frc.robot.subsystems.Elevator;
-import frc.robot.Constants.SCORING;
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
 import frc.robot.commands.elevator.SetElevatorDistance;
+import frc.robot.commands.actuator.Drop;
+import frc.robot.commands.arm.MoveArm;
+import frc.robot.commands.arm.SetArmDistance;
+import frc.robot.commands.arm.StopArm;
 import frc.robot.commands.elevator.StopElevator;
+import frc.robot.commands.scoring.L4;
+// Subsystems
+import frc.robot.subsystems.AlgaeSubsystem;
+import frc.robot.subsystems.ClimberSubsystem;
+import frc.robot.subsystems.VisionSubsystem;
+
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.CommandSwerveDrivetrain;
+import frc.robot.subsystems.Elevator;
+
+import frc.robot.subsystems.Actuator;
 
 public class RobotContainer {
     private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
@@ -49,14 +58,15 @@ public class RobotContainer {
     private final CommandXboxController controllerJoystick = new CommandXboxController(1);
 
     // Initialize subsystems
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-
-    // public final ClawSubsystem claw = new ClawSubsystem();
+    
     public final AlgaeSubsystem algae = new AlgaeSubsystem();
     public final VisionSubsystem vision = new VisionSubsystem();
     public final ClimberSubsystem climber = new ClimberSubsystem();
 
+    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public static final Elevator elevator = new Elevator();
+    public static final Arm arm = new Arm();
+    public static final Actuator actuator = new Actuator();
 
     public RobotContainer() {
         // Register named commands for auto
@@ -74,7 +84,17 @@ public class RobotContainer {
         controllerJoystick.rightTrigger().whileTrue(new MoveElevator(true));
         controllerJoystick.rightTrigger().onFalse(new StopElevator());
 
-        controllerJoystick.a().onTrue(new SetElevatorDistance(SCORING.L4_HEIGHT)); 
+        controllerJoystick.a().onTrue(new L4()); 
+
+        controllerJoystick.x().onTrue(new Drop());
+
+        // Arm commands
+        
+        controllerJoystick.leftBumper().whileTrue(new MoveArm(false));
+        controllerJoystick.leftBumper().onFalse(new StopElevator());
+
+        controllerJoystick.rightBumper().whileTrue(new MoveArm(true));
+        controllerJoystick.rightBumper().onFalse(new StopElevator());
 
         // Drive Commands
 
@@ -125,35 +145,19 @@ public class RobotContainer {
         driverJoystick.y().onFalse(climber.stopWenchCommand());
 
         // Algae Bar Commands
-        controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
-        controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
+        // controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
+        // controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
 
-        controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
-        controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
+        // controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
+        // controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
 
-        controllerJoystick.x().whileTrue(algae.moveArmCommand());
-        controllerJoystick.x().onFalse(algae.stopArm());
+        // controllerJoystick.x().whileTrue(algae.moveArmCommand());
+        // controllerJoystick.x().onFalse(algae.stopArm());
 
-        controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
-        controllerJoystick.y().onFalse(algae.stopArm());
-
-        // Claw Commands
-        // controllerJoystick.a().whileTrue(claw.goToLevel1Command());
-        // controllerJoystick.a().onFalse(claw.holdCommand());
-
-        // controllerJoystick.leftBumper().whileTrue(claw.moveArmUpCommand());
-        // controllerJoystick.leftBumper().onFalse(claw.holdArmPositionCommand());
-
-        // controllerJoystick.rightBumper().whileTrue(claw.moveArmDownCommand());
-        // controllerJoystick.rightBumper().onFalse(claw.holdArmPositionCommand());
+        // controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
+        // controllerJoystick.y().onFalse(algae.stopArm());
 
         // controllerJoystick.x().whileTrue(claw.dropCoralCommand());
-
-        // controllerJoystick.leftTrigger().whileTrue(claw.moveElevatorUpCommand());
-        // controllerJoystick.leftTrigger().onFalse(claw.holdElevatorPositionCommand());
-
-        // controllerJoystick.rightTrigger().whileTrue(claw.moveElevatorDownCommand());
-        // controllerJoystick.rightTrigger().onFalse(claw.holdElevatorPositionCommand());
 
         // controllerJoystick.b().onTrue(claw.dropCoralCommand());
     }
