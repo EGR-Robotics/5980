@@ -5,19 +5,25 @@ import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class MoveAlgae extends Command {
-    private boolean m_up;
+    private boolean m_direction;
 
-    public MoveAlgae(boolean up) {
-        m_up = up;
+    public MoveAlgae(boolean direction) {
+        m_direction = direction;
+        addRequirements(RobotContainer.elevator);
     }
 
     @Override
     public void execute() {
-        RobotContainer.algae.moveArm(m_up);
+        RobotContainer.elevator.setSpeed(m_direction ? 15 : -15);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
     @Override
     public void end(boolean interrupted) {
-        // RobotContainer.algae.stop();
+        RobotContainer.elevator.stop();
     }
 }
