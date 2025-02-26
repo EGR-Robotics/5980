@@ -84,9 +84,9 @@ public class RobotContainer {
         controllerJoystick.rightTrigger().whileTrue(new MoveElevator(true));
         controllerJoystick.rightTrigger().onFalse(new StopElevator());
 
-        controllerJoystick.a().onTrue(new L4()); 
+        // controllerJoystick.a().onTrue(new L4()); 
 
-        controllerJoystick.x().onTrue(new Drop());
+        // controllerJoystick.x().onTrue(new Drop());
 
         // Arm commands
         
@@ -145,17 +145,17 @@ public class RobotContainer {
         driverJoystick.y().onFalse(climber.stopWenchCommand());
 
         // Algae Bar Commands
-        // controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
-        // controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
+        controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
+        controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
 
-        // controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
-        // controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
+        controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
+        controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
 
-        // controllerJoystick.x().whileTrue(algae.moveArmCommand());
-        // controllerJoystick.x().onFalse(algae.stopArm());
+        controllerJoystick.x().whileTrue(algae.moveArmCommand());
+        controllerJoystick.x().onFalse(algae.stopArm());
 
-        // controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
-        // controllerJoystick.y().onFalse(algae.stopArm());
+        controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
+        controllerJoystick.y().onFalse(algae.stopArm());
 
         // controllerJoystick.x().whileTrue(claw.dropCoralCommand());
 
