@@ -1,14 +1,15 @@
 package frc.robot.commands.actuator;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.RobotContainer;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 
 public class Drop extends SequentialCommandGroup {
     public Drop() {
         super(
             new PushOut(),
-            new PushIn(),
-            RobotContainer.actuator.stopCommand()
+            new WaitCommand(1),
+            new Stop(),
+            new PushIn()
         );
     }
 }

@@ -7,30 +7,29 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.units.Units;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import frc.robot.Constants.ACTUATOR;
+
 // Constants
-import frc.robot.Constants.SCORING;
 import frc.robot.generated.TunerConstants;
 
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.commands.elevator.SetElevatorDistance;
+import frc.robot.Constants.APRIL_TAGS;
 import frc.robot.commands.actuator.Drop;
 import frc.robot.commands.arm.MoveArm;
-import frc.robot.commands.arm.SetArmDistance;
-import frc.robot.commands.arm.StopArm;
+
 import frc.robot.commands.elevator.StopElevator;
 import frc.robot.commands.scoring.L4;
 // Subsystems
 import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.VisionSubsystem;
+import frc.robot.subsystems.VisionSubsystemOld;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -60,7 +59,7 @@ public class RobotContainer {
     // Initialize subsystems
     
     public final AlgaeSubsystem algae = new AlgaeSubsystem();
-    public final VisionSubsystem vision = new VisionSubsystem();
+    public final VisionSubsystemOld vision = new VisionSubsystemOld();
     public final ClimberSubsystem climber = new ClimberSubsystem();
 
     public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
@@ -70,9 +69,14 @@ public class RobotContainer {
 
     public RobotContainer() {
         // Register named commands for auto
-        // NamedCommands.registerCommand("level1", claw.goToLevel1Command());
+        NamedCommands.registerCommand("level4", new L4());
+        NamedCommands.registerCommand("drop", new Drop());
 
         configureBindings();
+
+        var alliance = DriverStation.getAlliance();
+        
+        APRIL_TAGS.update(alliance.get());
     }
 
     private void configureBindings() {
@@ -84,9 +88,9 @@ public class RobotContainer {
         controllerJoystick.rightTrigger().whileTrue(new MoveElevator(true));
         controllerJoystick.rightTrigger().onFalse(new StopElevator());
 
-        // controllerJoystick.a().onTrue(new L4()); 
+        controllerJoystick.a().onTrue(new L4());
 
-        // controllerJoystick.x().onTrue(new Drop());
+        controllerJoystick.x().onTrue(new Drop());
 
         // Arm commands
         
@@ -134,9 +138,9 @@ public class RobotContainer {
 
 
         // Limelight Align Commands
-        // controllerJoystick.a().onTrue(
-        // vision.alignCommand(drivetrain)
-        // );
+        controllerJoystick.y().onTrue(
+            vision.alignCommand(drivetrain)
+        );
 
         // Climber Commands
         driverJoystick.x().whileTrue(climber.moveWenchUp());
@@ -145,24 +149,25 @@ public class RobotContainer {
         driverJoystick.y().onFalse(climber.stopWenchCommand());
 
         // Algae Bar Commands
-        controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
-        controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
+        // controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
+        // controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
 
-        controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
-        controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
+        // controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
+        // controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
 
-        controllerJoystick.x().whileTrue(algae.moveArmCommand());
-        controllerJoystick.x().onFalse(algae.stopArm());
+        // controllerJoystick.x().whileTrue(algae.moveArmCommand());
+        // controllerJoystick.x().onFalse(algae.stopArm());
 
-        controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
-        controllerJoystick.y().onFalse(algae.stopArm());
+        // controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
+        // controllerJoystick.y().onFalse(algae.stopArm());
 
         // controllerJoystick.x().whileTrue(claw.dropCoralCommand());
 
         // controllerJoystick.b().onTrue(claw.dropCoralCommand());
     }
-
+ 
     public Command getAutonomousCommand() {
+        // return new PathPlannerAuto("Test");
         return new PathPlannerAuto("New Auto");
     }
 }

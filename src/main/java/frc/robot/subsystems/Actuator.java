@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ACTUATOR;
 
@@ -11,6 +12,8 @@ public class Actuator extends SubsystemBase {
 
     public Actuator() {
         m_servo = new PWM(ACTUATOR.PWM_PORT);
+        // m_servo.setSpeed(0);
+        m_servo.setPosition(0);  
     }
 
     public void setSpeed(double speed) {
@@ -25,11 +28,11 @@ public class Actuator extends SubsystemBase {
         return m_servo.getPosition();
     }
 
-    public void stop() {
-        m_servo.setSpeed(0);
+    public void setPosition(double pos) {
+        m_servo.setPosition(pos);
     }
 
-    public Command stopCommand() {
-        return run(() -> stop());
+    public void stop() {
+        m_servo.setSpeed(0);
     }
 }

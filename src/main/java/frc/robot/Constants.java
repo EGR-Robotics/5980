@@ -6,17 +6,63 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
         public class SCORING {
                 public static final double ELEVATOR_SPEED = 1;
                 public static final double ARM_SPEED = 0.15;
 
-                public static final Distance L4_ELEVATOR_HEIGHT = Units.Feet.of(-0.5);
-                public static final Angle L4_ARM_ANGLE = Units.Rotations.of(-24);
+                public static final Distance L4_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
+                public static final Angle L4_ARM_ANGLE = Units.Rotations.of(-30);
+        }
+
+        public class APRIL_TAGS {
+                public static int REEF_AB_TAGID;
+                public static int REEF_CD_TAGID;
+                public static int REEF_EF_TAGID;
+                public static int REEF_GH_TAGID;
+                public static int REEF_IJ_TAGID;
+                public static int REEF_KL_TAGID;
+
+                public static int CORAL_STATION_LEFT_TAGID;
+                public static int CORAL_STATION_RIGHT_TAGID;
+
+                // below values are in meters
+                public static final double INSIDE_REEF_ZONE_THRESHOLD = 1.6;
+                public static final double AUTO_ADJUST_THRESHOLD = 1.8;
+
+                private static final double CORAL_STATION_OFFSET_HORIZONTAL = 0.3;
+                private static final double CORAL_STATION_OFFSET_VERTICAL = 0.3;
+                public static Translation2d CORAL_STATION_LEFT_OFFSET;
+                public static Translation2d CORAL_STATION_RIGHT_OFFSET;
+
+                public static void update(Alliance alliance) {
+                        REEF_AB_TAGID = alliance == Alliance.Blue ? 18 : 7;
+                        REEF_CD_TAGID = alliance == Alliance.Blue ? 19 : 8;
+                        REEF_EF_TAGID = alliance == Alliance.Blue ? 20 : 9;
+                        REEF_GH_TAGID = alliance == Alliance.Blue ? 21 : 10;
+                        REEF_IJ_TAGID = alliance == Alliance.Blue ? 22 : 11;
+                        REEF_KL_TAGID = alliance == Alliance.Blue ? 17 : 6;
+
+                        CORAL_STATION_LEFT_TAGID = alliance == Alliance.Blue ? 13 : 1;
+                        CORAL_STATION_RIGHT_TAGID = alliance == Alliance.Blue ? 12 : 2;
+
+                        CORAL_STATION_LEFT_OFFSET = alliance == Alliance.Blue
+                                        ? new Translation2d(CORAL_STATION_OFFSET_HORIZONTAL,
+                                                        -CORAL_STATION_OFFSET_VERTICAL)
+                                        : new Translation2d(CORAL_STATION_OFFSET_HORIZONTAL,
+                                                        CORAL_STATION_OFFSET_VERTICAL);
+                        CORAL_STATION_RIGHT_OFFSET = alliance == Alliance.Blue
+                                        ? new Translation2d(-CORAL_STATION_OFFSET_HORIZONTAL,
+                                                        -CORAL_STATION_OFFSET_VERTICAL)
+                                        : new Translation2d(CORAL_STATION_OFFSET_HORIZONTAL,
+                                                        CORAL_STATION_OFFSET_VERTICAL);
+                }
         }
 
         public class ARM {
@@ -32,10 +78,10 @@ public class Constants {
                 public static final double AXIS_MAX_SPEED = 0.25;
                 public static final double MOTOR_ARB_F = 0.05;
 
-                public static final double MOTOR_P = 5;
+                public static final double MOTOR_P = 12;
                 public static final double MOTOR_I = 0;
                 public static final double MOTOR_D = 0;
-                public static final double MOTOR_F = 0;
+                public static final double MOTOR_F = 0.1;
 
                 public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = MOTOR_CONFIG.closedLoop
                                 .pidf(MOTOR_P, MOTOR_I, MOTOR_D, MOTOR_F)
@@ -46,7 +92,7 @@ public class Constants {
                 public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
                                 .maxAcceleration(1000)
-                                .maxVelocity(3000);
+                                .maxVelocity(6000);
 
                 public static final double GEAR_RATIO = 20;
                 public static final Distance OUTPUT_PULLEY_DIAMETER = Units.Inches.of(
@@ -71,10 +117,10 @@ public class Constants {
                 public static final double AXIS_MAX_SPEED = 0.25;
                 public static final double MOTOR_ARB_F = 0.05;
 
-                public static final double MOTOR_P = 7;
+                public static final double MOTOR_P = 30;
                 public static final double MOTOR_I = 0;
                 public static final double MOTOR_D = 0;
-                public static final double MOTOR_F = 0;
+                public static final double MOTOR_F = 0.1;
 
                 public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = MOTOR_CONFIG.closedLoop
                                 .pidf(MOTOR_P, MOTOR_I, MOTOR_D, MOTOR_F)
@@ -85,7 +131,7 @@ public class Constants {
                 public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
                                 .maxAcceleration(1000)
-                                .maxVelocity(5000);
+                                .maxVelocity(6000);
 
                 public static final double GEAR_RATIO = 25;
                 public static final Distance OUTPUT_PULLEY_DIAMETER = Units.Inches.of(
@@ -96,7 +142,7 @@ public class Constants {
                 public static final Distance OUTPUT_PULLEY_CIRCUMFERENCE = HTD5_PULLEY_PITCH
                                 .times(OUTPUT_PULLEY_NUMBER_OF_TEETH);
 
-                public static final Distance ELEVATOR_SAFE_HEIGHT = Units.Feet.of(-0.7);
+                public static final Distance ELEVATOR_SAFE_HEIGHT = Units.Feet.of(-4);
         }
 
         public class ACTUATOR {

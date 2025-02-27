@@ -6,14 +6,23 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class PushOut extends Command {
     @Override
     public void execute() {
-        System.out.println("Pushout command running. Cur speed: " + RobotContainer.actuator.getSpeed() + "...; cur position: " + RobotContainer.actuator.getPosition());
-
+        System.out.println("Push out init: " + RobotContainer.actuator.getPosition());
 
         RobotContainer.actuator.setSpeed(1);
+        // RobotContainer.actuator.setPosition(1);
     }
 
     @Override
     public boolean isFinished() {
-        return RobotContainer.actuator.getPosition() == 1;
+        System.out.println("Pushout command running. Cur speed: " + RobotContainer.actuator.getSpeed() + "...; cur position: " + RobotContainer.actuator.getPosition());
+
+        if(RobotContainer.actuator.getPosition() >= 1) {
+            // RobotContainer.actuator.stop();
+            System.out.println("Stopping after pushout command finishes");
+
+            return true;
+        }
+
+        return false;
     }
 }
