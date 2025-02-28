@@ -14,20 +14,22 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
         public class SCORING {
-                public static final double ELEVATOR_SPEED = 1;
+                public static final double ELEVATOR_SPEED = 0.4;
                 public static final double ARM_SPEED = 0.15;
 
-                public static final Distance L4_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
-                public static final Angle L4_ARM_ANGLE = Units.Rotations.of(-30);
+                public static final Distance L4_ELEVATOR_HEIGHT = Units.Feet.of(-1.1);
 
-                public static final Distance L3_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
-                public static final Angle L3_ARM_ANGLE = Units.Rotations.of(-30);
+                public static final Angle L4_ELEVATOR_ROT = Units.Rotations.of(-60);
+                public static final Angle L4_ARM_ANGLE = Units.Rotations.of(-4.5);
+
+                public static final Distance L3_ELEVATOR_HEIGHT = Units.Feet.of(-2.5);
+                public static final Angle L3_ARM_ANGLE = Units.Rotations.of(-3.0);
 
                 public static final Distance L2_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
-                public static final Angle L2_ARM_ANGLE = Units.Rotations.of(-30);
-                
+                public static final Angle L2_ARM_ANGLE = Units.Rotations.of(-3.0);
+
                 public static final Distance L1_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
-                public static final Angle L1_ARM_ANGLE = Units.Rotations.of(-30);
+                public static final Angle L1_ARM_ANGLE = Units.Rotations.of(-3.0);
         }
 
         public class APRIL_TAGS {
@@ -117,19 +119,19 @@ public class Constants {
                 public static final int CAN_ID = 15;
 
                 public static final SparkBaseConfig MOTOR_CONFIG = new SparkMaxConfig()
-                                .idleMode(IdleMode.kCoast)
+                                .idleMode(IdleMode.kBrake)
                                 .inverted(false)
-                                .openLoopRampRate(.25)
+                                .openLoopRampRate(.3)
                                 .smartCurrentLimit(40, 40)
                                 .voltageCompensation(12);
 
                 public static final double AXIS_MAX_SPEED = 0.25;
                 public static final double MOTOR_ARB_F = 0.05;
 
-                public static final double MOTOR_P = 30;
+                public static final double MOTOR_P = 3;
                 public static final double MOTOR_I = 0;
                 public static final double MOTOR_D = 0;
-                public static final double MOTOR_F = 0.1;
+                public static final double MOTOR_F = 0;
 
                 public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = MOTOR_CONFIG.closedLoop
                                 .pidf(MOTOR_P, MOTOR_I, MOTOR_D, MOTOR_F)
@@ -139,10 +141,10 @@ public class Constants {
 
                 public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
-                                .maxAcceleration(1000)
-                                .maxVelocity(6000);
+                                .maxAcceleration(500)
+                                .maxVelocity(1000);
 
-                public static final double GEAR_RATIO = 75;
+                public static final double GEAR_RATIO = 15;
                 public static final Distance OUTPUT_PULLEY_DIAMETER = Units.Inches.of(
                                 2.256);
 

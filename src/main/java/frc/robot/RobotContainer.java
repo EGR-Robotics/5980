@@ -23,13 +23,15 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 // Constants
 import frc.robot.generated.TunerConstants;
-
+import frc.robot.commands.elevator.HoldElevator;
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
+import frc.robot.commands.elevator.SetElevatorDistance;
 import frc.robot.Constants.APRIL_TAGS;
 import frc.robot.commands.actuator.Drop;
+import frc.robot.commands.actuator.Stop;
 import frc.robot.commands.arm.MoveArm;
-
+import frc.robot.commands.arm.StopArm;
 import frc.robot.commands.elevator.StopElevator;
 import frc.robot.commands.scoring.L1;
 import frc.robot.commands.scoring.L2;
@@ -90,29 +92,48 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Elevator Commands
-        Trigger leftJoystick = new Joystick(controllerJoystick, XboxController.Axis.kLeftY.value);
-        //new Trigger(() -> controllerJoystick.getLeftY());
+        
+        elevator.setDefaultCommand(
+            new InstantCommand(
+                () -> {
+                    if(controllerJoystick.getLeftY() > 0.1) {
+                        (new MoveElevator(true)).execute();
+                    }
+                    else if(controllerJoystick.getLeftY() < -0.2) {
+                        (new MoveElevator(false)).execute();
+                    }
+                    else {
+                        elevator.holdPosition();
+                        (new StopElevator()).execute();
+                    }
+                }, elevator
+            )
+        );
 
-        // controllerJoystick.leftStick().whileTrue(new MoveElevator(controllerJoystick.getLeftY() > 0.1));
-        // controllerJoystick.leftStick().onFalse(new StopElevator());
+        controllerJoystick.x().onTrue(new Drop());
 
-
-        // controllerJoystick.axisGreaterThan(8, 0.1).whileTrue(new MoveElevator(true));
-
-        controllerJoystick.povLeft().onTrue(new Drop());
-
-        controllerJoystick.a().onTrue(new L1());
+        controllerJoystick.a().onTrue(new L4());
         controllerJoystick.b().onTrue(new L2());
         controllerJoystick.y().onTrue(new L3());
-        controllerJoystick.x().onTrue(new L4());
+        // controllerJoystick.x().onTrue(new L1());
 
         // Arm commands
-        
-        // controllerJoystick.povDown().whileTrue(new MoveArm(false));
-        // controllerJoystick.povDown().onFalse(new StopElevator());
 
-        // controllerJoystick.povUp().whileTrue(new MoveArm(true));
-        // controllerJoystick.povUp().onFalse(new StopElevator());
+        arm.setDefaultCommand(
+            new InstantCommand(
+                () -> {
+                    if(controllerJoystick.getRightY() > 0.2) {
+                        (new MoveArm(true)).execute();
+                    }
+                    else if(controllerJoystick.getRightY() < -0.2) {
+                        (new MoveArm(false)).execute();
+                    }
+                    else {
+                        (new StopArm()).execute();
+                    }
+                }, arm
+            )
+        );
 
         // Drive Commands
 
@@ -148,17 +169,16 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
 
-
-
+        // Limelight commands
 
         // Limelight Align Commands
         // controllerJoystick.y().onTrue(
         //     vision.alignCommand(drivetrain)
         // );
 
+
         // Climber Commands
-        driverJoystick.x().whileTrue(climber.moveWenchUp());
-        driverJoystick.x().onFalse(climber.stopWenchCommand());
+        driverJoystick.x().onTrue(climber.moveWenchUp());
         driverJoystick.y().whileTrue(climber.moveWenchDown());
         driverJoystick.y().onFalse(climber.stopWenchCommand());
 
@@ -178,7 +198,7 @@ public class RobotContainer {
     }
  
     public Command getAutonomousCommand() {
-        return new PathPlannerAuto("Test");
-        // return new PathPlannerAuto("New Auto");
+        // return new PathPlannerAuto("Test");
+        return new PathPlannerAuto("New Auto");
     }
 }

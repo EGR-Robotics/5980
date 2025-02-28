@@ -14,7 +14,7 @@ import frc.robot.commands.elevator.SetElevatorDistance;
 public class L2 extends ParallelCommandGroup {
     public L2() {
         super(
-                new SetElevatorDistance(SCORING.L2_ELEVATOR_HEIGHT),
+                // new SetElevatorDistance(SCORING.L2_ELEVATOR_HEIGHT),
                 new SequentialCommandGroup(
                         new WaitCommand(1).unless(() -> RobotContainer.elevator.getDistance()
                                 .compareTo(ELEVATOR.ELEVATOR_SAFE_HEIGHT) == -1),
