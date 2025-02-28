@@ -11,8 +11,14 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.event.EventLoop;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 // Constants
@@ -25,6 +31,9 @@ import frc.robot.commands.actuator.Drop;
 import frc.robot.commands.arm.MoveArm;
 
 import frc.robot.commands.elevator.StopElevator;
+import frc.robot.commands.scoring.L1;
+import frc.robot.commands.scoring.L2;
+import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
 // Subsystems
 import frc.robot.subsystems.AlgaeSubsystem;
@@ -81,24 +90,29 @@ public class RobotContainer {
 
     private void configureBindings() {
         // Elevator Commands
+        Trigger leftJoystick = new Joystick(controllerJoystick, XboxController.Axis.kLeftY.value);
+        //new Trigger(() -> controllerJoystick.getLeftY());
 
-        controllerJoystick.leftTrigger().whileTrue(new MoveElevator(false));
-        controllerJoystick.leftTrigger().onFalse(new StopElevator());
+        // controllerJoystick.leftStick().whileTrue(new MoveElevator(controllerJoystick.getLeftY() > 0.1));
+        // controllerJoystick.leftStick().onFalse(new StopElevator());
 
-        controllerJoystick.rightTrigger().whileTrue(new MoveElevator(true));
-        controllerJoystick.rightTrigger().onFalse(new StopElevator());
 
-        controllerJoystick.a().onTrue(new L4());
+        // controllerJoystick.axisGreaterThan(8, 0.1).whileTrue(new MoveElevator(true));
 
-        controllerJoystick.x().onTrue(new Drop());
+        controllerJoystick.povLeft().onTrue(new Drop());
+
+        controllerJoystick.a().onTrue(new L1());
+        controllerJoystick.b().onTrue(new L2());
+        controllerJoystick.y().onTrue(new L3());
+        controllerJoystick.x().onTrue(new L4());
 
         // Arm commands
         
-        controllerJoystick.leftBumper().whileTrue(new MoveArm(false));
-        controllerJoystick.leftBumper().onFalse(new StopElevator());
+        // controllerJoystick.povDown().whileTrue(new MoveArm(false));
+        // controllerJoystick.povDown().onFalse(new StopElevator());
 
-        controllerJoystick.rightBumper().whileTrue(new MoveArm(true));
-        controllerJoystick.rightBumper().onFalse(new StopElevator());
+        // controllerJoystick.povUp().whileTrue(new MoveArm(true));
+        // controllerJoystick.povUp().onFalse(new StopElevator());
 
         // Drive Commands
 
@@ -138,9 +152,9 @@ public class RobotContainer {
 
 
         // Limelight Align Commands
-        controllerJoystick.y().onTrue(
-            vision.alignCommand(drivetrain)
-        );
+        // controllerJoystick.y().onTrue(
+        //     vision.alignCommand(drivetrain)
+        // );
 
         // Climber Commands
         driverJoystick.x().whileTrue(climber.moveWenchUp());
@@ -149,25 +163,22 @@ public class RobotContainer {
         driverJoystick.y().onFalse(climber.stopWenchCommand());
 
         // Algae Bar Commands
-        // controllerJoystick.a().whileTrue(algae.moveElevatorUpCommand());
-        // controllerJoystick.a().onFalse(algae.holdElevatorPositionCommand());
+        controllerJoystick.leftTrigger().whileTrue(algae.moveElevatorDownCommand());
+        controllerJoystick.leftTrigger().onFalse(algae.holdElevatorPositionCommand());
 
-        // controllerJoystick.b().whileTrue(algae.moveElevatorDownCommand());
-        // controllerJoystick.b().onFalse(algae.holdElevatorPositionCommand());
+        controllerJoystick.rightTrigger().whileTrue(algae.moveElevatorUpCommand());
+        controllerJoystick.rightTrigger().onFalse(algae.holdElevatorPositionCommand());
 
-        // controllerJoystick.x().whileTrue(algae.moveArmCommand());
-        // controllerJoystick.x().onFalse(algae.stopArm());
+        controllerJoystick.leftBumper().whileTrue(algae.dropAlgaeCommand());
+        controllerJoystick.leftBumper().onFalse(algae.stopArm());
 
-        // controllerJoystick.y().whileTrue(algae.dropAlgaeCommand());
-        // controllerJoystick.y().onFalse(algae.stopArm());
+        controllerJoystick.rightBumper().whileTrue(algae.moveArmCommand());
+        controllerJoystick.rightBumper().onFalse(algae.stopArm());
 
-        // controllerJoystick.x().whileTrue(claw.dropCoralCommand());
-
-        // controllerJoystick.b().onTrue(claw.dropCoralCommand());
     }
  
     public Command getAutonomousCommand() {
-        // return new PathPlannerAuto("Test");
-        return new PathPlannerAuto("New Auto");
+        return new PathPlannerAuto("Test");
+        // return new PathPlannerAuto("New Auto");
     }
 }

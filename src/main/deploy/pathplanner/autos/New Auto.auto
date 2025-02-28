@@ -17,12 +17,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "drop"
-          }
-        },
-        {
           "type": "path",
           "data": {
             "pathName": "New Path"

@@ -19,6 +19,15 @@ public class Constants {
 
                 public static final Distance L4_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
                 public static final Angle L4_ARM_ANGLE = Units.Rotations.of(-30);
+
+                public static final Distance L3_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
+                public static final Angle L3_ARM_ANGLE = Units.Rotations.of(-30);
+
+                public static final Distance L2_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
+                public static final Angle L2_ARM_ANGLE = Units.Rotations.of(-30);
+                
+                public static final Distance L1_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
+                public static final Angle L1_ARM_ANGLE = Units.Rotations.of(-30);
         }
 
         public class APRIL_TAGS {
@@ -133,7 +142,7 @@ public class Constants {
                                 .maxAcceleration(1000)
                                 .maxVelocity(6000);
 
-                public static final double GEAR_RATIO = 25;
+                public static final double GEAR_RATIO = 75;
                 public static final Distance OUTPUT_PULLEY_DIAMETER = Units.Inches.of(
                                 2.256);
 
