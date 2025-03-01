@@ -7,14 +7,22 @@ import frc.robot.RobotContainer;
 public class SetArmDistance extends Command {
     private Angle m_rotations;
 
+    private double m_position;
+
     public SetArmDistance(Angle rotations) {
         m_rotations = rotations;
         addRequirements(RobotContainer.arm);
     }
 
+    public SetArmDistance(double position) {
+        m_position = position;
+        addRequirements(RobotContainer.arm);
+    }
+
     @Override
     public void initialize() {
-        RobotContainer.arm.setTargetRotations(m_rotations);
+        RobotContainer.arm.setPosition(m_position);
+        // RobotContainer.arm.setTargetRotations(m_rotations);
     }
 
     @Override

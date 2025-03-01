@@ -8,7 +8,7 @@ public class Drop extends SequentialCommandGroup {
         super(
             new PushOut(),
             new WaitCommand(1),
-            new Stop(),
+            new StopServo(),
             new PushIn()
         );
     }

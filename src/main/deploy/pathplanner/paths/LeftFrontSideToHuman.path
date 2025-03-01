@@ -3,35 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.226639344262295,
-        "y": 2.736321721311475
+        "x": 5.238627049180328,
+        "y": 5.373616803278688
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.540266393442623,
-        "y": 1.465624999999999
+        "x": 6.113729508196721,
+        "y": 6.812141393442622
       },
       "isLocked": false,
-      "linkedName": "BottomLeftReef"
+      "linkedName": "Front Coral Zone"
     },
     {
       "anchor": {
-        "x": 1.750204918032787,
-        "y": 0.8662397540983602
+        "x": 1.6662909836065571,
+        "y": 7.171772540983605
       },
       "prevControl": {
-        "x": 0.750204918032787,
-        "y": 0.8662397540983602
+        "x": 1.8912386493465139,
+        "y": 7.0594469308683685
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LeftSideHuman"
+      "linkedName": "RightSideHuman"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "pointTowardsZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "Zero",
+      "waypointRelativePos": 0.15052231718898426,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -42,13 +49,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -125.39479584498712
+    "rotation": -51.76617482255304
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 120.54757174890706
+    "rotation": -119.53878225955806
   },
   "useDefaultConstraints": true
 }

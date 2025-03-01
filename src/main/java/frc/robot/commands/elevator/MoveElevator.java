@@ -16,15 +16,6 @@ public class MoveElevator extends Command {
 
     @Override
     public void execute() {
-        System.out.println("Comparing values robot distance: " + RobotContainer.elevator.getDistance().compareTo(Units.Feet.of(-7)));
-        
-        if(RobotContainer.elevator.getDistance().compareTo(Units.Feet.of(-7)) == -1 && m_direction) {
-            RobotContainer.elevator.stop();
-            System.out.println("Stopping elevator at: " + RobotContainer.elevator.getDistance());
-            
-            return;
-        }
-
         RobotContainer.elevator.setSpeed(m_direction ? SCORING.ELEVATOR_SPEED : -SCORING.ELEVATOR_SPEED);
     }
 

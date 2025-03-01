@@ -11,6 +11,12 @@ import frc.robot.RobotContainer;
 public class SetElevatorDistance extends Command {
     private Angle m_angle;
     private Distance m_distance;
+    private double m_pos;
+
+    public SetElevatorDistance(double pos) {
+        m_pos = pos;
+        addRequirements(RobotContainer.elevator);
+    }
 
     public SetElevatorDistance(Distance rot) {
         m_distance = rot;
@@ -26,7 +32,8 @@ public class SetElevatorDistance extends Command {
     public void initialize() {
         // System.out.println("Running l4 command");
         // RobotContainer.elevator.setTargetRotations(m_angle);
-        RobotContainer.elevator.setTargetDistance(m_distance);
+        // RobotContainer.elevator.setTargetDistance(m_distance);
+        RobotContainer.elevator.setEncoderPosition(m_pos);
     }
 
     @Override

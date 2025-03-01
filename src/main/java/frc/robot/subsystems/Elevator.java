@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import static edu.wpi.first.units.Units.Feet;
-
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
@@ -12,25 +10,25 @@ import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.math.filter.Debouncer;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
-import edu.wpi.first.wpilibj.DigitalInput;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+
 import frc.robot.Constants.ELEVATOR;
+import frc.robot.Helpers;
 
 public class Elevator extends SubsystemBase {
-    private DigitalInput m_hall_effect;
-    private Debouncer m_debouncer;
-
     double curEncoderValue;
     Angle targetRots;
     Distance targetDistance;
+
+    double targetEncoderPos;
 
     private SparkMax m_motor;
 
@@ -56,20 +54,42 @@ public class Elevator extends SubsystemBase {
         m_PIDController = m_motor.getClosedLoopController();
 
         m_encoder = m_motor.getEncoder();
-        curEncoderValue = m_encoder.getPosition();
+        m_encoder.setPosition(0);
+
+        // curEncoderValue = m_encoder.getPosition();
 
         targetRots = getRotations();
         targetDistance = getDistance();
     }
 
-    public void setSpeed(double percentOutput) {
-        System.out.println("Cur elevator rotations " + getRotations());
-        System.out.println("Cur elevator distance " + getDistance());
-        System.out.println("Cur elevator distance (feet) " + getDistance().in(Feet));
+    public void setEncoderPosition(double pos) {
+        targetEncoderPos = pos;
 
+        m_PIDController.setReference(
+                pos,
+                ControlType.kMAXMotionPositionControl,
+                ClosedLoopSlot.kSlot0,
+                ELEVATOR.MOTOR_ARB_F,
+                ArbFFUnits.kVoltage);
+    }
+
+    public double getEncoderPosition() {
+        return m_encoder.getPosition();
+    }
+
+    public void setSpeed(double percentOutput) {
+        if (ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
+                ELEVATOR.ELEVATOR_UPPER_LIMIT) && percentOutput < 0)
+            return;
+        else if (ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
+                ELEVATOR.ELEVATOR_LOWER_LIMIT) && percentOutput > 0)
+            return;
 
         m_motor.set(percentOutput);
         m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
+        // curEncoderValue = m_encoder.getPosition();
+
+        System.out.println("Elevator position: " + m_encoder.getPosition());
     }
 
     public void setAxisSpeed(double speed) {
@@ -84,18 +104,12 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setTargetRotations(Angle targetRotations) {
-        System.out.println("Going to " + targetRotations);
-
-        System.out.println(m_targetRotations);
-
         m_PIDController.setReference(
                 m_targetRotations.in(Units.Rotations),
-                ControlType.kPosition
-                // ControlType.kMAXMotionPositionControl,
-                // ClosedLoopSlot.kSlot0,
-                // ELEVATOR.MOTOR_ARB_F,
-                // ArbFFUnits.kVoltage
-            );
+                ControlType.kMAXMotionPositionControl,
+                ClosedLoopSlot.kSlot0,
+                ELEVATOR.MOTOR_ARB_F,
+                ArbFFUnits.kVoltage);
     }
 
     public void setTargetDistance(Distance targetDistance) {
@@ -104,8 +118,6 @@ public class Elevator extends SubsystemBase {
                         .div(ELEVATOR.OUTPUT_PULLEY_CIRCUMFERENCE)
                         .times(ELEVATOR.GEAR_RATIO)
                         .magnitude());
-
-        System.out.println("Moving elevator to (distance): " + targetDistance +  "; at current rotations: " + getRotations());
 
         setTargetRotations(rotations);
     }
@@ -129,51 +141,25 @@ public class Elevator extends SubsystemBase {
                 getRotations().div(ELEVATOR.GEAR_RATIO).in(Units.Rotations)));
     }
 
-    private boolean isAtTargetRotations() {
-        return m_targetRotations.isNear(
-                getRotations(),
-                ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT);
-    }
-
     public boolean isAtTarget() {
-        return isAtTargetRotations();
-    }
-
-    // public boolean isAtZero() {
-    //     return m_debouncer.calculate(m_hall_effect.get());
-    // }
-
-    public void setZero() {
-        m_encoder.setPosition(0);
+        return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT > Helpers.percentError(targetEncoderPos, m_encoder.getPosition());
     }
 
     public void postMove() {
-        System.out.println("Running post move");
         targetRots = getRotations();
         targetDistance = getDistance();
     }
 
     public void holdPosition() {
-        // System.out.println("Holding elevator at: " + getDistance());
-        // setTargetDistance(getDistance());
-
-        // System.out.println("Cur values: " + getDistance() + " and " + getRotations());
-        // System.out.println("Holding elevator at: " + targetDistance);
-        setSpeed(-.4);
-
-        //setTargetRotations(targetRots);
-        // setTargetDistance(targetDistance);
-
-        // m_PIDController.setReference(curEncoderValue, ControlType.kMAXMotionPositionControl);
+        // setSpeed(-.5);
     }
-    public Command holdPositionCommand() {
-        // curEncoderValue = m_encoder.getPosition();
 
+    public Command holdPositionCommand() {
         return run(() -> holdPosition());
     }
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("Elevator RPM", m_encoder.getVelocity());
+
     }
 }

@@ -18,14 +18,18 @@ import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
 import frc.robot.Constants.ARM;
+import frc.robot.Constants.ELEVATOR;
+import frc.robot.Helpers;
+import frc.robot.RobotContainer;
 
 public class Arm extends SubsystemBase {
     private SparkMax m_motor;
 
     private SparkClosedLoopController m_PIDController;
     private RelativeEncoder m_encoder;
+
+    private double targetEncoderPos;
 
     private MutAngle m_targetRotations = Units.Rotations.mutable(Double.NaN);
     private MutAngularVelocity m_currentAngularVelocityHolder = Units.RPM.mutable(
@@ -46,11 +50,38 @@ public class Arm extends SubsystemBase {
         m_PIDController = m_motor.getClosedLoopController();
 
         m_encoder = m_motor.getEncoder();
+        m_encoder.setPosition(0);
     }
 
     public void setSpeed(double percentOutput) {
+        // if (ARM.MAX_MOTION_ALLOWED_ERROR_PERCENT >=
+        // Helpers.percentError(m_encoder.getPosition(),
+        // ARM.ENCODER_UPPER_LIMIT) && percentOutput > 0)
+        // return;
+        // else if (ARM.MAX_MOTION_ALLOWED_ERROR_PERCENT >=
+        // Helpers.percentError(m_encoder.getPosition(),
+        // ARM.ENCODER_LOWER_LIMIT) && percentOutput < 0)
+        // return;
+
+        // if (percentOutput < 0 && ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers
+        //         .percentError(ELEVATOR.ELEVATOR_SAFE_POS, RobotContainer.elevator.getEncoderPosition()))
+        //     return;
+
         m_motor.set(percentOutput);
         m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
+
+        System.out.println("Arm position: " + m_encoder.getPosition());
+    }
+
+    public void setPosition(double pos) {
+        targetEncoderPos = pos;
+
+        m_PIDController.setReference(
+                pos,
+                ControlType.kMAXMotionPositionControl,
+                ClosedLoopSlot.kSlot0,
+                ARM.MOTOR_ARB_F,
+                ArbFFUnits.kVoltage);
     }
 
     public void setAxisSpeed(double speed) {
@@ -93,22 +124,12 @@ public class Arm extends SubsystemBase {
                 getRotations().div(ARM.GEAR_RATIO).in(Units.Rotations)));
     }
 
-    private boolean isAtTargetRotations() {
-        return m_targetRotations.isNear(
-                getRotations(),
-                ARM.MAX_MOTION_ALLOWED_ERROR_PERCENT);
-    }
-
     public boolean isAtTarget() {
-        return isAtTargetRotations();
-    }
-
-    public void setZero() {
-        m_encoder.setPosition(0);
+        return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT > Helpers.percentError(targetEncoderPos,
+                m_encoder.getPosition());
     }
 
     @Override
     public void periodic() {
-        // SmartDashboard.putNumber("ARM RPM", m_encoder.getVelocity());
     }
 }

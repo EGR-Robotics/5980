@@ -3,7 +3,7 @@ package frc.robot.commands.actuator;
 import frc.robot.RobotContainer;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class Stop extends Command {
+public class StopServo extends Command {
     @Override
     public void execute() {
         System.out.println("Stopping servo");

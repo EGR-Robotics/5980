@@ -15,9 +15,11 @@ public class L3 extends ParallelCommandGroup {
     public L3() {
         super(
                 // new SetElevatorDistance(SCORING.L3_ELEVATOR_HEIGHT),
-                new SequentialCommandGroup(
-                        new WaitCommand(1).unless(() -> RobotContainer.elevator.getDistance()
-                                .compareTo(ELEVATOR.ELEVATOR_SAFE_HEIGHT) == -1),
-                        new SetArmDistance(SCORING.L3_ARM_ANGLE)));
+                // new SequentialCommandGroup(
+                //         new WaitCommand(1).unless(() -> RobotContainer.elevator.getDistance()
+                //                 .compareTo(ELEVATOR.ELEVATOR_SAFE_HEIGHT) == -1),
+                //         new SetArmDistance(SCORING.L3_ARM_ANGLE))
+                        );
     }
 }
+        
