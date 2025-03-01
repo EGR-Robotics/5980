@@ -14,12 +14,12 @@ public class MoveIntake extends Command {
 
     @Override
     public void execute() {
+        System.out.println("running");
         RobotContainer.algae.setIntakeSpeed(m_velocity);
     }
 
     @Override
     public boolean isFinished() {
-        
         return true;
     }
     

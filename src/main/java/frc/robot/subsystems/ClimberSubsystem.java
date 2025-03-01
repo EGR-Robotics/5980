@@ -76,9 +76,9 @@ public class ClimberSubsystem implements Subsystem {
 
     public void moveWench(boolean up) {
         if (up) {
-            setVelocity(.3, .05, motor, true);
+            setVelocity(.6, .05, motor, true);
         } else {
-            setVelocity(-.3, .05, motor, false);
+            setVelocity(-.6, .05, motor, false);
         }
     }
 

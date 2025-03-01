@@ -7,10 +7,13 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -23,6 +26,7 @@ import frc.robot.Constants.APRIL_TAGS;
 import frc.robot.Constants.CLIMBER;
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
+import frc.robot.commands.elevator.SetElevatorDistance;
 import frc.robot.commands.actuator.Drop;
 import frc.robot.commands.algae.MoveAlgaeArm;
 import frc.robot.commands.algae.MoveIntake;
@@ -43,6 +47,7 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Actuator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Algae;
+import frc.robot.subsystems.AlgaeSubsystem;
 import frc.robot.subsystems.Climber;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
@@ -78,6 +83,10 @@ public class RobotContainer {
     public static final Actuator actuator = new Actuator();
     // public static final Climber climber = new Climber();
 
+    // public static final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
+
+    private final SendableChooser<Command> autoChooser;
+
     public RobotContainer() {
         // Register named commands for auto
         NamedCommands.registerCommand("level4", new L4());
@@ -85,9 +94,15 @@ public class RobotContainer {
 
         configureBindings();
 
+        autoChooser = AutoBuilder.buildAutoChooser();
+
+        SmartDashboard.putData("Auto Chooser", autoChooser);
+
         var alliance = DriverStation.getAlliance();
 
         APRIL_TAGS.update(alliance.get());
+
+        // actuator.setSpeed(1);
     }
 
     private void configureBindings() {
@@ -106,12 +121,16 @@ public class RobotContainer {
                             }
                         }, elevator));
 
-        controllerJoystick.x().onTrue(new Drop());
+        // controllerJoystick.x().onTrue(new Drop());
+
+        // controllerJoystick.x().onTrue(new InstantCommand(() -> actuator.setPosition(0)));
 
         controllerJoystick.a().whileTrue(new L4());
         controllerJoystick.b().onTrue(new L2());
         controllerJoystick.y().onTrue(new L3());
-        // controllerJoystick.x().onTrue(new L1());
+        // controll+erJoystick.x().onTrue(new L1());
+
+        controllerJoystick.x().onTrue(new SetElevatorDistance(0));
 
         // Arm commands
 
@@ -131,9 +150,29 @@ public class RobotContainer {
 
         controllerJoystick.leftTrigger().whileTrue(new MoveAlgaeArm(ALGAE.ARM_RAISE_SPEED));
         controllerJoystick.rightTrigger().whileTrue(new MoveAlgaeArm(ALGAE.ARM_LOWER_SPEED));
+        // controllerJoystick.leftTrigger().onFalse(algae.zero());
+        // controllerJoystick.rightTrigger().onFalse(algae.zero());
+
+
+
+        // algae.setDefaultCommand(
+        //     new InstantCommand(
+        //         () -> algae.zero().execute(), algae
+        //     )
+        // );
 
         controllerJoystick.leftBumper().whileTrue(new MoveIntake(ALGAE.INTAKE_SPEED));
+        // controllerJoystick.leftBumper().onFalse(algae.zero());
+        
         controllerJoystick.rightBumper().whileTrue(new MoveIntake(ALGAE.OUTAKE_SPEED));
+        // controllerJoystick.rightBumper().onFalse(algae.zero());
+
+        
+        // controllerJoystick.leftBumper().whileTrue(algaeSubsystem.moveElevatorUpCommand());
+        // controllerJoystick.leftBumper().onFalse(algaeSubsystem.holdElevatorPositionCommand());
+        
+        // controllerJoystick.rightBumper().whileTrue(algaeSubsystem.moveElevatorDownCommand());
+        // controllerJoystick.rightBumper().onFalse(algaeSubsystem.holdElevatorPositionCommand());
 
         // Drive Commands
 
@@ -141,13 +180,25 @@ public class RobotContainer {
         // and Y is defined as to the left according to WPILib convention.
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
-                drivetrain.applyRequest(() -> drive.withVelocityX(-driverJoystick.getLeftY() * MaxSpeed) // Drive
+                drivetrain.applyRequest(() -> {
+                    double curSpeed = MaxSpeed;
+                    double angularSpeed = MaxAngularRate;
+
+                    if(elevator.getEncoderPosition() <= -50) {
+                        curSpeed *= .4;
+                        angularSpeed *= .4;
+
+                        System.out.println("Modifying speeds: " + curSpeed + " at " + elevator.getEncoderPosition());
+                    }
+
+                    return drive.withVelocityX(-driverJoystick.getLeftY() * curSpeed) // Drive
                                                                                                          // forward with
                                                                                                          // negative Y
                                                                                                          // (forward)
-                        .withVelocityY(-driverJoystick.getLeftX() * MaxSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(-driverJoystick.getRightX() * MaxAngularRate) // Drive counterclockwise with
+                        .withVelocityY(-driverJoystick.getLeftX() * curSpeed) // Drive left with negative X (left)
+                        .withRotationalRate(-driverJoystick.getRightX() * angularSpeed); // Drive counterclockwise with
                                                                                           // negative X (left)
+                }
                 ));
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
@@ -176,7 +227,7 @@ public class RobotContainer {
         // );
 
         // Climber Commands
-        driverJoystick.x().onTrue(climberOld.moveWenchUp());
+        driverJoystick.x().onTrue(climberOld.moveWenchUp()); 
         driverJoystick.y().whileTrue(climberOld.moveWenchDown());
         driverJoystick.y().onFalse(climberOld.stopWenchCommand());
 
@@ -186,6 +237,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         // return new PathPlannerAuto("Test");
-        return new PathPlannerAuto("New Auto");
+        // return new PathPlannerAuto("New Auto");
+        return autoChooser.getSelected();
     }
 }

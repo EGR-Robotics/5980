@@ -3,12 +3,18 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkClosedLoopController;
+import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
+import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import frc.robot.Constants.ALGAE;
+import frc.robot.Constants.ELEVATOR;
 import frc.robot.Helpers;
 
 import com.revrobotics.spark.SparkBase.ResetMode;
@@ -18,6 +24,8 @@ public class Algae implements Subsystem {
 
     private SparkMax m_arm_motor;
     private RelativeEncoder m_encoder;
+
+    private SparkClosedLoopController m_PIDController;
 
     private double currentVelocity = 0;
 
@@ -32,6 +40,8 @@ public class Algae implements Subsystem {
                 ALGAE.MOTOR_CONFIG,
                 ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
+
+        m_PIDController = m_arm_motor.getClosedLoopController();
     }
 
     public void setIntakeSpeed(double speed) {
@@ -79,5 +89,26 @@ public class Algae implements Subsystem {
 
         setVelocity(velocity, 0.05, m_arm_motor, velocity >= 0);
         System.out.println("Algae Bar Position: " + m_encoder.getPosition());
+    }
+
+    public void holdAlgae() {
+        m_PIDController.setReference(
+                m_encoder.getPosition(),
+                ControlType.kMAXMotionPositionControl,
+                ClosedLoopSlot.kSlot0,
+                ELEVATOR.MOTOR_ARB_F,
+                ArbFFUnits.kVoltage);
+    }
+
+    public Command zero() {
+        return run(() -> {
+            System.out.println("running");
+            m_PIDController.setReference(
+                    0,
+                    ControlType.kMAXMotionPositionControl,
+                    ClosedLoopSlot.kSlot0,
+                    ELEVATOR.MOTOR_ARB_F,
+                    ArbFFUnits.kVoltage);
+        });
     }
 }

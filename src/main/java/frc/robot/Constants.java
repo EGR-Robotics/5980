@@ -18,7 +18,7 @@ public class Constants {
                 public static final double ELEVATOR_SPEED = 0.5;
                 public static final double ARM_SPEED = 0.15;
 
-                public static final double L4_ELEVATOR_POSITION = -220;
+                public static final double L4_ELEVATOR_POSITION = -160;
                 public static final double L4_ARM_POSITION = -17;
 
                 public static final Distance L4_ELEVATOR_HEIGHT = Units.Feet.of(-1.1);
@@ -106,8 +106,8 @@ public class Constants {
 
                 public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
-                                .maxAcceleration(1000)
-                                .maxVelocity(500);
+                                .maxAcceleration(1200)
+                                .maxVelocity(600);
 
                 public static final double GEAR_RATIO = 20;
                 public static final Distance OUTPUT_PULLEY_DIAMETER = Units.Inches.of(
@@ -201,8 +201,8 @@ public class Constants {
                 public static final double ENCODER_UPPER_LIMIT = 0; // TODO: Update
                 public static final double ENCODER_LOWER_LIMIT = 0; // TODO: Update
 
-                public static final double ARM_RAISE_SPEED = 0.5;
-                public static final double ARM_LOWER_SPEED = -0.5;
+                public static final double ARM_RAISE_SPEED = 0.25;
+                public static final double ARM_LOWER_SPEED = -0.25;
 
                 public static final double INTAKE_SPEED = 0.15;
                 public static final double OUTAKE_SPEED = -0.3;
