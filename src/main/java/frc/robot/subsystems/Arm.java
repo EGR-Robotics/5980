@@ -16,7 +16,7 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
-
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ARM;
 import frc.robot.Constants.ELEVATOR;
@@ -73,6 +73,10 @@ public class Arm extends SubsystemBase {
         System.out.println("Arm position: " + m_encoder.getPosition());
     }
 
+    public double getPosition() {
+        return m_encoder.getPosition();
+    }
+
     public void setPosition(double pos) {
         targetEncoderPos = pos;
 
@@ -127,6 +131,15 @@ public class Arm extends SubsystemBase {
     public boolean isAtTarget() {
         return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT > Helpers.percentError(targetEncoderPos,
                 m_encoder.getPosition());
+    }
+
+    public Command hold() {
+        return run(() -> m_PIDController.setReference(
+                m_encoder.getPosition(),
+                ControlType.kMAXMotionPositionControl,
+                ClosedLoopSlot.kSlot0,
+                ARM.MOTOR_ARB_F,
+                ArbFFUnits.kVoltage));
     }
 
     @Override

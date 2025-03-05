@@ -5,9 +5,27 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "level4"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "Copy of New New New Path"
+            "pathName": "CenterToReef"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "slightLower"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New New New New Path"
           }
         }
       ]

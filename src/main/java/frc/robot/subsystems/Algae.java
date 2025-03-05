@@ -88,7 +88,6 @@ public class Algae implements Subsystem {
         //     return;
 
         setVelocity(velocity, 0.05, m_arm_motor, velocity >= 0);
-        System.out.println("Algae Bar Position: " + m_encoder.getPosition());
     }
 
     public void holdAlgae() {
@@ -102,7 +101,6 @@ public class Algae implements Subsystem {
 
     public Command zero() {
         return run(() -> {
-            System.out.println("running");
             m_PIDController.setReference(
                     0,
                     ControlType.kMAXMotionPositionControl,

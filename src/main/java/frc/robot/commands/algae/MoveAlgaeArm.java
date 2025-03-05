@@ -14,7 +14,7 @@ public class MoveAlgaeArm extends Command {
 
     @Override
     public void execute() {
-        RobotContainer.algae.setArmSpeed(m_velocity);
+        // RobotContainer.algae.setArmSpeed(m_velocity);
     }
 
     @Override
@@ -25,6 +25,6 @@ public class MoveAlgaeArm extends Command {
     
     @Override
     public void end(boolean interrupted) {
-        RobotContainer.algae.setArmSpeed(0);
+        // RobotContainer.algae.setArmSpeed(0);
     }
 }

@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "Copy of New Path"
+            "pathName": "New Path"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "New Path"
+            "name": "level4"
           }
         }
       ]

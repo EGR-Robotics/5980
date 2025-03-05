@@ -24,7 +24,7 @@ public class ClimberSubsystem implements Subsystem {
 
         // Create configuration for sparks
         SparkMaxConfig config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
+        config.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12);
 
         /*
          * Configure the closed loop controller. We want to make sure we set the
@@ -76,9 +76,9 @@ public class ClimberSubsystem implements Subsystem {
 
     public void moveWench(boolean up) {
         if (up) {
-            setVelocity(.6, .05, motor, true);
+            setVelocity(.8, .05, motor, true);
         } else {
-            setVelocity(-.6, .05, motor, false);
+            setVelocity(-.8, .05, motor, false);
         }
     }
 

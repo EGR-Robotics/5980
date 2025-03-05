@@ -17,6 +17,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "slightLower"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "LeftFrontSideToHuman"
@@ -25,7 +31,31 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.5
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "HumanRightToReef"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "slightLower"
           }
         }
       ]

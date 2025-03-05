@@ -4,18 +4,24 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix6.Utils;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
+import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants;
 
 public class VisionSubsystemOld extends SubsystemBase {
@@ -151,13 +157,32 @@ public class VisionSubsystemOld extends SubsystemBase {
     }
 
     public void align(CommandSwerveDrivetrain drivetrain) {
-        double[] camPose = m_camPos.getDoubleArray(new double[6]);
+        var driveState = drivetrain.getState();
+        double headingDeg = driveState.Pose.getRotation().getDegrees();
+        double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
-        if (camPose.length != 0) {
-            System.out.println("x tag pose" + camPose[0]);
-            System.out.println("y tag  pose" + camPose[1]);
-            System.out.println("z tag pose" + camPose[2]);
+        LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
+
+        var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+
+        if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+            System.out.println("running vision measurement");
+            drivetrain.addVisionMeasurement(llMeasurement.pose,
+                    Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
         }
+
+        // double[] camPose = m_camPos.getDoubleArray(new double[6]);
+
+        // if (camPose.length != 0) {
+        // System.out.println("x tag pose" + camPose[0]);
+        // System.out.println("y tag pose" + camPose[1]);
+        // System.out.println("z tag pose" + camPose[2]);
+        // }
+
+        // Pose2d targetPose = new Pose2d(
+        // new Translation2d(targetTagTranslation.getX() + offset.getX(),
+        // targetTagTranslation.getY() + offset.getY()),
+        // coralStationID.m_rotation);
 
         // final var rot_limelight = limelight_aim_proportional();
         // var rot = rot_limelight;

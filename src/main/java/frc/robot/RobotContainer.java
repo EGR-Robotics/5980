@@ -29,16 +29,19 @@ import frc.robot.commands.elevator.MoveElevator;
 import frc.robot.commands.elevator.SetElevatorDistance;
 import frc.robot.commands.actuator.Drop;
 import frc.robot.commands.algae.MoveAlgaeArm;
-import frc.robot.commands.algae.MoveIntake;
+// import frc.robot.commands.algae.MoveIntake;
 import frc.robot.commands.arm.MoveArm;
 import frc.robot.commands.arm.StopArm;
 // import frc.robot.commands.climber.MoveClimber;
 import frc.robot.commands.elevator.StopElevator;
+import frc.robot.commands.limelight.Align;
 import frc.robot.commands.scoring.L1;
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
-
+import frc.robot.commands.scoring.L4AutoLower;
+import frc.robot.commands.scoring.ScoreElevator;
+import frc.robot.commands.scoring.Trough;
 // Subsystems
 import frc.robot.subsystems.ClimberSubsystem;
 import frc.robot.subsystems.VisionSubsystemOld;
@@ -73,24 +76,31 @@ public class RobotContainer {
 
     // Initialize subsystems
 
-    public final VisionSubsystemOld vision = new VisionSubsystemOld();
+    public static final VisionSubsystemOld vision = new VisionSubsystemOld();
     public final ClimberSubsystem climberOld = new ClimberSubsystem();
-    public final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
 
-    public static final Algae algae = new Algae();
+    // public static final Algae algae = new Algae();
     public static final Elevator elevator = new Elevator();
     public static final Arm arm = new Arm();
     public static final Actuator actuator = new Actuator();
     // public static final Climber climber = new Climber();
 
-    // public static final AlgaeSubsystem algaeSubsystem = new AlgaeSubsystem();
+    public static final AlgaeSubsystem algae = new AlgaeSubsystem();
 
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         // Register named commands for auto
         NamedCommands.registerCommand("level4", new L4());
-        // NamedCommands.registerCommand("drop", new Drop());
+        NamedCommands.registerCommand("zero", new InstantCommand(
+            () -> elevator.setEncoderPosition(0), elevator
+        ));
+
+        NamedCommands.registerCommand("slightLower", new L4AutoLower());
+
+        NamedCommands.registerCommand("trough", new Trough());
+        NamedCommands.registerCommand("pickup", new ScoreElevator());
 
         configureBindings();
 
@@ -126,11 +136,20 @@ public class RobotContainer {
         // controllerJoystick.x().onTrue(new InstantCommand(() -> actuator.setPosition(0)));
 
         controllerJoystick.a().whileTrue(new L4());
-        controllerJoystick.b().onTrue(new L2());
-        controllerJoystick.y().onTrue(new L3());
-        // controll+erJoystick.x().onTrue(new L1());
+        controllerJoystick.b().whileTrue(new L3());
+        controllerJoystick.y().whileTrue(new L2());
 
-        controllerJoystick.x().onTrue(new SetElevatorDistance(0));
+        // Limelight commands
+
+        // Limelight Align Commands
+        controllerJoystick.x().onTrue(
+            new Align()
+        );
+        
+        // controllerJoystick.a().onFalse(arm.hold());
+        // controllerJoystick.y().onTrue(new L4AutoLower());
+
+        // controllerJoystick.x().onTrue(new L4AutoLower());
 
         // Arm commands
 
@@ -161,10 +180,23 @@ public class RobotContainer {
         //     )
         // );
 
-        controllerJoystick.leftBumper().whileTrue(new MoveIntake(ALGAE.INTAKE_SPEED));
+
+        controllerJoystick.leftTrigger().whileTrue(algae.moveElevatorDownCommand());
+        controllerJoystick.leftTrigger().onFalse(algae.holdElevatorPositionCommand());
+
+        controllerJoystick.rightTrigger().whileTrue(algae.moveElevatorUpCommand());
+        controllerJoystick.rightTrigger().onFalse(algae.holdElevatorPositionCommand());
+
+        controllerJoystick.leftBumper().whileTrue(algae.dropAlgaeCommand());
+        controllerJoystick.leftBumper().onFalse(algae.stopArm());
+
+        controllerJoystick.rightBumper().whileTrue(algae.moveArmCommand());
+        controllerJoystick.rightBumper().onFalse(algae.stopArm());
+
+        // controllerJoystick.leftBumper().whileTrue(new MoveIntake(ALGAE.INTAKE_SPEED));
         // controllerJoystick.leftBumper().onFalse(algae.zero());
         
-        controllerJoystick.rightBumper().whileTrue(new MoveIntake(ALGAE.OUTAKE_SPEED));
+        // controllerJoystick.rightBumper().whileTrue(new MoveIntake(ALGAE.OUTAKE_SPEED));
         // controllerJoystick.rightBumper().onFalse(algae.zero());
 
         
@@ -187,8 +219,6 @@ public class RobotContainer {
                     if(elevator.getEncoderPosition() <= -50) {
                         curSpeed *= .4;
                         angularSpeed *= .4;
-
-                        System.out.println("Modifying speeds: " + curSpeed + " at " + elevator.getEncoderPosition());
                     }
 
                     return drive.withVelocityX(-driverJoystick.getLeftY() * curSpeed) // Drive
@@ -205,7 +235,7 @@ public class RobotContainer {
 
         // Zero out
         driverJoystick.b().onTrue(
-                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0, 0))));
+                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(180, 0))));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -218,13 +248,6 @@ public class RobotContainer {
         driverJoystick.leftBumper().onTrue(drivetrain.runOnce(() -> drivetrain.seedFieldCentric()));
 
         drivetrain.registerTelemetry(logger::telemeterize);
-
-        // Limelight commands
-
-        // Limelight Align Commands
-        // controllerJoystick.y().onTrue(
-        // vision.alignCommand(drivetrain)
-        // );
 
         // Climber Commands
         driverJoystick.x().onTrue(climberOld.moveWenchUp()); 

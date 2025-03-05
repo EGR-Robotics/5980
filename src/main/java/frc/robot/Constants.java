@@ -15,25 +15,17 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
         public class SCORING {
-                public static final double ELEVATOR_SPEED = 0.5;
-                public static final double ARM_SPEED = 0.15;
+                public static final double ELEVATOR_SPEED = 0.6;
+                public static final double ARM_SPEED = 0.2;
 
-                public static final double L4_ELEVATOR_POSITION = -160;
-                public static final double L4_ARM_POSITION = -17;
+                public static final double L4_ELEVATOR_POSITION = -122;
+                public static final double L4_ARM_POSITION = -16;
 
-                public static final Distance L4_ELEVATOR_HEIGHT = Units.Feet.of(-1.1);
+                public static final double L3_ELEVATOR_POSITION = 0;
+                public static final double L3_ARM_POSITION = -15.5;
 
-                public static final Angle L4_ELEVATOR_ROT = Units.Rotations.of(-60);
-                public static final Angle L4_ARM_ANGLE = Units.Rotations.of(-4.5);
-
-                public static final Distance L3_ELEVATOR_HEIGHT = Units.Feet.of(-2.5);
-                public static final Angle L3_ARM_ANGLE = Units.Rotations.of(-3.0);
-
-                public static final Distance L2_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
-                public static final Angle L2_ARM_ANGLE = Units.Rotations.of(-3.0);
-
-                public static final Distance L1_ELEVATOR_HEIGHT = Units.Feet.of(-4.5);
-                public static final Angle L1_ARM_ANGLE = Units.Rotations.of(-3.0);
+                public static final double L2_ELEVATOR_POSITION = 67;
+                public static final double L2_ARM_POSITION = -17;
         }
 
         public class APRIL_TAGS {
@@ -135,7 +127,7 @@ public class Constants {
                 public static final double AXIS_MAX_SPEED = 0.25;
                 public static final double MOTOR_ARB_F = 0.1;
 
-                public static final double MOTOR_P = 30;
+                public static final double MOTOR_P = 0.010;
                 public static final double MOTOR_I = 0;
                 public static final double MOTOR_D = 0;
                 public static final double MOTOR_F = 0;

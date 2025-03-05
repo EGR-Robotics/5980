@@ -46,17 +46,19 @@ public class AlgaeSubsystem implements Subsystem {
 
         // Create configuration for sparks
         SparkMaxConfig config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kCoast).smartCurrentLimit(40).voltageCompensation(12);
+        config.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12);
 
         /*
          * Configure the closed loop controller. We want to make sure we set the
          * feedback sensor as the primary encoder.
          */
+
         config.closedLoop
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 // Set PID values for position control
                 .p(0.1)
-                .outputRange(-1, 1).maxMotion
+                .outputRange(-1, 1)
+                .maxMotion
                 // Set MAXMotion parameters for position control
                 .maxVelocity(2000)
                 .maxAcceleration(10000)
@@ -115,7 +117,7 @@ public class AlgaeSubsystem implements Subsystem {
 
     public void moveElevator(boolean up) {
         if (up) {
-            setVelocity(0.25, 0.05, elevatorMotor, true);
+            setVelocity(0.4, 0.05, elevatorMotor, true);
         } else {
             setVelocity(-0.15, 0.05, elevatorMotor, false);
         }
