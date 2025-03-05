@@ -157,6 +157,10 @@ public class VisionSubsystemOld extends SubsystemBase {
     }
 
     public void align(CommandSwerveDrivetrain drivetrain) {
+        PIDController xController = new PIDController(1.0, 0, 0); // Tune Kp, Ki, Kd
+        PIDController yController = new PIDController(1.0, 0, 0);
+        PIDController thetaController = new PIDController(1.0, 0, 0);
+
         var driveState = drivetrain.getState();
         double headingDeg = driveState.Pose.getRotation().getDegrees();
         double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
@@ -169,6 +173,26 @@ public class VisionSubsystemOld extends SubsystemBase {
             System.out.println("running vision measurement");
             drivetrain.addVisionMeasurement(llMeasurement.pose,
                     Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
+
+
+            Pose2d currentPose = drivetrain.getState().Pose; // Get current position from odometry
+
+            // Calculate velocity adjustments using PID controllers
+            double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
+            double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
+            double thetaSpeed = thetaController.calculate(
+                currentPose.getRotation().getRadians(), llMeasurement.pose.getRotation().getRadians()
+            );
+        
+            // Limit max speed for safety
+            xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
+            ySpeed = MathUtil.clamp(ySpeed, -1.0, 1.0);
+            thetaSpeed = MathUtil.clamp(thetaSpeed, -1.0, 1.0);
+        
+            // Send velocities to the Phoenix Swerve drive command
+            drive.withVelocityX(-xSpeed)  // Move forward/backward
+                    .withVelocityY(-ySpeed)  // Move left/right
+                    .withRotationalRate(-thetaSpeed);  // Rotate
         }
 
         // double[] camPose = m_camPos.getDoubleArray(new double[6]);
