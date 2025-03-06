@@ -5,10 +5,13 @@ import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.Utils;
+import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
@@ -167,21 +170,23 @@ public class VisionSubsystemOld extends SubsystemBase {
 
         LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
 
+        LimelightHelpers.get(getName());
+
         var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
         if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
-            System.out.println("running vision measurement");
-            drivetrain.addVisionMeasurement(llMeasurement.pose,
-                    Utils.fpgaToCurrentTime(llMeasurement.timestampSeconds));
+            drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
 
 
             Pose2d currentPose = drivetrain.getState().Pose; // Get current position from odometry
+
+            Pose2d targetPose = llMeasurement.pose;
 
             // Calculate velocity adjustments using PID controllers
             double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
             double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
             double thetaSpeed = thetaController.calculate(
-                currentPose.getRotation().getRadians(), llMeasurement.pose.getRotation().getRadians()
+                currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians()
             );
         
             // Limit max speed for safety
@@ -189,6 +194,15 @@ public class VisionSubsystemOld extends SubsystemBase {
             ySpeed = MathUtil.clamp(ySpeed, -1.0, 1.0);
             thetaSpeed = MathUtil.clamp(thetaSpeed, -1.0, 1.0);
         
+            double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+
+            SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+                .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+            System.out.println("Current pose: " + currentPose);
+            System.out.println("Target pose: " + targetPose);
+
             // Send velocities to the Phoenix Swerve drive command
             drive.withVelocityX(-xSpeed)  // Move forward/backward
                     .withVelocityY(-ySpeed)  // Move left/right

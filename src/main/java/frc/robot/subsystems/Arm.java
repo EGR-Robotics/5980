@@ -54,17 +54,13 @@ public class Arm extends SubsystemBase {
     }
 
     public void setSpeed(double percentOutput) {
-        // if (ARM.MAX_MOTION_ALLOWED_ERROR_PERCENT >=
-        // Helpers.percentError(m_encoder.getPosition(),
-        // ARM.ENCODER_UPPER_LIMIT) && percentOutput > 0)
-        // return;
-        // else if (ARM.MAX_MOTION_ALLOWED_ERROR_PERCENT >=
-        // Helpers.percentError(m_encoder.getPosition(),
-        // ARM.ENCODER_LOWER_LIMIT) && percentOutput < 0)
-        // return;
+        // System.out.println(percentOutput);
 
-        // if (percentOutput < 0 && ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers
-        //         .percentError(ELEVATOR.ELEVATOR_SAFE_POS, RobotContainer.elevator.getEncoderPosition()))
+        // if (m_encoder.getPosition() <= ARM.ENCODER_UPPER_LIMIT && percentOutput < 0) {
+        //             System.out.println();
+        //             return;
+        //         }
+        // else if (m_encoder.getPosition() >= ARM.ENCODER_LOWER_LIMIT && percentOutput > 0)
         //     return;
 
         m_motor.set(percentOutput);

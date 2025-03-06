@@ -110,8 +110,8 @@ public class Constants {
                 public static final Distance OUTPUT_PULLEY_CIRCUMFERENCE = HTD5_PULLEY_PITCH
                                 .times(OUTPUT_PULLEY_NUMBER_OF_TEETH);
 
-                public static final double ENCODER_UPPER_LIMIT = 0; // TODO: Update
-                public static final double ENCODER_LOWER_LIMIT = 0; // TODO: Update
+                public static final double ENCODER_UPPER_LIMIT = -18; // TODO: Update
+                public static final double ENCODER_LOWER_LIMIT = 0.6; // TODO: Update
         }
 
         public class ELEVATOR {

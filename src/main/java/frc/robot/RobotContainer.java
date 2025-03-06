@@ -62,7 +62,7 @@ public class RobotContainer {
 
     /* Setting up bindings for necessary control of the swerve drive platform */
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
@@ -221,6 +221,11 @@ public class RobotContainer {
                         angularSpeed *= .4;
                     }
 
+                    if(driverJoystick.getRightTriggerAxis() == 1) {
+                        curSpeed *= .2;
+                        angularSpeed *= 2;
+                    }
+
                     return drive.withVelocityX(-driverJoystick.getLeftY() * curSpeed) // Drive
                                                                                                          // forward with
                                                                                                          // negative Y
@@ -250,7 +255,8 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         // Climber Commands
-        driverJoystick.x().onTrue(climberOld.moveWenchUp()); 
+        driverJoystick.x().whileTrue(climberOld.moveWenchUp()); 
+        driverJoystick.x().onFalse(climberOld.stopWenchCommand());
         driverJoystick.y().whileTrue(climberOld.moveWenchDown());
         driverJoystick.y().onFalse(climberOld.stopWenchCommand());
 
