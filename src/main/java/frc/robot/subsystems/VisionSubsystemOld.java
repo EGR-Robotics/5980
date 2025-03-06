@@ -12,7 +12,9 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -26,6 +28,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.generated.TunerConstants;
+import pabeles.concurrency.IntOperatorTask.Max;
 
 public class VisionSubsystemOld extends SubsystemBase {
     private final NetworkTable limelightTable;
@@ -159,6 +162,50 @@ public class VisionSubsystemOld extends SubsystemBase {
         return targetingForwardSpeed;
     }
 
+    public void alignTX() {
+        double tx = LimelightHelpers.getTX("limelight");
+        double ty = LimelightHelpers.getTY("limelight");
+
+        double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
+        double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
+
+        final SlewRateLimiter m_xspeedLimiter = new SlewRateLimiter(3);
+        final SlewRateLimiter m_yspeedLimiter = new SlewRateLimiter(3);
+        final SlewRateLimiter m_rotLimiter = new SlewRateLimiter(3);
+
+        // Get the x speed. We are inverting this because Xbox controllers return
+        // negative values when we push forward.
+        var xSpeed = -m_xspeedLimiter.calculate(MathUtil.applyDeadband(RobotContainer.driverJoystick.getLeftY(), 0.02))
+                * MaxSpeed;
+
+        // Get the y speed or sideways/strafe speed. We are inverting this because
+        // we want a positive value when we pull to the left. Xbox controllers
+        // return positive values when you pull to the right by default.
+        var ySpeed = -m_yspeedLimiter.calculate(MathUtil.applyDeadband(RobotContainer.driverJoystick.getLeftX(), 0.02))
+                * MaxSpeed;
+
+        // Get the rate of angular rotation. We are inverting this because we want a
+        // positive value when we pull to the left (remember, CCW is positive in
+        // mathematics). Xbox controllers return positive values when you pull to
+        // the right by default.
+        var rot = -m_rotLimiter.calculate(MathUtil.applyDeadband(RobotContainer.driverJoystick.getRightX(), 0.02))
+                * MaxAngularRate;
+
+        final var rot_limelight = limelight_aim_proportional();
+        rot = rot_limelight;
+
+        final var forward_limelight = limelight_range_proportional();
+        xSpeed = forward_limelight;
+
+        
+
+        // m_swerve.drive(xSpeed, ySpeed, rot, false, getPeriod());
+    }
+
+    public Command alignTXCommand() {
+        return run(this::alignTX);
+    }
+
     public void align(CommandSwerveDrivetrain drivetrain) {
         PIDController xController = new PIDController(1.0, 0, 0); // Tune Kp, Ki, Kd
         PIDController yController = new PIDController(1.0, 0, 0);
@@ -170,83 +217,41 @@ public class VisionSubsystemOld extends SubsystemBase {
 
         LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
 
-        LimelightHelpers.get(getName());
-
         var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
         if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+            drivetrain.setVisionMeasurementStdDevs(VecBuilder.fill(.7, .7, 9999999));
             drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
 
-
             Pose2d currentPose = drivetrain.getState().Pose; // Get current position from odometry
-
-            Pose2d targetPose = llMeasurement.pose;
+            Pose3d targetPose = LimelightHelpers.getTargetPose3d_RobotSpace("limelight");
+            Pose2d targerPose2d = targetPose.toPose2d();
 
             // Calculate velocity adjustments using PID controllers
             double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
             double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
             double thetaSpeed = thetaController.calculate(
-                currentPose.getRotation().getRadians(), targetPose.getRotation().getRadians()
-            );
-        
+                    currentPose.getRotation().getRadians(), targerPose2d.getRotation().getRadians());
+
             // Limit max speed for safety
             xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
             ySpeed = MathUtil.clamp(ySpeed, -1.0, 1.0);
             thetaSpeed = MathUtil.clamp(thetaSpeed, -1.0, 1.0);
-        
+
             double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
 
             SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-                .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+                    .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
             System.out.println("Current pose: " + currentPose);
             System.out.println("Target pose: " + targetPose);
 
             // Send velocities to the Phoenix Swerve drive command
-            drive.withVelocityX(-xSpeed)  // Move forward/backward
-                    .withVelocityY(-ySpeed)  // Move left/right
-                    .withRotationalRate(-thetaSpeed);  // Rotate
+            drive.withVelocityX(-xSpeed) // Move forward/backward
+                    .withVelocityY(-ySpeed) // Move left/right
+                    .withRotationalRate(-thetaSpeed); // Rotate
         }
-
-        // double[] camPose = m_camPos.getDoubleArray(new double[6]);
-
-        // if (camPose.length != 0) {
-        // System.out.println("x tag pose" + camPose[0]);
-        // System.out.println("y tag pose" + camPose[1]);
-        // System.out.println("z tag pose" + camPose[2]);
-        // }
-
-        // Pose2d targetPose = new Pose2d(
-        // new Translation2d(targetTagTranslation.getX() + offset.getX(),
-        // targetTagTranslation.getY() + offset.getY()),
-        // coralStationID.m_rotation);
-
-        // final var rot_limelight = limelight_aim_proportional();
-        // var rot = rot_limelight;
-
-        // final var forward_limelight = limelight_range_proportional();
-        // var xSpeed = forward_limelight;
-
-        // // while using Limelight, turn off field-relative driving.
-        // boolean fieldRelative = false;
-
-        // double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); //
-        // 3/4 of a rotation per second
-
-        // final SwerveRequest.RobotCentric drive = new SwerveRequest.RobotCentric()
-        // .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) //
-        // // Add a 10% deadband
-        // .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop
-        // // control for drive motors
-
-        // drivetrain.applyRequest(
-        // () -> drive.withVelocityX(xSpeed).withRotationalRate(rot) // Drive
-        // counterclockwise with
-        // // negative Y
-        // // (forward)
-        // // negative X (left)
-        // );
     }
 
     public Command alignCommand(CommandSwerveDrivetrain drive) {
