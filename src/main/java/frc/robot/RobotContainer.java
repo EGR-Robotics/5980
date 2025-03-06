@@ -71,8 +71,8 @@ public class RobotContainer {
     private final Telemetry logger = new Telemetry(MaxSpeed);
 
     // Initialize controllers
-    private final CommandXboxController driverJoystick = new CommandXboxController(0);
-    private final CommandXboxController controllerJoystick = new CommandXboxController(1);
+    public final static CommandXboxController driverJoystick = new CommandXboxController(0);
+    public final static CommandXboxController controllerJoystick = new CommandXboxController(1);
 
     // Initialize subsystems
 
@@ -236,7 +236,11 @@ public class RobotContainer {
                 }
                 ));
 
-        driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+        // driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
+
+        driverJoystick.a().whileTrue(
+            vision.alignTXCommand()
+        );
 
         // Zero out
         driverJoystick.b().onTrue(
