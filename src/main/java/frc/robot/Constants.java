@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
         public class SCORING {
-                public static final double ELEVATOR_SPEED = 0.6;
+                public static final double ELEVATOR_SPEED = 1;
                 public static final double ARM_SPEED = 0.2;
 
                 public static final double L4_ELEVATOR_POSITION = -122;
