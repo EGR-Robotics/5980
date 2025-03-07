@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -76,9 +77,9 @@ public class RobotContainer {
 
     // Initialize subsystems
 
-    public static final VisionSubsystemOld vision = new VisionSubsystemOld();
     public final ClimberSubsystem climberOld = new ClimberSubsystem();
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
+    public static final VisionSubsystemOld vision = new VisionSubsystemOld();
 
     // public static final Algae algae = new Algae();
     public static final Elevator elevator = new Elevator();
@@ -142,9 +143,9 @@ public class RobotContainer {
         // Limelight commands
 
         // Limelight Align Commands
-        controllerJoystick.x().onTrue(
-            new Align()
-        );
+        // controllerJoystick.x().onTrue(
+        //     new Align()
+        // );
         
         // controllerJoystick.a().onFalse(arm.hold());
         // controllerJoystick.y().onTrue(new L4AutoLower());
@@ -224,6 +225,24 @@ public class RobotContainer {
                     if(driverJoystick.getRightTriggerAxis() == 1) {
                         curSpeed *= .2;
                         angularSpeed *= 2;
+                    }
+
+                    XboxController controller = new XboxController(1);
+
+                    if(controller.getXButton()) {
+                        double[] speeds = vision.align(drivetrain);
+
+                        SwerveRequest.FieldCentric robotDrive = new SwerveRequest.FieldCentric()
+                            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
+                            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+
+                        return robotDrive.withVelocityX(speeds[0]) // Drive
+                                                                                                            // forward with
+                                                                                                            // negative Y
+                                                                                                            // (forward)
+                            .withVelocityY(speeds[1]) // Drive left with negative X (left)
+                            .withRotationalRate(speeds[2]);
                     }
 
                     return drive.withVelocityX(-driverJoystick.getLeftY() * curSpeed) // Drive

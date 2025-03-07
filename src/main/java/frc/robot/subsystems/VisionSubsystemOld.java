@@ -49,6 +49,12 @@ public class VisionSubsystemOld extends SubsystemBase {
     public VisionSubsystemOld() {
         limelightTable = NetworkTableInstance.getDefault().getTable("limelight");
         m_camPos = NetworkTableInstance.getDefault().getTable("limelight").getEntry("targetpose_cameraspace");
+    
+        var driveState = RobotContainer.drivetrain.getState();
+    
+        double headingDeg = driveState.Pose.getRotation().getDegrees();
+    
+        LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
     }
 
     /**
@@ -197,25 +203,35 @@ public class VisionSubsystemOld extends SubsystemBase {
         final var forward_limelight = limelight_range_proportional();
         xSpeed = forward_limelight;
 
-        
+        SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
+                    .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
+                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-        // m_swerve.drive(xSpeed, ySpeed, rot, false, getPeriod());
+        
+        System.out.println("Speed: " + xSpeed + " " + " ySpeed: " + ySpeed + " rot: " + rot);
+
+        final var speedX = xSpeed;
+        final var rotF = rot;
+
+        // Send velocities to the Phoenix Swerve drive command
+        RobotContainer.drivetrain.applyRequest(
+            () -> drive.withVelocityX(-speedX) // Move forward/backward
+                .withVelocityY(-ySpeed) // Move left/right
+                .withRotationalRate(-rotF) // Rotate
+        );
     }
 
     public Command alignTXCommand() {
         return run(this::alignTX);
     }
 
-    public void align(CommandSwerveDrivetrain drivetrain) {
-        PIDController xController = new PIDController(1.0, 0, 0); // Tune Kp, Ki, Kd
-        PIDController yController = new PIDController(1.0, 0, 0);
+    public double[] align(CommandSwerveDrivetrain drivetrain) {
+        PIDController xController = new PIDController(1, 0, 0); // Tune Kp, Ki, Kd
+        PIDController yController = new PIDController(1, 0, 0);
         PIDController thetaController = new PIDController(1.0, 0, 0);
 
         var driveState = drivetrain.getState();
-        double headingDeg = driveState.Pose.getRotation().getDegrees();
         double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
-
-        LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
 
         var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
 
@@ -228,30 +244,37 @@ public class VisionSubsystemOld extends SubsystemBase {
             Pose2d targerPose2d = targetPose.toPose2d();
 
             // Calculate velocity adjustments using PID controllers
-            double xSpeed = xController.calculate(currentPose.getX(), targetPose.getX());
-            double ySpeed = yController.calculate(currentPose.getY(), targetPose.getY());
-            double thetaSpeed = thetaController.calculate(
-                    currentPose.getRotation().getRadians(), targerPose2d.getRotation().getRadians());
-
-            // Limit max speed for safety
-            xSpeed = MathUtil.clamp(xSpeed, -1.0, 1.0);
-            ySpeed = MathUtil.clamp(ySpeed, -1.0, 1.0);
-            thetaSpeed = MathUtil.clamp(thetaSpeed, -1.0, 1.0);
+            double xSpeed = xController.calculate(targetPose.getX());
+            double ySpeed = yController.calculate(targetPose.getY());
+            double thetaSpeed = thetaController.calculate(targerPose2d.getRotation().getRadians());
 
             double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-
-            SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-                    .withDeadband(MaxSpeed * 0.1).withRotationalDeadband(MaxAngularRate * 0.1) // Add a 10% deadband
-                    .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
             System.out.println("Current pose: " + currentPose);
             System.out.println("Target pose: " + targetPose);
 
+            // final var speedXF = xSpeed;
+            // final var speedYF = ySpeed;
+            // final var rotF = thetaSpeed;
+
+            final var speedXF = limelight_aim_proportional();
+            
+            final var speedYF = limelight_range_proportional();
+            final var rotF = 0;
+
             // Send velocities to the Phoenix Swerve drive command
-            drive.withVelocityX(-xSpeed) // Move forward/backward
-                    .withVelocityY(-ySpeed) // Move left/right
-                    .withRotationalRate(-thetaSpeed); // Rotate
+            // drivetrain.applyRequest(
+            //     () -> drive.withVelocityX(-speedXF) // Move forward/backward
+            //         .withVelocityY(-speedYF) // Move left/right
+            //         .withRotationalRate(-rotF) // Rotate
+            // );
+
+            double[] arr = {-speedXF, -speedYF, -rotF};
+
+            return arr;
         }
+
+        return new double[3];
     }
 
     public Command alignCommand(CommandSwerveDrivetrain drive) {
