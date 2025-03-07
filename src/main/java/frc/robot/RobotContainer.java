@@ -10,6 +10,7 @@ import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
@@ -25,6 +26,7 @@ import frc.robot.generated.TunerConstants;
 import frc.robot.Constants.ALGAE;
 import frc.robot.Constants.APRIL_TAGS;
 import frc.robot.Constants.CLIMBER;
+import frc.robot.Constants.CONTROLLER;
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
 import frc.robot.commands.elevator.SetElevatorDistance;
@@ -245,12 +247,12 @@ public class RobotContainer {
                             .withRotationalRate(speeds[2]);
                     }
 
-                    return drive.withVelocityX(-driverJoystick.getLeftY() * curSpeed) // Drive
+                    return drive.withVelocityX(MathUtil.applyDeadband(-driverJoystick.getLeftY(), CONTROLLER.CONTROLLER_DEADBAND) * curSpeed) // Drive
                                                                                                          // forward with
                                                                                                          // negative Y
                                                                                                          // (forward)
-                        .withVelocityY(-driverJoystick.getLeftX() * curSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(-driverJoystick.getRightX() * angularSpeed); // Drive counterclockwise with
+                        .withVelocityY(MathUtil.applyDeadband(-driverJoystick.getLeftX(), CONTROLLER.CONTROLLER_DEADBAND) * curSpeed) // Drive left with negative X (left)
+                        .withRotationalRate(MathUtil.applyDeadband(-driverJoystick.getRightX(), CONTROLLER.CONTROLLER_DEADBAND) * angularSpeed); // Drive counterclockwise with
                                                                                           // negative X (left)
                 }
                 ));

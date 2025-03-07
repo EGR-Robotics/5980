@@ -14,6 +14,10 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 
 public class Constants {
+        public class CONTROLLER {
+                public static final double CONTROLLER_DEADBAND = 0.075;
+        }
+
         public class SCORING {
                 public static final double ELEVATOR_SPEED = 1;
                 public static final double ARM_SPEED = 0.2;
