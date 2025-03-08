@@ -16,7 +16,7 @@ public class MoveElevator extends Command {
 
     @Override
     public void execute() {
-        RobotContainer.elevator.setSpeed(m_direction ? SCORING.ELEVATOR_SPEED + 0.3 : -SCORING.ELEVATOR_SPEED - 0.3);
+        RobotContainer.elevator.setSpeed(m_direction ? SCORING.ELEVATOR_SPEED : -SCORING.ELEVATOR_SPEED);
     }
 
     @Override
