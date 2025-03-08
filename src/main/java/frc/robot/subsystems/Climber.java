@@ -12,30 +12,44 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 
 import com.revrobotics.spark.SparkBase.ResetMode;
 
-import frc.robot.Constants.CLIMBER;
-
 public class Climber implements Subsystem {
     private SparkMax motor;
-
     private double currentVelocity = 0;
 
     public Climber() {
-        motor = new SparkMax(CLIMBER.CAN_ID, MotorType.kBrushless);
+        motor = new SparkMax(13, MotorType.kBrushless);
 
-        motor.configure(CLIMBER.MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        // Create configuration for sparks
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12);
+
+        /*
+         * Configure the closed loop controller. We want to make sure we set the
+         * feedback sensor as the primary encoder.
+         */
+        config.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                // Set PID values for position control
+                .p(0.1)
+                .outputRange(-1, 1).maxMotion
+                // Set MAXMotion parameters for position control
+                .maxVelocity(2000)
+                .maxAcceleration(10000)
+                .allowedClosedLoopError(0.25);
+
+        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
-    
-    private void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
+
+    public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
         new Thread(() -> {
             while (Math.abs(targetVelocity - currentVelocity) > 0.1) { // Small threshold to stop ramping
-                if(up){
+                if (up) {
                     if (targetVelocity > currentVelocity) {
                         currentVelocity += rampRate;// Change in speed per cycle
                     } else {
                         currentVelocity -= rampRate;
                     }
-                }
-                else{
+                } else {
                     if (targetVelocity < currentVelocity) {
                         currentVelocity -= rampRate;// Change in speed per cycle
                     } else {
@@ -45,7 +59,7 @@ public class Climber implements Subsystem {
                 }
 
                 motor.set(currentVelocity); // currentVelocity/ Max RPM
-                
+
                 try {
                     Thread.sleep(50); // Small delay for smooth ramping
                 } catch (InterruptedException e) {
@@ -56,7 +70,23 @@ public class Climber implements Subsystem {
         }).start();
     }
 
-    public void setClimberSpeed(double velocity) {
-        setVelocity(.3, .05, motor, velocity >= 0);
+    public void moveWench(boolean up) {
+        if (up) {
+            setVelocity(.8, .05, motor, true);
+        } else {
+            setVelocity(-.8, .05, motor, false);
+        }
+    }
+
+    public Command stopWenchCommand() {
+        return run(() -> motor.set(0));
+    }
+
+    public Command moveWenchUp() {
+        return run(() -> moveWench(true));
+    }
+
+    public Command moveWenchDown() {
+        return run(() -> moveWench(false));
     }
 }

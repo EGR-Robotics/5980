@@ -3,61 +3,93 @@ package frc.robot.subsystems;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.SparkClosedLoopController;
-import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkFlex;
-import com.revrobotics.spark.ClosedLoopSlot;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkClosedLoopController;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 
-import frc.robot.Constants.ALGAE;
-import frc.robot.Constants.ELEVATOR;
-import frc.robot.Helpers;
-
 import com.revrobotics.spark.SparkBase.ResetMode;
 
 public class Algae implements Subsystem {
-    private SparkFlex m_vortex;
+    private SparkFlex armMotor;
 
-    private SparkMax m_arm_motor;
-    private RelativeEncoder m_encoder;
+    private SparkMax elevatorMotor;
+    private RelativeEncoder elevatorEncoder;
+    private SparkClosedLoopController elevatorController;
 
-    private SparkClosedLoopController m_PIDController;
+    private double curElevatorPos;
 
     private double currentVelocity = 0;
 
     public Algae() {
-        m_vortex = new SparkFlex(ALGAE.VORTEX_CAN_ID, MotorType.kBrushless);
+        // Initialize arm motors
+        armMotor = new SparkFlex(16, MotorType.kBrushless);
 
-        m_arm_motor = new SparkMax(ALGAE.ARM_CAN_ID, MotorType.kBrushless);
-        m_encoder = m_arm_motor.getEncoder();
-        m_encoder.setPosition(0);
+        // Initialize elevator motor
+        elevatorMotor = new SparkMax(17, MotorType.kBrushless);
+        elevatorEncoder = elevatorMotor.getEncoder();
 
-        m_arm_motor.configure(
-                ALGAE.MOTOR_CONFIG,
+        elevatorController = elevatorMotor.getClosedLoopController();
+        elevatorEncoder.setPosition(0);
+
+        curElevatorPos = elevatorEncoder.getPosition();
+
+        // Create configuration for sparks
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12);
+
+        /*
+         * Configure the closed loop controller. We want to make sure we set the
+         * feedback sensor as the primary encoder.
+         */
+
+        config.closedLoop
+                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                // Set PID values for position control
+                .p(0.1)
+                .outputRange(-1, 1)
+                .maxMotion
+                // Set MAXMotion parameters for position control
+                .maxVelocity(2000)
+                .maxAcceleration(10000)
+                .allowedClosedLoopError(0.25);
+
+        elevatorMotor.configure(
+                config,
                 ResetMode.kResetSafeParameters,
                 PersistMode.kPersistParameters);
-
-        m_PIDController = m_arm_motor.getClosedLoopController();
     }
 
-    public void setIntakeSpeed(double speed) {
-        m_vortex.set(speed);
+    public void goToLevel1() {
+        elevatorController.setReference(5, ControlType.kMAXMotionPositionControl);
+        curElevatorPos = elevatorEncoder.getPosition();
+    }
+       
+    public void moveArm() {
+        armMotor.set(-0.15);
     }
 
-    private void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
+    public void drop() {
+        armMotor.set(0.3);
+    }
+
+    public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
         new Thread(() -> {
             while (Math.abs(targetVelocity - currentVelocity) > 0.1) { // Small threshold to stop ramping
-                if (up) {
+                if(up){
                     if (targetVelocity > currentVelocity) {
                         currentVelocity += rampRate;// Change in speed per cycle
                     } else {
                         currentVelocity -= rampRate;
                     }
-                } else {
+                }
+                else{
                     if (targetVelocity < currentVelocity) {
                         currentVelocity -= rampRate;// Change in speed per cycle
                     } else {
@@ -67,7 +99,7 @@ public class Algae implements Subsystem {
                 }
 
                 motor.set(currentVelocity); // currentVelocity/ Max RPM
-
+                
                 try {
                     Thread.sleep(50); // Small delay for smooth ramping
                 } catch (InterruptedException e) {
@@ -79,34 +111,45 @@ public class Algae implements Subsystem {
         }).start();
     }
 
-    public void setArmSpeed(double velocity) {
-        // if (ALGAE.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
-        //         ALGAE.ENCODER_UPPER_LIMIT) && velocity > 0)
-        //     return;
-        // else if (ALGAE.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
-        //         ALGAE.ENCODER_LOWER_LIMIT) && velocity < 0)
-        //     return;
+    public void moveElevator(boolean up) {
+        if (up) {
+            setVelocity(0.4, 0.05, elevatorMotor, true);
+        } else {
+            setVelocity(-0.15, 0.05, elevatorMotor, false);
+        }
 
-        setVelocity(velocity, 0.05, m_arm_motor, velocity >= 0);
+        // elevatorController.setReference(1, ControlType.kMAXMotionPositionControl);
+
+        curElevatorPos = elevatorEncoder.getPosition();
     }
 
-    public void holdAlgae() {
-        m_PIDController.setReference(
-                m_encoder.getPosition(),
-                ControlType.kMAXMotionPositionControl,
-                ClosedLoopSlot.kSlot0,
-                ELEVATOR.MOTOR_ARB_F,
-                ArbFFUnits.kVoltage);
+    public Command goToLevel1Command() {
+        return run(() -> goToLevel1());
     }
 
-    public Command zero() {
-        return run(() -> {
-            m_PIDController.setReference(
-                    0,
-                    ControlType.kMAXMotionPositionControl,
-                    ClosedLoopSlot.kSlot0,
-                    ELEVATOR.MOTOR_ARB_F,
-                    ArbFFUnits.kVoltage);
-        });
+    public Command moveArmCommand() {
+        return run(() -> moveArm());
+    }
+
+    public Command dropAlgaeCommand() {
+        return run(() -> drop());
+    }
+
+    public Command moveElevatorUpCommand() {
+        return run(() -> moveElevator(true));
+    }
+
+    public Command moveElevatorDownCommand() {
+        return run(() -> moveElevator(false));
+    }
+
+    public Command holdElevatorPositionCommand() {
+        return run(() -> elevatorController.setReference(curElevatorPos, ControlType.kMAXMotionPositionControl));
+    }
+
+    public Command stopArm() {
+        currentVelocity = 0;
+
+        return run(() -> armMotor.set(0));
     }
 }

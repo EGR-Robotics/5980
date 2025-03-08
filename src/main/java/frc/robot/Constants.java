@@ -1,19 +1,24 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+
 import com.revrobotics.spark.config.ClosedLoopConfig;
-import com.revrobotics.spark.config.EncoderConfig;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.Units;
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
+import frc.robot.generated.TunerConstants;
 
 public class Constants {
+        public class LIMELIGHT {
+                public static final String LIMELIGHT_NAME_1 = "limelight";
+        }
+
         public class SCORING {
                 public static final double ELEVATOR_SPEED = 0.6;
                 public static final double ARM_SPEED = 0.2;
@@ -26,50 +31,6 @@ public class Constants {
 
                 public static final double L2_ELEVATOR_POSITION = 67;
                 public static final double L2_ARM_POSITION = -17;
-        }
-
-        public class APRIL_TAGS {
-                public static int REEF_AB_TAGID;
-                public static int REEF_CD_TAGID;
-                public static int REEF_EF_TAGID;
-                public static int REEF_GH_TAGID;
-                public static int REEF_IJ_TAGID;
-                public static int REEF_KL_TAGID;
-
-                public static int CORAL_STATION_LEFT_TAGID;
-                public static int CORAL_STATION_RIGHT_TAGID;
-
-                // below values are in meters
-                public static final double INSIDE_REEF_ZONE_THRESHOLD = 1.6;
-                public static final double AUTO_ADJUST_THRESHOLD = 1.8;
-
-                private static final double CORAL_STATION_OFFSET_HORIZONTAL = 0.3;
-                private static final double CORAL_STATION_OFFSET_VERTICAL = 0.3;
-                public static Translation2d CORAL_STATION_LEFT_OFFSET;
-                public static Translation2d CORAL_STATION_RIGHT_OFFSET;
-
-                public static void update(Alliance alliance) {
-                        REEF_AB_TAGID = alliance == Alliance.Blue ? 18 : 7;
-                        REEF_CD_TAGID = alliance == Alliance.Blue ? 19 : 8;
-                        REEF_EF_TAGID = alliance == Alliance.Blue ? 20 : 9;
-                        REEF_GH_TAGID = alliance == Alliance.Blue ? 21 : 10;
-                        REEF_IJ_TAGID = alliance == Alliance.Blue ? 22 : 11;
-                        REEF_KL_TAGID = alliance == Alliance.Blue ? 17 : 6;
-
-                        CORAL_STATION_LEFT_TAGID = alliance == Alliance.Blue ? 13 : 1;
-                        CORAL_STATION_RIGHT_TAGID = alliance == Alliance.Blue ? 12 : 2;
-
-                        CORAL_STATION_LEFT_OFFSET = alliance == Alliance.Blue
-                                        ? new Translation2d(CORAL_STATION_OFFSET_HORIZONTAL,
-                                                        -CORAL_STATION_OFFSET_VERTICAL)
-                                        : new Translation2d(CORAL_STATION_OFFSET_HORIZONTAL,
-                                                        CORAL_STATION_OFFSET_VERTICAL);
-                        CORAL_STATION_RIGHT_OFFSET = alliance == Alliance.Blue
-                                        ? new Translation2d(-CORAL_STATION_OFFSET_HORIZONTAL,
-                                                        -CORAL_STATION_OFFSET_VERTICAL)
-                                        : new Translation2d(CORAL_STATION_OFFSET_HORIZONTAL,
-                                                        CORAL_STATION_OFFSET_VERTICAL);
-                }
         }
 
         public class ARM {
@@ -112,6 +73,8 @@ public class Constants {
 
                 public static final double ENCODER_UPPER_LIMIT = -18; // TODO: Update
                 public static final double ENCODER_LOWER_LIMIT = 0.6; // TODO: Update
+
+                public static final double DEADBAND = 0.1;
         }
 
         public class ELEVATOR {
@@ -156,6 +119,13 @@ public class Constants {
                 public static final double ELEVATOR_LOWER_LIMIT = 1;
 
                 public static final double ELEVATOR_SAFE_POS = -4;
+
+                public static final double DEADBAND = 0.1;
+
+                public static final double SLOW_DOWN_POSITION = -50;
+                public static final double DRIVE_SLOW_DOWN_RATE = 0.4;
+                public static final double DRIVE_ANGULAR_SLOW_DOWN_RATE = 0.4;
+
         }
 
         public class ALGAE {
@@ -215,5 +185,15 @@ public class Constants {
                                 .voltageCompensation(12);
 
                 public static final double SPEED = 0.3;
+        }
+
+        public class DRIVE {
+                public static final double MAX_SPEED = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond);
+                public static final double MAX_ANGULAR_RATE = RotationsPerSecond.of(0.75).in(RadiansPerSecond);
+
+                public static final double DRIVE_DEADBAND = 0.05;
+                public static final double ROTATION_DEADBAND = 0.05;
+
+                public static final double SLOW_DOWN_RATE = 0.2;
         }
 }

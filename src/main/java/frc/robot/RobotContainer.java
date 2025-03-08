@@ -1,18 +1,11 @@
 package frc.robot;
 
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -22,98 +15,82 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 // Constants
 import frc.robot.generated.TunerConstants;
-import frc.robot.Constants.ALGAE;
-import frc.robot.Constants.APRIL_TAGS;
-import frc.robot.Constants.CLIMBER;
+import frc.robot.Constants.ARM;
+import frc.robot.Constants.DRIVE;
+import frc.robot.Constants.ELEVATOR;
+import frc.robot.Constants.LIMELIGHT;
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.commands.elevator.SetElevatorDistance;
-import frc.robot.commands.actuator.Drop;
-import frc.robot.commands.algae.MoveAlgaeArm;
-// import frc.robot.commands.algae.MoveIntake;
+// import frc.robot.commands.actuator.Drop;
 import frc.robot.commands.arm.MoveArm;
 import frc.robot.commands.arm.StopArm;
-// import frc.robot.commands.climber.MoveClimber;
 import frc.robot.commands.elevator.StopElevator;
-import frc.robot.commands.limelight.Align;
-import frc.robot.commands.scoring.L1;
+// import frc.robot.commands.scoring.L1;
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
 import frc.robot.commands.scoring.L4AutoLower;
 import frc.robot.commands.scoring.ScoreElevator;
 import frc.robot.commands.scoring.Trough;
+
 // Subsystems
-import frc.robot.subsystems.ClimberSubsystem;
-import frc.robot.subsystems.VisionSubsystemOld;
+import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Vision;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Actuator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Algae;
-import frc.robot.subsystems.AlgaeSubsystem;
-import frc.robot.subsystems.Climber;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
-    private double MaxSpeed = TunerConstants.kSpeedAt12Volts.in(MetersPerSecond); // kSpeedAt12Volts desired top speed
-    private double MaxAngularRate = RotationsPerSecond.of(0.75).in(RadiansPerSecond); // 3/4 of a rotation per second
-                                                                                      // max angular velocity
-
-    /* Setting up bindings for necessary control of the swerve drive platform */
+    // Set up swerve request bindings for necessary control of the swerve drive
+    // platform
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
+            .withDeadband(DRIVE.MAX_SPEED * DRIVE.DRIVE_DEADBAND)
+            .withRotationalDeadband(DRIVE.MAX_ANGULAR_RATE * DRIVE.DRIVE_DEADBAND) // Multiply by deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(MaxSpeed);
+    private final Telemetry logger = new Telemetry(DRIVE.MAX_SPEED);
 
     // Initialize controllers
     public final static CommandXboxController driverJoystick = new CommandXboxController(0);
     public final static CommandXboxController controllerJoystick = new CommandXboxController(1);
 
     // Initialize subsystems
-
-    public final ClimberSubsystem climberOld = new ClimberSubsystem();
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
-    public static final VisionSubsystemOld vision = new VisionSubsystemOld();
+    public static final Vision vision = new Vision();
 
-    // public static final Algae algae = new Algae();
+    public final Climber climber = new Climber();
+    public static final Actuator actuator = new Actuator();
+
     public static final Elevator elevator = new Elevator();
     public static final Arm arm = new Arm();
-    public static final Actuator actuator = new Actuator();
-    // public static final Climber climber = new Climber();
+    public static final Algae algae = new Algae();
 
-    public static final AlgaeSubsystem algae = new AlgaeSubsystem();
-
+    // Initialize auto chooser
     private final SendableChooser<Command> autoChooser;
 
     public RobotContainer() {
         // Register named commands for auto
-        NamedCommands.registerCommand("level4", new L4());
         NamedCommands.registerCommand("zero", new InstantCommand(
-            () -> elevator.setEncoderPosition(0), elevator
-        ));
+                () -> elevator.setEncoderPosition(0), elevator));
 
         NamedCommands.registerCommand("slightLower", new L4AutoLower());
+        NamedCommands.registerCommand("level4", new L4());
 
         NamedCommands.registerCommand("trough", new Trough());
         NamedCommands.registerCommand("pickup", new ScoreElevator());
 
-        configureBindings();
-
         autoChooser = AutoBuilder.buildAutoChooser();
-
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
-        var alliance = DriverStation.getAlliance();
-
-        APRIL_TAGS.update(alliance.get());
-
-        // actuator.setSpeed(1);
+        // Configure bindings from controller to commands
+        configureBindings();
     }
 
     private void configureBindings() {
@@ -122,44 +99,30 @@ public class RobotContainer {
         elevator.setDefaultCommand(
                 new InstantCommand(
                         () -> {
-                            if (controllerJoystick.getLeftY() > 0.1) {
+                            if (controllerJoystick.getLeftY() > ELEVATOR.DEADBAND) {
                                 (new MoveElevator(true)).execute();
-                            } else if (controllerJoystick.getLeftY() < -0.2) {
+                            } else if (controllerJoystick.getLeftY() < -ELEVATOR.DEADBAND) {
                                 (new MoveElevator(false)).execute();
                             } else {
-                                elevator.holdPosition();
                                 (new StopElevator()).execute();
+                                elevator.holdPosition();
                             }
                         }, elevator));
-
-        // controllerJoystick.x().onTrue(new Drop());
-
-        // controllerJoystick.x().onTrue(new InstantCommand(() -> actuator.setPosition(0)));
 
         controllerJoystick.a().whileTrue(new L4());
         controllerJoystick.b().whileTrue(new L3());
         controllerJoystick.y().whileTrue(new L2());
 
-        // Limelight commands
-
-        // Limelight Align Commands
-        // controllerJoystick.x().onTrue(
-        //     new Align()
-        // );
-        
-        // controllerJoystick.a().onFalse(arm.hold());
-        // controllerJoystick.y().onTrue(new L4AutoLower());
-
-        // controllerJoystick.x().onTrue(new L4AutoLower());
+        // controllerJoystick.x().onTrue(new Drop());
 
         // Arm commands
 
         arm.setDefaultCommand(
                 new InstantCommand(
                         () -> {
-                            if (controllerJoystick.getRightY() > 0.2) {
+                            if (controllerJoystick.getRightY() > ARM.DEADBAND) {
                                 (new MoveArm(true)).execute();
-                            } else if (controllerJoystick.getRightY() < -0.2) {
+                            } else if (controllerJoystick.getRightY() < -ARM.DEADBAND) {
                                 (new MoveArm(false)).execute();
                             } else {
                                 (new StopArm()).execute();
@@ -167,21 +130,6 @@ public class RobotContainer {
                         }, arm));
 
         // Algae Bar Commands
-
-        controllerJoystick.leftTrigger().whileTrue(new MoveAlgaeArm(ALGAE.ARM_RAISE_SPEED));
-        controllerJoystick.rightTrigger().whileTrue(new MoveAlgaeArm(ALGAE.ARM_LOWER_SPEED));
-        // controllerJoystick.leftTrigger().onFalse(algae.zero());
-        // controllerJoystick.rightTrigger().onFalse(algae.zero());
-
-
-
-        // algae.setDefaultCommand(
-        //     new InstantCommand(
-        //         () -> algae.zero().execute(), algae
-        //     )
-        // );
-
-
         controllerJoystick.leftTrigger().whileTrue(algae.moveElevatorDownCommand());
         controllerJoystick.leftTrigger().onFalse(algae.holdElevatorPositionCommand());
 
@@ -194,19 +142,6 @@ public class RobotContainer {
         controllerJoystick.rightBumper().whileTrue(algae.moveArmCommand());
         controllerJoystick.rightBumper().onFalse(algae.stopArm());
 
-        // controllerJoystick.leftBumper().whileTrue(new MoveIntake(ALGAE.INTAKE_SPEED));
-        // controllerJoystick.leftBumper().onFalse(algae.zero());
-        
-        // controllerJoystick.rightBumper().whileTrue(new MoveIntake(ALGAE.OUTAKE_SPEED));
-        // controllerJoystick.rightBumper().onFalse(algae.zero());
-
-        
-        // controllerJoystick.leftBumper().whileTrue(algaeSubsystem.moveElevatorUpCommand());
-        // controllerJoystick.leftBumper().onFalse(algaeSubsystem.holdElevatorPositionCommand());
-        
-        // controllerJoystick.rightBumper().whileTrue(algaeSubsystem.moveElevatorDownCommand());
-        // controllerJoystick.rightBumper().onFalse(algaeSubsystem.holdElevatorPositionCommand());
-
         // Drive Commands
 
         // Note that X is defined as forward according to WPILib convention,
@@ -214,56 +149,59 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> {
-                    double curSpeed = MaxSpeed;
-                    double angularSpeed = MaxAngularRate;
+                    double targetDriveSpeed = DRIVE.MAX_SPEED;
+                    double targetAngularRate = DRIVE.MAX_ANGULAR_RATE;
 
-                    if(elevator.getEncoderPosition() <= -50) {
-                        curSpeed *= .4;
-                        angularSpeed *= .4;
+                    // If elevator is raised
+                    if (elevator.getEncoderPosition() <= ELEVATOR.SLOW_DOWN_POSITION) {
+                        targetDriveSpeed *= ELEVATOR.DRIVE_SLOW_DOWN_RATE;
+                        targetAngularRate *= ELEVATOR.DRIVE_ANGULAR_SLOW_DOWN_RATE;
                     }
 
-                    if(driverJoystick.getRightTriggerAxis() == 1) {
-                        curSpeed *= .2;
-                        angularSpeed *= 2;
+                    // If the right trigger is pressed
+                    if (driverJoystick.getRightTriggerAxis() == 1) {
+                        targetDriveSpeed *= DRIVE.SLOW_DOWN_RATE;
+                        targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
                     }
 
-                    XboxController controller = new XboxController(1);
+                    // IF the left trigger is pressed
+                    if (driverJoystick.getLeftTriggerAxis() == 1) {
+                        // SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-                    if(controller.getXButton()) {
-                        double[] speeds = vision.align(drivetrain);
+                        // Create robot centric swerve request
+                        SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
+                                .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-                        SwerveRequest.FieldCentric robotDrive = new SwerveRequest.FieldCentric()
-                            .withDeadband(MaxSpeed * 0.05).withRotationalDeadband(MaxAngularRate * 0.05) // Add a 10% deadband
-                            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+                        
+                        double tx = LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1);
+                        double ty = LimelightHelpers.getTY(LIMELIGHT.LIMELIGHT_NAME_1);
+                        double ta = LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1);
 
+                        SmartDashboard.putNumber("Target TX", tx);
+                        SmartDashboard.putNumber("Target TY", ty);
+                        SmartDashboard.putNumber("Target TA", ta);
 
-                        return robotDrive.withVelocityX(speeds[0]) // Drive
-                                                                                                            // forward with
-                                                                                                            // negative Y
-                                                                                                            // (forward)
-                            .withVelocityY(speeds[1]) // Drive left with negative X (left)
-                            .withRotationalRate(speeds[2]);
+                        return limelightRotate
+                            .withVelocityX(-driverJoystick.getLeftY() * targetDriveSpeed)
+                            .withVelocityY(tx)
+                            .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
                     }
 
-                    return drive.withVelocityX(-driverJoystick.getLeftY() * curSpeed) // Drive
-                                                                                                         // forward with
-                                                                                                         // negative Y
-                                                                                                         // (forward)
-                        .withVelocityY(-driverJoystick.getLeftX() * curSpeed) // Drive left with negative X (left)
-                        .withRotationalRate(-driverJoystick.getRightX() * angularSpeed); // Drive counterclockwise with
-                                                                                          // negative X (left)
-                }
-                ));
+                    return 
+                        drive
+                            // Drive forward with negative Y forward
+                            .withVelocityX(-driverJoystick.getLeftY() * targetDriveSpeed) 
+                            // Drive left with negative X (left)
+                            .withVelocityY(-driverJoystick.getLeftX() * targetDriveSpeed) 
+                            // Drive counterclockwise with negative X (left)
+                            .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
+                }));
 
-        // driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-
-        driverJoystick.a().whileTrue(
-            vision.alignTXCommand()
-        );
+        driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
         // Zero out
         driverJoystick.b().onTrue(
-                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(180, 0))));
+                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0, 0))));
 
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
@@ -278,18 +216,13 @@ public class RobotContainer {
         drivetrain.registerTelemetry(logger::telemeterize);
 
         // Climber Commands
-        driverJoystick.x().whileTrue(climberOld.moveWenchUp()); 
-        driverJoystick.x().onFalse(climberOld.stopWenchCommand());
-        driverJoystick.y().whileTrue(climberOld.moveWenchDown());
-        driverJoystick.y().onFalse(climberOld.stopWenchCommand());
-
-        // driverJoystick.x().onTrue(new MoveClimber(CLIMBER.SPEED));
-        // driverJoystick.y().whileTrue(new MoveClimber(-CLIMBER.SPEED));    
+        driverJoystick.x().whileTrue(climber.moveWenchUp());
+        driverJoystick.x().onFalse(climber.stopWenchCommand());
+        driverJoystick.y().whileTrue(climber.moveWenchDown());
+        driverJoystick.y().onFalse(climber.stopWenchCommand());
     }
 
     public Command getAutonomousCommand() {
-        // return new PathPlannerAuto("Test");
-        // return new PathPlannerAuto("New Auto");
         return autoChooser.getSelected();
     }
 }

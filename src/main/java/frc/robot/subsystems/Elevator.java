@@ -56,8 +56,6 @@ public class Elevator extends SubsystemBase {
         m_encoder = m_motor.getEncoder();
         m_encoder.setPosition(0);
 
-        // curEncoderValue = m_encoder.getPosition();
-
         targetRots = getRotations();
         targetDistance = getDistance();
     }
@@ -87,9 +85,8 @@ public class Elevator extends SubsystemBase {
 
         m_motor.set(percentOutput);
         m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
-        // curEncoderValue = m_encoder.getPosition();
 
-        System.out.println("Elevator position: " + m_encoder.getPosition());
+        // System.out.println("Elevator encoder position: " + m_encoder.getPosition());
     }
 
     public void setAxisSpeed(double speed) {
@@ -142,7 +139,8 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean isAtTarget() {
-        return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT > Helpers.percentError(targetEncoderPos, m_encoder.getPosition());
+        return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT > Helpers.percentError(targetEncoderPos,
+                m_encoder.getPosition());
     }
 
     public void postMove() {

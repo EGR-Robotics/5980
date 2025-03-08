@@ -9,10 +9,8 @@ public class Actuator extends SubsystemBase {
 
     public Actuator() {
         m_servo = new PWM(ACTUATOR.PWM_PORT);
-        
-        // m_servo.setPosition(0);
-        System.out.println(m_servo.getPosition());
-    }
+
+        m_servo.setPosition(0);    }
 
     public void setSpeed(double speed) {
         m_servo.setSpeed(speed);
