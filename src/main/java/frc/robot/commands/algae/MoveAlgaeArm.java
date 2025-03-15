@@ -19,10 +19,10 @@ public class MoveAlgaeArm extends Command {
 
     @Override
     public boolean isFinished() {
-        
+
         return true;
     }
-    
+
     @Override
     public void end(boolean interrupted) {
         // RobotContainer.algae.setArmSpeed(0);

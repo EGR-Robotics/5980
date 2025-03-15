@@ -4,27 +4,27 @@
 // import frc.robot.RobotContainer;
 
 // public class MoveIntake extends Command {
-//     double m_velocity;
-    
-//     public MoveIntake(double velocity) {
-//         m_velocity = velocity;
+// double m_velocity;
 
-//         addRequirements(RobotContainer.algae);
-//     }
+// public MoveIntake(double velocity) {
+// m_velocity = velocity;
 
-//     @Override
-//     public void execute() {
-//         System.out.println("running");
-//         RobotContainer.algae.setIntakeSpeed(m_velocity);
-//     }
+// addRequirements(RobotContainer.algae);
+// }
 
-//     @Override
-//     public boolean isFinished() {
-//         return true;
-//     }
-    
-//     @Override
-//     public void end(boolean interrupted) {
-//         RobotContainer.algae.setIntakeSpeed(0);
-//     }
+// @Override
+// public void execute() {
+// System.out.println("running");
+// RobotContainer.algae.setIntakeSpeed(m_velocity);
+// }
+
+// @Override
+// public boolean isFinished() {
+// return true;
+// }
+
+// @Override
+// public void end(boolean interrupted) {
+// RobotContainer.algae.setIntakeSpeed(0);
+// }
 // }

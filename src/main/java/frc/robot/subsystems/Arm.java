@@ -56,12 +56,14 @@ public class Arm extends SubsystemBase {
     public void setSpeed(double percentOutput) {
         // System.out.println(percentOutput);
 
-        // if (m_encoder.getPosition() <= ARM.ENCODER_UPPER_LIMIT && percentOutput < 0) {
-        //             System.out.println();
-        //             return;
-        //         }
-        // else if (m_encoder.getPosition() >= ARM.ENCODER_LOWER_LIMIT && percentOutput > 0)
-        //     return;
+        // if (m_encoder.getPosition() <= ARM.ENCODER_UPPER_LIMIT && percentOutput < 0)
+        // {
+        // System.out.println();
+        // return;
+        // }
+        // else if (m_encoder.getPosition() >= ARM.ENCODER_LOWER_LIMIT && percentOutput
+        // > 0)
+        // return;
 
         m_motor.set(percentOutput);
         m_targetRotations.mut_replace(Double.NaN, Units.Rotations);

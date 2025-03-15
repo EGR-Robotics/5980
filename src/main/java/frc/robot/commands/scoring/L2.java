@@ -15,11 +15,9 @@ import frc.robot.commands.elevator.SetElevatorDistance;
 public class L2 extends ParallelCommandGroup {
     public L2() {
         super(
-            new HoldArmDistance(SCORING.L2_ARM_POSITION),
-            new SequentialCommandGroup(
-                new WaitCommand(0.5),
-                new SetElevatorDistance(SCORING.L2_ELEVATOR_POSITION)
-            )
-        );
+                new HoldArmDistance(SCORING.L2_ARM_POSITION),
+                new SequentialCommandGroup(
+                        new WaitCommand(0.5),
+                        new SetElevatorDistance(SCORING.L2_ELEVATOR_POSITION)));
     }
 }

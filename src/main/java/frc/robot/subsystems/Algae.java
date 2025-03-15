@@ -53,8 +53,7 @@ public class Algae implements Subsystem {
                 .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                 // Set PID values for position control
                 .p(0.1)
-                .outputRange(-1, 1)
-                .maxMotion
+                .outputRange(-1, 1).maxMotion
                 // Set MAXMotion parameters for position control
                 .maxVelocity(2000)
                 .maxAcceleration(10000)
@@ -70,7 +69,7 @@ public class Algae implements Subsystem {
         elevatorController.setReference(5, ControlType.kMAXMotionPositionControl);
         curElevatorPos = elevatorEncoder.getPosition();
     }
-       
+
     public void moveArm() {
         armMotor.set(-0.15);
     }
@@ -82,14 +81,13 @@ public class Algae implements Subsystem {
     public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
         new Thread(() -> {
             while (Math.abs(targetVelocity - currentVelocity) > 0.1) { // Small threshold to stop ramping
-                if(up){
+                if (up) {
                     if (targetVelocity > currentVelocity) {
                         currentVelocity += rampRate;// Change in speed per cycle
                     } else {
                         currentVelocity -= rampRate;
                     }
-                }
-                else{
+                } else {
                     if (targetVelocity < currentVelocity) {
                         currentVelocity -= rampRate;// Change in speed per cycle
                     } else {
@@ -99,7 +97,7 @@ public class Algae implements Subsystem {
                 }
 
                 motor.set(currentVelocity); // currentVelocity/ Max RPM
-                
+
                 try {
                     Thread.sleep(50); // Small delay for smooth ramping
                 } catch (InterruptedException e) {

@@ -4,26 +4,26 @@
 // import frc.robot.RobotContainer;
 
 // public class MoveClimber extends Command {
-//     double m_velocity;
+// double m_velocity;
 
-//     public MoveClimber(double velocity) {
-//         m_velocity = velocity;
+// public MoveClimber(double velocity) {
+// m_velocity = velocity;
 
-//         addRequirements(RobotContainer.climber);
-//     }
+// addRequirements(RobotContainer.climber);
+// }
 
-//     @Override
-//     public void execute() {
-//         RobotContainer.climber.setClimberSpeed(m_velocity);
-//     }
+// @Override
+// public void execute() {
+// RobotContainer.climber.setClimberSpeed(m_velocity);
+// }
 
-//     @Override
-//     public boolean isFinished() {
-//         return true;
-//     }
+// @Override
+// public boolean isFinished() {
+// return true;
+// }
 
-//     @Override
-//     public void end(boolean interrupted) {
-//         RobotContainer.climber.setClimberSpeed(m_velocity);
-//     }
+// @Override
+// public void end(boolean interrupted) {
+// RobotContainer.climber.setClimberSpeed(m_velocity);
+// }
 // }

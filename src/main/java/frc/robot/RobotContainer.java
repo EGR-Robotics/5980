@@ -32,9 +32,9 @@ import frc.robot.commands.elevator.StopElevator;
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
-import frc.robot.commands.scoring.L4AutoLower;
-import frc.robot.commands.scoring.ScoreElevator;
-import frc.robot.commands.scoring.Trough;
+import frc.robot.commands.auto.L4AutoLower;
+import frc.robot.commands.auto.ScoreElevator;
+import frc.robot.commands.auto.Trough;
 
 // Subsystems
 import frc.robot.subsystems.Climber;
@@ -93,8 +93,6 @@ public class RobotContainer {
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
-
-
         // Configure bindings from controller to commands
         configureBindings();
     }
@@ -123,9 +121,6 @@ public class RobotContainer {
         controllerJoystick.x().onFalse(new StopServo());
 
         // Arm commands
-
-
-
 
         arm.setDefaultCommand(
                 new InstantCommand(
@@ -170,8 +165,8 @@ public class RobotContainer {
 
                     // If the right trigger is pressed
                     // if (driverJoystick.getRightTriggerAxis() == 1) {
-                    //     targetDriveSpeed *= DRIVE.SLOW_DOWN_RATE;
-                    //     targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
+                    // targetDriveSpeed *= DRIVE.SLOW_DOWN_RATE;
+                    // targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
                     // }
 
                     // IF the left trigger is pressed
@@ -182,7 +177,6 @@ public class RobotContainer {
                         SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
                                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-                        
                         double tx = LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1);
                         double ty = LimelightHelpers.getTY(LIMELIGHT.LIMELIGHT_NAME_1);
                         double ta = LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1);
@@ -191,16 +185,19 @@ public class RobotContainer {
                         SmartDashboard.putNumber("Target TY", ty);
                         SmartDashboard.putNumber("Target TA", ta);
 
-                        double distanceForward = (LIMELIGHT.APRILTAG_HEIGHT - 0.25) / Math.tan(Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_UP + ty));
+                        double distanceForward = (LIMELIGHT.APRILTAG_HEIGHT - 0.25)
+                                / Math.tan(Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_UP + ty));
 
-                        double distanceX = distanceForward * Math.tan(Math.toRadians(tx) + Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_HORIZONTAL)) + LIMELIGHT.LIMELIGHT_OFFSET_RIGHT;
+                        double distanceX = distanceForward
+                                * Math.tan(Math.toRadians(tx) + Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_HORIZONTAL))
+                                + LIMELIGHT.LIMELIGHT_OFFSET_RIGHT;
 
                         boolean far = (distanceForward > LIMELIGHT.LIMELIGHT_FOWARD_MAX);
 
                         return limelightRotate
-                            .withVelocityX(far ? (targetDriveSpeed / 40) : 0)
-                            .withVelocityY(-Math.signum(distanceX) * targetDriveSpeed / 35)
-                            .withRotationalRate(0);
+                                .withVelocityX(far ? (targetDriveSpeed / 40) : 0)
+                                .withVelocityY(-Math.signum(distanceX) * targetDriveSpeed / 35)
+                                .withRotationalRate(0);
                     }
 
                     if (driverJoystick.getLeftTriggerAxis() == 1) {
@@ -210,7 +207,6 @@ public class RobotContainer {
                         SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
                                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-                        
                         double tx = LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1);
                         double ty = LimelightHelpers.getTY(LIMELIGHT.LIMELIGHT_NAME_1);
                         double ta = LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1);
@@ -219,24 +215,26 @@ public class RobotContainer {
                         SmartDashboard.putNumber("Target TY", ty);
                         SmartDashboard.putNumber("Target TA", ta);
 
-                        double distanceForward = (LIMELIGHT.APRILTAG_HEIGHT - 0.25) / Math.tan(Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_UP + ty));
+                        double distanceForward = (LIMELIGHT.APRILTAG_HEIGHT - 0.25)
+                                / Math.tan(Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_UP + ty));
 
-                        double distanceX = distanceForward * Math.tan(Math.toRadians(tx) + Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_HORIZONTAL)) + LIMELIGHT.LIMELIGHT_OFFSET_LEFT;
+                        double distanceX = distanceForward
+                                * Math.tan(Math.toRadians(tx) + Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_HORIZONTAL))
+                                + LIMELIGHT.LIMELIGHT_OFFSET_LEFT;
 
                         boolean far = (distanceForward > LIMELIGHT.LIMELIGHT_FOWARD_MAX);
-                        
+
                         return limelightRotate
-                            .withVelocityX(far ? (targetDriveSpeed / 40) : 0)
-                            .withVelocityY(-Math.signum(distanceX) * targetDriveSpeed / 35)
-                            .withRotationalRate(0);
+                                .withVelocityX(far ? (targetDriveSpeed / 40) : 0)
+                                .withVelocityY(-Math.signum(distanceX) * targetDriveSpeed / 35)
+                                .withRotationalRate(0);
                     }
 
-                    return 
-                        drive
+                    return drive
                             // Drive forward with negative Y forward
-                            .withVelocityX(-driverJoystick.getLeftY() * targetDriveSpeed) 
+                            .withVelocityX(-driverJoystick.getLeftY() * targetDriveSpeed)
                             // Drive left with negative X (left)
-                            .withVelocityY(-driverJoystick.getLeftX() * targetDriveSpeed) 
+                            .withVelocityY(-driverJoystick.getLeftX() * targetDriveSpeed)
                             // Drive counterclockwise with negative X (left)
                             .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
                 }));

@@ -14,9 +14,10 @@ public class PushIn extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("Pushin command running. Cur speed: " + RobotContainer.actuator.getSpeed() + "...; cur position: " + RobotContainer.actuator.getPosition());
+        System.out.println("Pushin command running. Cur speed: " + RobotContainer.actuator.getSpeed()
+                + "...; cur position: " + RobotContainer.actuator.getPosition());
 
-        if(RobotContainer.actuator.getPosition() <= 0) {
+        if (RobotContainer.actuator.getPosition() <= 0) {
             // RobotContainer.actuator.stop();
             System.out.println("Stopping after pushin command finishes");
 

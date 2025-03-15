@@ -15,10 +15,11 @@ public class L4AutoLower extends ParallelCommandGroup {
     public L4AutoLower() {
         super(
                 new SetArmDistance(SCORING.L4_ARM_POSITION + 5)
-                // new SetElevatorDistance(-10),
-                // new SequentialCommandGroup(  
-                //     new WaitCommand(0.5).unless(() -> RobotContainer.elevator.getEncoderPosition() < -3),
-                // )
+        // new SetElevatorDistance(-10),
+        // new SequentialCommandGroup(
+        // new WaitCommand(0.5).unless(() ->
+        // RobotContainer.elevator.getEncoderPosition() < -3),
+        // )
         );
     }
 }
