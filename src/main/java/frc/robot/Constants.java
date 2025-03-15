@@ -17,20 +17,31 @@ import frc.robot.generated.TunerConstants;
 public class Constants {
         public class LIMELIGHT {
                 public static final String LIMELIGHT_NAME_1 = "limelight";
+
+                public static final double APRILTAG_HEIGHT = .3112; // in meters
+                public static final double LIMELIGHT_ANGLE_UP = 10; // in degrees
+                public static final double LIMELIGHT_ANGLE_HORIZONTAL = -5; // in degrees
+                public static final double LIMELIGHT_OFFSET_LEFT = 0.14;// in meters 
+                public static final double LIMELIGHT_OFFSET_RIGHT = -0.47;// in meters 
+                public static final double LIMELIGHT_FOWARD_MAX = 0.38;// in meters 
+
         }
 
         public class SCORING {
                 public static final double ELEVATOR_SPEED = 1;
                 public static final double ARM_SPEED = 0.2;
 
-                public static final double L4_ELEVATOR_POSITION = -122;
-                public static final double L4_ARM_POSITION = -16;
+                // public static final double L4_ELEVATOR_POSITION = -122;
+                // public static final double L4_ARM_POSITION = 12.3;
+
+                public static final double L4_ELEVATOR_POSITION = 0;
+                public static final double L4_ARM_POSITION = -12;
 
                 public static final double L3_ELEVATOR_POSITION = 0;
-                public static final double L3_ARM_POSITION = -15.5;
+                public static final double L3_ARM_POSITION = -21.5;
 
-                public static final double L2_ELEVATOR_POSITION = 67;
-                public static final double L2_ARM_POSITION = -17;
+                public static final double L2_ELEVATOR_POSITION = 108.54;
+                public static final double L2_ARM_POSITION = -21.5;
         }
 
         public class ARM {
@@ -46,9 +57,9 @@ public class Constants {
                 public static final double AXIS_MAX_SPEED = 0.25;
                 public static final double MOTOR_ARB_F = 0.05;
 
-                public static final double MOTOR_P = 0.5;
-                public static final double MOTOR_I = 0;
-                public static final double MOTOR_D = 0;
+                public static final double MOTOR_P = 1.5;
+                public static final double MOTOR_I = 0.1;
+                public static final double MOTOR_D = 1;
                 public static final double MOTOR_F = 0;
 
                 public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = MOTOR_CONFIG.closedLoop
@@ -90,7 +101,7 @@ public class Constants {
                 public static final double AXIS_MAX_SPEED = 0.25;
                 public static final double MOTOR_ARB_F = 0.1;
 
-                public static final double MOTOR_P = 0.010;
+                public static final double MOTOR_P = 0.01;
                 public static final double MOTOR_I = 0;
                 public static final double MOTOR_D = 0;
                 public static final double MOTOR_F = 0;
@@ -185,6 +196,7 @@ public class Constants {
                                 .voltageCompensation(12);
 
                 public static final double SPEED = 0.3;
+
         }
 
         public class DRIVE {
@@ -195,5 +207,8 @@ public class Constants {
                 public static final double ROTATION_DEADBAND = 0.05;
 
                 public static final double SLOW_DOWN_RATE = 0.2;
+
+                
+        
         }
 }

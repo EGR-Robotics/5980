@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import edu.wpi.first.math.controller.PIDController;
 
 // Constants
 import frc.robot.generated.TunerConstants;
@@ -21,7 +22,9 @@ import frc.robot.Constants.ELEVATOR;
 import frc.robot.Constants.LIMELIGHT;
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
-// import frc.robot.commands.actuator.Drop;
+import frc.robot.commands.actuator.Drop;
+import frc.robot.commands.actuator.PushOut;
+import frc.robot.commands.actuator.StopServo;
 import frc.robot.commands.arm.MoveArm;
 import frc.robot.commands.arm.StopArm;
 import frc.robot.commands.elevator.StopElevator;
@@ -82,12 +85,15 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("slightLower", new L4AutoLower());
         NamedCommands.registerCommand("level4", new L4());
+        NamedCommands.registerCommand("level3", new L3());
 
         NamedCommands.registerCommand("trough", new Trough());
         NamedCommands.registerCommand("pickup", new ScoreElevator());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
+
+
 
         // Configure bindings from controller to commands
         configureBindings();
@@ -113,9 +119,13 @@ public class RobotContainer {
         controllerJoystick.b().whileTrue(new L3());
         controllerJoystick.y().whileTrue(new L2());
 
-        // controllerJoystick.x().onTrue(new Drop());
+        controllerJoystick.x().whileTrue(new PushOut());
+        controllerJoystick.x().onFalse(new StopServo());
 
         // Arm commands
+
+
+
 
         arm.setDefaultCommand(
                 new InstantCommand(
@@ -159,12 +169,40 @@ public class RobotContainer {
                     }
 
                     // If the right trigger is pressed
-                    if (driverJoystick.getRightTriggerAxis() == 1) {
-                        targetDriveSpeed *= DRIVE.SLOW_DOWN_RATE;
-                        targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
-                    }
+                    // if (driverJoystick.getRightTriggerAxis() == 1) {
+                    //     targetDriveSpeed *= DRIVE.SLOW_DOWN_RATE;
+                    //     targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
+                    // }
 
                     // IF the left trigger is pressed
+                    if (driverJoystick.getRightTriggerAxis() == 1) {
+                        // SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+
+                        // Create robot centric swerve request
+                        SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
+                                .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+                        
+                        double tx = LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1);
+                        double ty = LimelightHelpers.getTY(LIMELIGHT.LIMELIGHT_NAME_1);
+                        double ta = LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1);
+
+                        SmartDashboard.putNumber("Target TX", tx);
+                        SmartDashboard.putNumber("Target TY", ty);
+                        SmartDashboard.putNumber("Target TA", ta);
+
+                        double distanceForward = (LIMELIGHT.APRILTAG_HEIGHT - 0.25) / Math.tan(Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_UP + ty));
+
+                        double distanceX = distanceForward * Math.tan(Math.toRadians(tx) + Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_HORIZONTAL)) + LIMELIGHT.LIMELIGHT_OFFSET_RIGHT;
+
+                        boolean far = (distanceForward > LIMELIGHT.LIMELIGHT_FOWARD_MAX);
+
+                        return limelightRotate
+                            .withVelocityX(far ? (targetDriveSpeed / 40) : 0)
+                            .withVelocityY(-Math.signum(distanceX) * targetDriveSpeed / 35)
+                            .withRotationalRate(0);
+                    }
+
                     if (driverJoystick.getLeftTriggerAxis() == 1) {
                         // SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
@@ -181,10 +219,16 @@ public class RobotContainer {
                         SmartDashboard.putNumber("Target TY", ty);
                         SmartDashboard.putNumber("Target TA", ta);
 
+                        double distanceForward = (LIMELIGHT.APRILTAG_HEIGHT - 0.25) / Math.tan(Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_UP + ty));
+
+                        double distanceX = distanceForward * Math.tan(Math.toRadians(tx) + Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_HORIZONTAL)) + LIMELIGHT.LIMELIGHT_OFFSET_LEFT;
+
+                        boolean far = (distanceForward > LIMELIGHT.LIMELIGHT_FOWARD_MAX);
+                        
                         return limelightRotate
-                            .withVelocityX(-driverJoystick.getLeftY() * targetDriveSpeed)
-                            .withVelocityY(tx)
-                            .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
+                            .withVelocityX(far ? (targetDriveSpeed / 40) : 0)
+                            .withVelocityY(-Math.signum(distanceX) * targetDriveSpeed / 35)
+                            .withRotationalRate(0);
                     }
 
                     return 
