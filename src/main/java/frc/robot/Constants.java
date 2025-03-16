@@ -20,20 +20,20 @@ public class Constants {
         }
 
         public class SCORING {
-                public static final double ELEVATOR_SPEED = 1;
+                public static final double ELEVATOR_SPEED = 0.8;
                 public static final double ARM_SPEED = 0.2;
 
-                // public static final double L4_ELEVATOR_POSITION = -122;
-                // public static final double L4_ARM_POSITION = 12.3;
-
-                public static final double L4_ELEVATOR_POSITION = 0;
-                public static final double L4_ARM_POSITION = -12;
+                public static final double L4_ELEVATOR_POSITION = -44;
+                public static final double L4_ARM_POSITION = -19;
 
                 public static final double L3_ELEVATOR_POSITION = 0;
                 public static final double L3_ARM_POSITION = -21.5;
-
+                
                 public static final double L2_ELEVATOR_POSITION = 108.54;
                 public static final double L2_ARM_POSITION = -21.5;
+
+                public static final double L1_ELEVATOR_POSITION = 0;
+                public static final double L1_ARM_POSITION = -12;
         }
 
         public class ARM {

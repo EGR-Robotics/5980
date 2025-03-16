@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 import edu.wpi.first.math.geometry.Pose2d;
-
+import edu.wpi.first.math.util.Units;
 import frc.robot.Constants.LIMELIGHT;
 
 public class Robot extends TimedRobot {
@@ -25,14 +25,16 @@ public class Robot extends TimedRobot {
         CommandScheduler.getInstance().run();
 
         if (useLimelightPoseEstimate) {
-            var lastResult = LimelightHelpers.getLatestResults(LIMELIGHT.LIMELIGHT_NAME_1);
+            var driveState = RobotContainer.drivetrain.getState();
+            double headingDeg = driveState.Pose.getRotation().getDegrees();
+            double omegaRps = Units.radiansToRotations(driveState.Speeds.omegaRadiansPerSecond);
 
-            Pose2d llPose = lastResult.getBotPose2d_wpiBlue();
-
-            SmartDashboard.putNumberArray("LIMELIGHT_ESTIMATED_POSE", new double[] { llPose.getX(), llPose.getY() });
-
-            if (lastResult.valid)
-                RobotContainer.drivetrain.addVisionMeasurement(llPose, Timer.getFPGATimestamp());
+            LimelightHelpers.SetRobotOrientation("limelight", headingDeg, 0, 0, 0, 0, 0);
+            var llMeasurement = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2("limelight");
+            
+            if (llMeasurement != null && llMeasurement.tagCount > 0 && Math.abs(omegaRps) < 2.0) {
+                RobotContainer.drivetrain.addVisionMeasurement(llMeasurement.pose, llMeasurement.timestampSeconds);
+            }
         }
     }
 
