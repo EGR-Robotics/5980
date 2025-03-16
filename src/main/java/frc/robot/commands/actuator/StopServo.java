@@ -8,7 +8,7 @@ public class StopServo extends Command {
     public void execute() {
         System.out.println("Stopping servo");
 
-        RobotContainer.actuator.setSpeed(0);
+        RobotContainer.actuator.stop();
     }
 
     @Override

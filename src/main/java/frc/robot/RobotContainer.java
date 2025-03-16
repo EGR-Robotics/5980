@@ -32,6 +32,7 @@ import frc.robot.commands.elevator.StopElevator;
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
+import frc.robot.commands.auto.Align;
 import frc.robot.commands.auto.L4AutoLower;
 import frc.robot.commands.auto.ScoreElevator;
 import frc.robot.commands.auto.Trough;
@@ -164,70 +165,21 @@ public class RobotContainer {
                     }
 
                     // If the right trigger is pressed
-                    // if (driverJoystick.getRightTriggerAxis() == 1) {
-                    // targetDriveSpeed *= DRIVE.SLOW_DOWN_RATE;
-                    // targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
-                    // }
-
-                    // IF the left trigger is pressed
                     if (driverJoystick.getRightTriggerAxis() == 1) {
-                        // SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
-
-                        // Create robot centric swerve request
-                        SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
-                                .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
-                        double tx = LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1);
-                        double ty = LimelightHelpers.getTY(LIMELIGHT.LIMELIGHT_NAME_1);
-                        double ta = LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1);
-
-                        SmartDashboard.putNumber("Target TX", tx);
-                        SmartDashboard.putNumber("Target TY", ty);
-                        SmartDashboard.putNumber("Target TA", ta);
-
-                        double distanceForward = (LIMELIGHT.APRILTAG_HEIGHT - 0.25)
-                                / Math.tan(Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_UP + ty));
-
-                        double distanceX = distanceForward
-                                * Math.tan(Math.toRadians(tx) + Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_HORIZONTAL))
-                                + LIMELIGHT.LIMELIGHT_OFFSET_RIGHT;
-
-                        boolean far = (distanceForward > LIMELIGHT.LIMELIGHT_FOWARD_MAX);
-
-                        return limelightRotate
-                                .withVelocityX(far ? (targetDriveSpeed / 40) : 0)
-                                .withVelocityY(-Math.signum(distanceX) * targetDriveSpeed / 35)
-                                .withRotationalRate(0);
+                        targetDriveSpeed *= DRIVE.SLOW_DOWN_RATE;
+                        targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
                     }
 
                     if (driverJoystick.getLeftTriggerAxis() == 1) {
-                        // SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
+                        double kp_aim = 0.02;
 
-                        // Create robot centric swerve request
+                        double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1) - 1);
+                        double rotationSpeed = -tx * kp_aim;
+
                         SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
                                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-                        double tx = LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1);
-                        double ty = LimelightHelpers.getTY(LIMELIGHT.LIMELIGHT_NAME_1);
-                        double ta = LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1);
-
-                        SmartDashboard.putNumber("Target TX", tx);
-                        SmartDashboard.putNumber("Target TY", ty);
-                        SmartDashboard.putNumber("Target TA", ta);
-
-                        double distanceForward = (LIMELIGHT.APRILTAG_HEIGHT - 0.25)
-                                / Math.tan(Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_UP + ty));
-
-                        double distanceX = distanceForward
-                                * Math.tan(Math.toRadians(tx) + Math.toRadians(LIMELIGHT.LIMELIGHT_ANGLE_HORIZONTAL))
-                                + LIMELIGHT.LIMELIGHT_OFFSET_LEFT;
-
-                        boolean far = (distanceForward > LIMELIGHT.LIMELIGHT_FOWARD_MAX);
-
-                        return limelightRotate
-                                .withVelocityX(far ? (targetDriveSpeed / 40) : 0)
-                                .withVelocityY(-Math.signum(distanceX) * targetDriveSpeed / 35)
-                                .withRotationalRate(0);
+                        return limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
                     }
 
                     return drive
@@ -238,6 +190,8 @@ public class RobotContainer {
                             // Drive counterclockwise with negative X (left)
                             .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
                 }));
+
+        // driverJoystick.leftTrigger().onTrue(new Align());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
 

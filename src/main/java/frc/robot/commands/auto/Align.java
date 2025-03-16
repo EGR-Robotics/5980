@@ -1,7 +1,8 @@
-package frc.robot.commands.limelight;
+package frc.robot.commands.auto;
 
+import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
-
+import frc.robot.Constants.LIMELIGHT;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Align extends Command {
@@ -11,11 +12,11 @@ public class Align extends Command {
 
     @Override
     public boolean isFinished() {
-        return false;
+        return Math.abs(LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1)) < 1.0;
     }
 
     @Override
     public void execute() {
-        // RobotContainer.vision.align(RobotContainer.drivetrain);
+        // RobotContainer.vision.align();
     }
 }
