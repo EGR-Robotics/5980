@@ -11,21 +11,15 @@
           }
         },
         {
-          "type": "wait",
+          "type": "named",
           "data": {
-            "waitTime": 1.0
+            "name": "align"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "slightLower"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "LeftFrontSideToHuman"
           }
         }
       ]

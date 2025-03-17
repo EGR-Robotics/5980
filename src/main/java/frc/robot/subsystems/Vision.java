@@ -17,17 +17,15 @@ public class Vision extends SubsystemBase {
 
     }
 
-    public void align() {
-        // double kp_aim = 0.02;
+    public SwerveRequest align() {
+        double kp_aim = 0.02;
 
-        // double tx = LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1);
-        // double rotationSpeed = -tx * kp_aim;
+        double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1) + 1);
+        double rotationSpeed = -tx * kp_aim;
 
-        // SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
-        //         .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+        SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
+                .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-        // RobotContainer.drivetrain.applyRequest(
-        //     () -> limelightRotate.withVelocityX(rotationSpeed)
-        // );
+        return limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
     }
 }

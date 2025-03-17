@@ -91,6 +91,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("trough", new Trough());
         NamedCommands.registerCommand("pickup", new ScoreElevator());
 
+        NamedCommands.registerCommand("align", new Align());
+
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
