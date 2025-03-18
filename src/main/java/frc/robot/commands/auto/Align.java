@@ -12,13 +12,14 @@ public class Align extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1)) < 1.0;
+        System.out.println("Estimated TX: " + LimelightHelpers.getTX("limelight"));
+        return Math.abs(LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1)) < 1.5;
     }
 
     @Override
     public void execute() {
-        RobotContainer.drivetrain.applyRequest(
-            () -> RobotContainer.vision.align()
+        RobotContainer.drivetrain.setControl(
+            RobotContainer.vision.align()
         );
     }
 }

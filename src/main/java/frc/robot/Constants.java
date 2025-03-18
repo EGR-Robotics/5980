@@ -21,10 +21,10 @@ public class Constants {
 
         public class SCORING {
                 public static final double ELEVATOR_SPEED = 0.8;
-                public static final double ARM_SPEED = 0.2;
+                public static final double ARM_SPEED = 0.3;
 
                 public static final double L4_ELEVATOR_POSITION = -44;
-                public static final double L4_ARM_POSITION = -19;
+                public static final double L4_ARM_POSITION = -23;
 
                 public static final double L3_ELEVATOR_POSITION = 0;
                 public static final double L3_ARM_POSITION = -21.5;
@@ -62,8 +62,8 @@ public class Constants {
 
                 public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
-                                .maxAcceleration(1200)
-                                .maxVelocity(600);
+                                .maxAcceleration(2000)
+                                .maxVelocity(1000);
 
                 public static final double GEAR_RATIO = 20;
                 public static final Distance OUTPUT_PULLEY_DIAMETER = Units.Inches.of(
@@ -106,8 +106,8 @@ public class Constants {
 
                 public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
-                                .maxAcceleration(45000)
-                                .maxVelocity(22500);
+                                .maxAcceleration(60000)
+                                .maxVelocity(30000);
 
                 public static final double GEAR_RATIO = 15;
                 public static final Distance OUTPUT_PULLEY_DIAMETER = Units.Inches.of(

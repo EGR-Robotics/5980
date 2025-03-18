@@ -21,7 +21,7 @@ public class Algae implements Subsystem {
     private SparkFlex armMotor;
 
     private SparkMax elevatorMotor;
-    private AbsoluteEncoder elevatorEncoder;
+    private RelativeEncoder elevatorEncoder;
     //private RelativeEncoder ;
     private SparkClosedLoopController elevatorController;
 
@@ -35,9 +35,10 @@ public class Algae implements Subsystem {
 
         // Initialize elevator motor
         elevatorMotor = new SparkMax(17, MotorType.kBrushless);
-        elevatorEncoder = elevatorMotor.getAbsoluteEncoder();
+        elevatorEncoder = elevatorMotor.getEncoder();
 
         elevatorController = elevatorMotor.getClosedLoopController();
+        elevatorEncoder.setPosition(0);
 
         curElevatorPos = elevatorEncoder.getPosition();
 
@@ -111,12 +112,8 @@ public class Algae implements Subsystem {
     }
 
     public void moveElevator(boolean up) {
-        curElevatorPos = elevatorEncoder.getPosition();
-
-        System.out.println(curElevatorPos);
-
         if (up) {
-            setVelocity(0.15, 0.05, elevatorMotor, true);
+            setVelocity(0.4, 0.05, elevatorMotor, true);
         } else {
             // if(curElevatorPos > 0){
             //     setVelocity(0, 0, elevatorMotor, false);
@@ -125,8 +122,8 @@ public class Algae implements Subsystem {
             setVelocity(-0.15, 0.05, elevatorMotor, false);
         }
 
-        elevatorController.setReference(1, ControlType.kMAXMotionPositionControl);
-
+        // elevatorController.setReference(1, ControlType.kMAXMotionPositionControl);
+        curElevatorPos = elevatorEncoder.getPosition();
     }
 
     public Command goToLevel1Command() {
@@ -147,6 +144,10 @@ public class Algae implements Subsystem {
 
     public Command moveElevatorDownCommand() {
         return run(() -> moveElevator(false));
+    }
+
+    public Command stopElevator() {
+        return run(() -> elevatorMotor.set(0));
     }
 
     public Command holdElevatorPositionCommand() {

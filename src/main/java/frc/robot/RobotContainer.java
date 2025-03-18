@@ -85,8 +85,7 @@ public class RobotContainer {
                 () -> elevator.setEncoderPosition(0), elevator));
 
         NamedCommands.registerCommand("slightLower", new L4AutoLower());
-        NamedCommands.registerCommand("level4", new L4());
-        NamedCommands.registerCommand("level3", new L3());
+        NamedCommands.registerCommand("level4", new frc.robot.commands.auto.L4());
 
         NamedCommands.registerCommand("trough", new Trough());
         NamedCommands.registerCommand("pickup", new ScoreElevator());
@@ -172,17 +171,17 @@ public class RobotContainer {
                         targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
                     }
 
-                    if (driverJoystick.getLeftTriggerAxis() == 1) {
-                        double kp_aim = 0.02;
+                    // if (driverJoystick.getLeftTriggerAxis() == 1) {
+                    //     double kp_aim = 0.02;
 
-                        double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1) + 1);
-                        double rotationSpeed = -tx * kp_aim;
+                    //     double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1) + 1);
+                    //     double rotationSpeed = -tx * kp_aim;
 
-                        SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
-                                .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+                    //     SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
+                    //             .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-                        return limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
-                    }
+                    //     return limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
+                    // }
 
                     return drive
                             // Drive forward with negative Y forward
@@ -193,7 +192,7 @@ public class RobotContainer {
                             .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
                 }));
 
-        // driverJoystick.leftTrigger().onTrue(new Align());
+        driverJoystick.leftTrigger().onTrue(new Align());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
 

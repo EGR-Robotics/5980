@@ -18,13 +18,15 @@ public class Vision extends SubsystemBase {
     }
 
     public SwerveRequest align() {
-        double kp_aim = 0.02;
+        double kp_aim = 0.015;
 
-        double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1) + 1);
+        double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1));
         double rotationSpeed = -tx * kp_aim;
 
         SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+        System.out.println(rotationSpeed);
 
         return limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
     }

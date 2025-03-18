@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.3105532786885234,
-        "y": 5.205788934426229
+        "x": 5.25,
+        "y": 5.05
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.595717213114753,
-        "y": 7.405327868852457
+        "x": 6.535163934426244,
+        "y": 7.249538934426231
       },
       "isLocked": false,
       "linkedName": "Front Coral Zone"
