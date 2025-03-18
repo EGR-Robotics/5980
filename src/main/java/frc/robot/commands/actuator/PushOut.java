@@ -18,9 +18,10 @@ public class PushOut extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("Pushout command running. Cur speed: " + RobotContainer.actuator.getSpeed() + "...; cur position: " + RobotContainer.actuator.getPosition());
+        System.out.println("Pushout command running. Cur speed: " + RobotContainer.actuator.getSpeed()
+                + "...; cur position: " + RobotContainer.actuator.getPosition());
 
-        if(RobotContainer.actuator.getPosition() >= 1) {
+        if (RobotContainer.actuator.getPosition() >= 1) {
             System.out.println("Stopping after pushout command finishes");
 
             return true;

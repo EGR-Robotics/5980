@@ -19,7 +19,6 @@ public class Align extends Command {
     @Override
     public void execute() {
         RobotContainer.drivetrain.setControl(
-            RobotContainer.vision.align()
-        );
+                RobotContainer.vision.align());
     }
 }

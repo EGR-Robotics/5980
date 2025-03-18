@@ -22,7 +22,7 @@ public class Algae implements Subsystem {
 
     private SparkMax elevatorMotor;
     private RelativeEncoder elevatorEncoder;
-    //private RelativeEncoder ;
+    // private RelativeEncoder ;
     private SparkClosedLoopController elevatorController;
 
     private double curElevatorPos;
@@ -116,9 +116,9 @@ public class Algae implements Subsystem {
             setVelocity(0.4, 0.05, elevatorMotor, true);
         } else {
             // if(curElevatorPos > 0){
-            //     setVelocity(0, 0, elevatorMotor, false);
+            // setVelocity(0, 0, elevatorMotor, false);
             // }
-            
+
             setVelocity(-0.15, 0.05, elevatorMotor, false);
         }
 
