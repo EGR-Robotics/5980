@@ -57,7 +57,6 @@ public class Elevator extends SubsystemBase {
         m_encoder.setPosition(0);
 
         targetRots = getRotations();
-        targetDistance = getDistance();
     }
 
     public void setEncoderPosition(double pos) {
@@ -76,22 +75,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setSpeed(double percentOutput) {
-        if (ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
-                ELEVATOR.ELEVATOR_UPPER_LIMIT) && percentOutput < 0)
-            return;
-        else if (ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
-                ELEVATOR.ELEVATOR_LOWER_LIMIT) && percentOutput > 0)
-            return;
-
         m_motor.set(percentOutput);
-        m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
-
-        // System.out.println("Elevator encoder position: " + m_encoder.getPosition());
-    }
-
-    public void setAxisSpeed(double speed) {
-        speed *= ELEVATOR.AXIS_MAX_SPEED;
-        m_motor.set(speed);
         m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
     }
 
@@ -109,16 +93,6 @@ public class Elevator extends SubsystemBase {
                 ArbFFUnits.kVoltage);
     }
 
-    public void setTargetDistance(Distance targetDistance) {
-        Angle rotations = Units.Rotations.of(
-                targetDistance
-                        .div(ELEVATOR.OUTPUT_PULLEY_CIRCUMFERENCE)
-                        .times(ELEVATOR.GEAR_RATIO)
-                        .magnitude());
-
-        setTargetRotations(rotations);
-    }
-
     public AngularVelocity getVelocity() {
         m_currentAngularVelocityHolder.mut_replace(
                 m_encoder.getVelocity(),
@@ -133,19 +107,9 @@ public class Elevator extends SubsystemBase {
         return m_currentRotationsHolder;
     }
 
-    public Distance getDistance() {
-        return (ELEVATOR.OUTPUT_PULLEY_CIRCUMFERENCE.times(
-                getRotations().div(ELEVATOR.GEAR_RATIO).in(Units.Rotations)));
-    }
-
     public boolean isAtTarget() {
         return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT > Helpers.percentError(targetEncoderPos,
                 m_encoder.getPosition());
-    }
-
-    public void postMove() {
-        targetRots = getRotations();
-        targetDistance = getDistance();
     }
 
     public void holdPosition() {

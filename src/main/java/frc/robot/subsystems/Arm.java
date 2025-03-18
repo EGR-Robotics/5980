@@ -13,7 +13,6 @@ import com.revrobotics.spark.SparkMax;
 import edu.wpi.first.units.Units;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.AngularVelocity;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutAngle;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -21,7 +20,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ARM;
 import frc.robot.Constants.ELEVATOR;
 import frc.robot.Helpers;
-import frc.robot.RobotContainer;
 
 public class Arm extends SubsystemBase {
     private SparkMax m_motor;
@@ -33,8 +31,6 @@ public class Arm extends SubsystemBase {
 
     private MutAngle m_targetRotations = Units.Rotations.mutable(Double.NaN);
     private MutAngularVelocity m_currentAngularVelocityHolder = Units.RPM.mutable(
-            Double.NaN);
-    private MutAngle m_currentRotationsHolder = Units.Rotations.mutable(
             Double.NaN);
 
     public Arm() {
@@ -86,12 +82,6 @@ public class Arm extends SubsystemBase {
                 ArbFFUnits.kVoltage);
     }
 
-    public void setAxisSpeed(double speed) {
-        speed *= ARM.AXIS_MAX_SPEED;
-        m_motor.set(speed);
-        m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
-    }
-
     public void stop() {
         m_motor.stopMotor();
         m_targetRotations.mut_replace(Double.NaN, Units.Rotations);
@@ -112,18 +102,6 @@ public class Arm extends SubsystemBase {
                 m_encoder.getVelocity(),
                 Units.RPM);
         return m_currentAngularVelocityHolder;
-    }
-
-    private Angle getRotations() {
-        m_currentRotationsHolder.mut_replace(
-                m_encoder.getPosition(),
-                Units.Rotations);
-        return m_currentRotationsHolder;
-    }
-
-    public Distance getDistance() {
-        return (ARM.OUTPUT_PULLEY_CIRCUMFERENCE.times(
-                getRotations().div(ARM.GEAR_RATIO).in(Units.Rotations)));
     }
 
     public boolean isAtTarget() {

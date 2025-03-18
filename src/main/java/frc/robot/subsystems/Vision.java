@@ -6,7 +6,6 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LIMELIGHT;
 import frc.robot.LimelightHelpers;
-import frc.robot.RobotContainer;
 
 public class Vision extends SubsystemBase {
     public Vision() {
@@ -26,7 +25,7 @@ public class Vision extends SubsystemBase {
         SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
 
-        System.out.println(rotationSpeed);
+        // return limelightRotate.withVelocityY(rotationSpeed);
 
         return limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
     }

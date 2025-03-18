@@ -12,17 +12,14 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import edu.wpi.first.math.controller.PIDController;
 
 // Constants
 import frc.robot.generated.TunerConstants;
 import frc.robot.Constants.ARM;
-import frc.robot.Constants.DRIVE;
+import frc.robot.Constants.DRIVETRAIN;
 import frc.robot.Constants.ELEVATOR;
-import frc.robot.Constants.LIMELIGHT;
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.commands.actuator.Drop;
 import frc.robot.commands.actuator.PushOut;
 import frc.robot.commands.actuator.StopServo;
 import frc.robot.commands.arm.MoveArm;
@@ -49,17 +46,16 @@ import frc.robot.subsystems.Algae;
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
 public class RobotContainer {
-    // Set up swerve request bindings for necessary control of the swerve drive
-    // platform
+    // Set up swerve request bindings for necessary control of the swerve drive platform
     private final SwerveRequest.FieldCentric drive = new SwerveRequest.FieldCentric()
-            .withDeadband(DRIVE.MAX_SPEED * DRIVE.DRIVE_DEADBAND)
-            .withRotationalDeadband(DRIVE.MAX_ANGULAR_RATE * DRIVE.DRIVE_DEADBAND) // Multiply by deadband
+            .withDeadband(DRIVETRAIN.MAX_SPEED * DRIVETRAIN.DRIVE_DEADBAND)
+            .withRotationalDeadband(DRIVETRAIN.MAX_ANGULAR_RATE * DRIVETRAIN.ROTATION_DEADBAND) // Multiply by deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
     private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
-    private final Telemetry logger = new Telemetry(DRIVE.MAX_SPEED);
+    private final Telemetry logger = new Telemetry(DRIVETRAIN.MAX_SPEED);
 
     // Initialize controllers
     public final static CommandXboxController driverJoystick = new CommandXboxController(0);
@@ -156,8 +152,8 @@ public class RobotContainer {
         drivetrain.setDefaultCommand(
                 // Drivetrain will execute this command periodically
                 drivetrain.applyRequest(() -> {
-                    double targetDriveSpeed = DRIVE.MAX_SPEED;
-                    double targetAngularRate = DRIVE.MAX_ANGULAR_RATE;
+                    double targetDriveSpeed = DRIVETRAIN.MAX_SPEED;
+                    double targetAngularRate = DRIVETRAIN.MAX_ANGULAR_RATE;
 
                     // If elevator is raised
                     if (elevator.getEncoderPosition() <= ELEVATOR.SLOW_DOWN_POSITION) {
@@ -167,8 +163,8 @@ public class RobotContainer {
 
                     // If the right trigger is pressed
                     if (driverJoystick.getRightTriggerAxis() == 1) {
-                        targetDriveSpeed *= DRIVE.SLOW_DOWN_RATE;
-                        targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
+                        targetDriveSpeed *= DRIVETRAIN.SLOW_DOWN_RATE;
+                        targetAngularRate *= DRIVETRAIN.SLOW_DOWN_RATE;
                     }
 
                     // if (driverJoystick.getLeftTriggerAxis() == 1) {

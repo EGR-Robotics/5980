@@ -3,7 +3,7 @@ package frc.robot.commands.arm;
 import frc.robot.RobotContainer;
 
 import edu.wpi.first.wpilibj2.command.Command;
-
+import frc.robot.Constants.ARM;
 import frc.robot.Constants.SCORING;
 
 public class MoveArm extends Command {
@@ -16,7 +16,7 @@ public class MoveArm extends Command {
 
     @Override
     public void execute() {
-        RobotContainer.arm.setSpeed(m_direction ? SCORING.ARM_SPEED : -SCORING.ARM_SPEED);
+        RobotContainer.arm.setSpeed(m_direction ? ARM.SPEED : -ARM.SPEED);
     }
 
     @Override

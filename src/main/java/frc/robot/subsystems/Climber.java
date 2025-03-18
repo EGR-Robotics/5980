@@ -2,13 +2,12 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.SparkBase.PersistMode;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
+
+import frc.robot.Constants.CLIMBER;
 
 import com.revrobotics.spark.SparkBase.ResetMode;
 
@@ -19,25 +18,7 @@ public class Climber implements Subsystem {
     public Climber() {
         motor = new SparkMax(13, MotorType.kBrushless);
 
-        // Create configuration for sparks
-        SparkMaxConfig config = new SparkMaxConfig();
-        config.idleMode(IdleMode.kBrake).smartCurrentLimit(40).voltageCompensation(12);
-
-        /*
-         * Configure the closed loop controller. We want to make sure we set the
-         * feedback sensor as the primary encoder.
-         */
-        config.closedLoop
-                .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                // Set PID values for position control
-                .p(0.1)
-                .outputRange(-1, 1).maxMotion
-                // Set MAXMotion parameters for position control
-                .maxVelocity(2000)
-                .maxAcceleration(10000)
-                .allowedClosedLoopError(0.25);
-
-        motor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+        motor.configure(CLIMBER.MOTOR_CONFIG, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
     }
 
     public void setVelocity(double targetVelocity, double rampRate, SparkMax motor, Boolean up) {
