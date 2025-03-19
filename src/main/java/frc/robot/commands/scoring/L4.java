@@ -15,9 +15,10 @@ import frc.robot.commands.elevator.SetElevatorDistance;
 public class L4 extends ParallelCommandGroup {
     public L4() {
         super(
-                new SetElevatorDistance(SCORING.L4_ELEVATOR_POSITION),
-                new SequentialCommandGroup(
-                        new WaitCommand(0.5).unless(() -> RobotContainer.elevator.getEncoderPosition() < 30),
-                        new HoldArmDistance(SCORING.L4_ARM_POSITION)));
+                new SetElevatorDistance(SCORING.L4_ELEVATOR_POSITION)
+                // new SequentialCommandGroup(
+                //         new WaitCommand(0.5).unless(() -> RobotContainer.elevator.getEncoderPosition() < 30),
+                //         new HoldArmDistance(SCORING.L4_ARM_POSITION))
+        );
     }
 }

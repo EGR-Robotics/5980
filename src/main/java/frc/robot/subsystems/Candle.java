@@ -1,12 +1,11 @@
 package frc.robot.subsystems;
 
-import com.ctre.phoenix.led.Animation;
 import com.ctre.phoenix.led.CANdle;
 import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.CANdleConfiguration;
-import com.ctre.phoenix.led.StrobeAnimation;
 
-import edu.wpi.first.wpilibj.DriverStation;
+import com.ctre.phoenix.led.LarsonAnimation;
+
 import frc.robot.Constants.CANDLE;
 
 public class Candle {
@@ -17,17 +16,17 @@ public class Candle {
 
         candleConfig.disableWhenLOS = false;
         candleConfig.stripType = LEDStripType.RGB;
+        
         // candleConfig.brightnessScalar = 0.1; // dim the LEDs to half brightness
         // configALL.vBatOutputMode = VBatOutputMode.Modulated;
-        m_candle.configAllSettings(candleConfig, 100);
 
+        m_candle.configAllSettings(candleConfig, 100);
     }
 
     
-    public void Blink(){
-        StrobeAnimation strobe = new StrobeAnimation(0, 255,0, 0, 0.5, CANDLE.kLED_TOTAL);
+    public void EGR(){
+        LarsonAnimation strobe = new LarsonAnimation(0, 255,0 );
 
         m_candle.animate(strobe);
     }
-
 }

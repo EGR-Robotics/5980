@@ -1,6 +1,5 @@
 package frc.robot.commands.arm;
 
-import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
