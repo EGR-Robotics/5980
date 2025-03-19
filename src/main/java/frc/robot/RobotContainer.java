@@ -173,7 +173,7 @@ public class RobotContainer {
                             .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
                 }));
 
-        driverJoystick.leftTrigger().onTrue(new Align());
+        driverJoystick.leftTrigger().onTrue(new AlignLR());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
 

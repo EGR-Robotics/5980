@@ -16,7 +16,7 @@ public class Vision extends SubsystemBase {
 
     }
 
-    public SwerveRequest align() {
+    public SwerveRequest alignLR() {
         double kp_aim = 0.015;
 
         double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1));
@@ -25,8 +25,6 @@ public class Vision extends SubsystemBase {
 
         SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
-        System.out.println(rotationSpeed);
 
         return limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
     }
