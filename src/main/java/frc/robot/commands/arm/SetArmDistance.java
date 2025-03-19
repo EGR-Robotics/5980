@@ -5,14 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
 public class SetArmDistance extends Command {
-    private Angle m_rotations;
-
     private double m_position;
-
-    public SetArmDistance(Angle rotations) {
-        m_rotations = rotations;
-        addRequirements(RobotContainer.arm);
-    }
 
     public SetArmDistance(double position) {
         m_position = position;
@@ -22,11 +15,11 @@ public class SetArmDistance extends Command {
     @Override
     public void initialize() {
         RobotContainer.arm.setPosition(m_position);
-        // RobotContainer.arm.setTargetRotations(m_rotations);
     }
 
     @Override
     public boolean isFinished() {
+        System.out.println("Current arm position: " + RobotContainer.arm.getPosition());
         return RobotContainer.arm.isAtTarget();
     }
 

@@ -21,6 +21,7 @@ public class Vision extends SubsystemBase {
         double kp_aim = 0.015;
 
         double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1));
+
         double rotationSpeed = -tx * kp_aim;
 
         SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()

@@ -24,7 +24,7 @@ public class Constants {
         public static final double ARM_SPEED = 0.3;
 
         public static final double L4_ELEVATOR_POSITION = -44;
-        public static final double L4_ARM_POSITION = -23;
+        public static final double L4_ARM_POSITION = -22;
 
         public static final double L3_ELEVATOR_POSITION = 0;
         public static final double L3_ARM_POSITION = -21.5;
@@ -62,8 +62,8 @@ public class Constants {
 
         public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
-                .maxAcceleration(2000)
-                .maxVelocity(1000);
+                .maxAcceleration(3200)
+                .maxVelocity(1600);
 
         public static final double GEAR_RATIO = 20;
         public static final Distance OUTPUT_PULLEY_DIAMETER = Units.Inches.of(
@@ -133,12 +133,12 @@ public class Constants {
 
     public class ALGAE {
         public static final int ARM_CAN_ID = 17;
-        public static final int VORTEX_CAN_ID = 16;
+        public static final int INTAKE_CAN_ID = 16;
 
-        public static final SparkBaseConfig MOTOR_CONFIG = new SparkMaxConfig()
+        public static final SparkBaseConfig ARM_MOTOR_CONFIG = new SparkMaxConfig()
                 .idleMode(IdleMode.kBrake)
                 .inverted(false)
-                .openLoopRampRate(.3)
+                .openLoopRampRate(.25)
                 .smartCurrentLimit(40, 40)
                 .voltageCompensation(12);
 
@@ -150,7 +150,7 @@ public class Constants {
         public static final double MOTOR_D = 0;
         public static final double MOTOR_F = 0;
 
-        public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = MOTOR_CONFIG.closedLoop
+        public static final ClosedLoopConfig CLOSED_LOOP_CONFIG = ARM_MOTOR_CONFIG.closedLoop
                 .pidf(MOTOR_P, MOTOR_I, MOTOR_D, MOTOR_F)
                 .outputRange(-1, 1);
 
@@ -158,19 +158,14 @@ public class Constants {
 
         public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
-                .maxAcceleration(100)
-                .maxVelocity(5001);
-
-        public static final double GEAR_RATIO = 15; // TODO: Update gear ratio
-
-        public static final double ENCODER_UPPER_LIMIT = 0; // TODO: Update
-        public static final double ENCODER_LOWER_LIMIT = 0; // TODO: Update
+                .maxAcceleration(10000)
+                .maxVelocity(5000);
 
         public static final double ARM_RAISE_SPEED = 0.25;
         public static final double ARM_LOWER_SPEED = -0.25;
 
-        public static final double INTAKE_SPEED = 0.15;
-        public static final double OUTAKE_SPEED = -0.3;
+        public static final double INTAKE_SPEED = -0.15;
+        public static final double OUTAKE_SPEED = 0.3;
     }
 
     public class ACTUATOR {

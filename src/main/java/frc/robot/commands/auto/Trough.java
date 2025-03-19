@@ -7,7 +7,8 @@ import frc.robot.commands.elevator.SetElevatorDistance;
 public class Trough extends ParallelCommandGroup {
     public Trough() {
         super(
-                new SetElevatorDistance(0),
-                new SetArmDistance(0));
+            new SetArmDistance(0),
+            new SetElevatorDistance(0)
+        );
     }
 }

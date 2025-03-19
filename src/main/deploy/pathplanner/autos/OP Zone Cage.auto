@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CurCageToReef"
+            "pathName": "OpponentCageToHumanLeft"
           }
         },
         {
@@ -17,15 +17,27 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "slightLower"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "New New Path"
+          }
+        },
+        {
           "type": "wait",
           "data": {
-            "waitTime": 0.5
+            "waitTime": 5.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "slightLower"
+            "name": "pickup"
           }
         }
       ]

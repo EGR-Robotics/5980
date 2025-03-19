@@ -3,6 +3,10 @@ package frc.robot.commands.auto;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.LIMELIGHT;
+
+import com.ctre.phoenix6.swerve.SwerveRequest;
+
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class Align extends Command {
@@ -13,7 +17,7 @@ public class Align extends Command {
     @Override
     public boolean isFinished() {
         System.out.println("Estimated TX: " + LimelightHelpers.getTX("limelight"));
-        return Math.abs(LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1)) < 1.5;
+        return Math.abs(LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1)) < 2.5;
     }
 
     @Override

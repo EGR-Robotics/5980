@@ -3,27 +3,18 @@ package frc.robot.commands.algae;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
-public class MoveAlgaeArm extends Command {
-    boolean m_up;
-
-    public MoveAlgaeArm(boolean up) {
-        m_up = up;
-
+public class HoldAlgaeArm extends Command {
+    public HoldAlgaeArm() {
         addRequirements(RobotContainer.algae);
     }
-
+    
     @Override
     public void execute() {
-        RobotContainer.algae.moveArm(m_up);
+        RobotContainer.algae.zero();
     }
 
     @Override
     public boolean isFinished() {
         return false;
-    }
-
-    @Override
-    public void end(boolean interrupted) {
-        RobotContainer.algae.stopArm();
     }
 }

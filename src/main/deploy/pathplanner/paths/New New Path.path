@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.226639344262295,
-        "y": 2.736321721311475
+        "x": 4.98,
+        "y": 2.8
       },
       "prevControl": null,
       "nextControl": {
-        "x": 7.540266393442623,
-        "y": 1.465624999999999
+        "x": 7.293627049180329,
+        "y": 1.529303278688524
       },
       "isLocked": false,
       "linkedName": "BottomLeftReef"
@@ -21,7 +21,7 @@
       },
       "prevControl": {
         "x": 0.750204918032787,
-        "y": 0.8662397540983602
+        "y": 0.8662397540983603
       },
       "nextControl": null,
       "isLocked": false,

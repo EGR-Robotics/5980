@@ -23,6 +23,7 @@ public class SetElevatorDistance extends Command {
 
     @Override
     public boolean isFinished() {
+        System.out.println("Cur elevator distance: " + RobotContainer.elevator.getEncoderPosition());
         return RobotContainer.elevator.isAtTarget();
     }
 

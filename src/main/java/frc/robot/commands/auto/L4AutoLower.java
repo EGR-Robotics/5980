@@ -14,6 +14,6 @@ import frc.robot.commands.elevator.SetElevatorDistance;
 public class L4AutoLower extends ParallelCommandGroup {
     public L4AutoLower() {
         super(
-                new SetArmDistance(SCORING.L4_ARM_POSITION + 6));
+                new SetArmDistance(SCORING.L4_ARM_POSITION + 8));
     }
 }

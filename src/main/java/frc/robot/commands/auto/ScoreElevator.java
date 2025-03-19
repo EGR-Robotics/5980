@@ -9,6 +9,6 @@ import frc.robot.commands.elevator.SetElevatorDistance;
 public class ScoreElevator extends ParallelCommandGroup {
     public ScoreElevator() {
         super(
-                new SetElevatorDistance(14.5));
+                new SetElevatorDistance(12));
     }
 }

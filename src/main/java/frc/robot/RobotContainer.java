@@ -25,6 +25,9 @@ import frc.robot.commands.elevator.MoveElevator;
 import frc.robot.commands.actuator.Drop;
 import frc.robot.commands.actuator.PushOut;
 import frc.robot.commands.actuator.StopServo;
+import frc.robot.commands.algae.HoldAlgaeArm;
+import frc.robot.commands.algae.MoveAlgaeArm;
+import frc.robot.commands.algae.MoveIntake;
 import frc.robot.commands.arm.MoveArm;
 import frc.robot.commands.arm.StopArm;
 import frc.robot.commands.elevator.StopElevator;
@@ -137,17 +140,26 @@ public class RobotContainer {
                         }, arm));
 
         // Algae Bar Commands
-        controllerJoystick.leftTrigger().whileTrue(algae.moveElevatorDownCommand());
-        controllerJoystick.leftTrigger().onFalse(algae.holdElevatorPositionCommand());
 
-        controllerJoystick.rightTrigger().whileTrue(algae.moveElevatorUpCommand());
-        controllerJoystick.rightTrigger().onFalse(algae.holdElevatorPositionCommand());
+        algae.setDefaultCommand(new HoldAlgaeArm());
 
-        controllerJoystick.leftBumper().whileTrue(algae.dropAlgaeCommand());
-        controllerJoystick.leftBumper().onFalse(algae.stopArm());
+        controllerJoystick.leftTrigger().whileTrue(new MoveAlgaeArm(false));
+        controllerJoystick.rightTrigger().whileTrue(new MoveAlgaeArm(true));
 
-        controllerJoystick.rightBumper().whileTrue(algae.moveArmCommand());
-        controllerJoystick.rightBumper().onFalse(algae.stopArm());
+        controllerJoystick.leftBumper().whileTrue(new MoveIntake(false));
+        controllerJoystick.rightBumper().whileTrue(new MoveIntake(true));
+
+        // controllerJoystick.leftTrigger().whileTrue(algae.moveElevatorDownCommand());
+        // controllerJoystick.leftTrigger().onFalse(algae.holdElevatorPositionCommand());
+
+        // controllerJoystick.rightTrigger().whileTrue(algae.moveElevatorUpCommand());
+        // controllerJoystick.rightTrigger().onFalse(algae.holdElevatorPositionCommand());
+
+        // controllerJoystick.leftBumper().whileTrue(algae.dropAlgaeCommand());
+        // controllerJoystick.leftBumper().onFalse(algae.stopArm());
+
+        // controllerJoystick.rightBumper().whileTrue(algae.moveArmCommand());
+        // controllerJoystick.rightBumper().onFalse(algae.stopArm());
 
         // Drive Commands
 
@@ -196,11 +208,7 @@ public class RobotContainer {
         driverJoystick.leftTrigger().onTrue(new Align());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-
-        // Zero out
-        driverJoystick.b().onTrue(
-                drivetrain.applyRequest(() -> point.withModuleDirection(new Rotation2d(0, 0))));
-
+        
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         driverJoystick.back().and(driverJoystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));

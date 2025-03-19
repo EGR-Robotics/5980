@@ -4,24 +4,24 @@
     {
       "anchor": {
         "x": 5.25,
-        "y": 5.05
+        "y": 5.0
       },
       "prevControl": null,
       "nextControl": {
         "x": 6.535163934426244,
-        "y": 7.249538934426231
+        "y": 7.199538934426231
       },
       "isLocked": false,
       "linkedName": "Front Coral Zone"
     },
     {
       "anchor": {
-        "x": 1.342622950819672,
-        "y": 7.339600409836065
+        "x": 1.00425,
+        "y": 7.301
       },
       "prevControl": {
-        "x": 1.5675706165596288,
-        "y": 7.227274799720829
+        "x": 1.2291976657399566,
+        "y": 7.188674389884763
       },
       "nextControl": null,
       "isLocked": false,
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "trough",
-      "waypointRelativePos": 0.12962962962962749,
+      "waypointRelativePos": 0.06438848920863283,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -62,5 +62,5 @@
     "velocity": 0,
     "rotation": -119.99999999999999
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }
