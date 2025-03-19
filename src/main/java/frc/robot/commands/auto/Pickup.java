@@ -4,8 +4,8 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 import frc.robot.commands.elevator.SetElevatorDistance;
 
-public class ScoreElevator extends ParallelCommandGroup {
-    public ScoreElevator() {
+public class Pickup extends ParallelCommandGroup {
+    public Pickup() {
         super(
                 new SetElevatorDistance(12));
     }

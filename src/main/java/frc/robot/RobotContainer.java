@@ -32,10 +32,10 @@ import frc.robot.commands.elevator.StopElevator;
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
-import frc.robot.commands.auto.Align;
-import frc.robot.commands.auto.L4AutoLower;
-import frc.robot.commands.auto.ScoreElevator;
-import frc.robot.commands.auto.Trough;
+import frc.robot.commands.vision.Align;
+import frc.robot.commands.auto.L4LowerCoral;
+import frc.robot.commands.auto.Pickup;
+import frc.robot.commands.auto.ResetForPickup;
 
 // Subsystems
 import frc.robot.subsystems.Climber;
@@ -80,16 +80,13 @@ public class RobotContainer {
 
     public RobotContainer() {
         // Register named commands for auto
-        NamedCommands.registerCommand("zero", new InstantCommand(
-                () -> elevator.setEncoderPosition(0), elevator));
+        NamedCommands.registerCommand("L4LowerCoral", new L4LowerCoral());
+        NamedCommands.registerCommand("L4", new L4());
 
-        NamedCommands.registerCommand("slightLower", new L4AutoLower());
-        NamedCommands.registerCommand("level4", new frc.robot.commands.auto.L4());
+        NamedCommands.registerCommand("ResetForPickup", new ResetForPickup());
+        NamedCommands.registerCommand("Pickup", new Pickup());
 
-        NamedCommands.registerCommand("trough", new Trough());
-        NamedCommands.registerCommand("pickup", new ScoreElevator());
-
-        NamedCommands.registerCommand("align", new Align());
+        NamedCommands.registerCommand("Align", new Align());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);

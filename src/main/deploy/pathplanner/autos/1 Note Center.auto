@@ -19,13 +19,13 @@
         {
           "type": "named",
           "data": {
-            "name": "align"
+            "name": "Align"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "slightLower"
+            "name": "L4LowerCoral"
           }
         }
       ]

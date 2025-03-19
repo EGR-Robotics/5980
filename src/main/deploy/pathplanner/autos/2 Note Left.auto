@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "slightLower"
+            "name": "L4LowerCoral"
           }
         },
         {
@@ -37,7 +37,7 @@
         {
           "type": "named",
           "data": {
-            "name": "pickup"
+            "name": "Pickup"
           }
         },
         {
@@ -55,7 +55,7 @@
         {
           "type": "named",
           "data": {
-            "name": "slightLower"
+            "name": "L4LowerCoral"
           }
         }
       ]

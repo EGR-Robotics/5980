@@ -33,13 +33,13 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "trough",
+      "name": "ResetForPickup",
       "waypointRelativePos": 0.12962962962962749,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "trough"
+          "name": "ResetForPickup"
         }
       }
     }

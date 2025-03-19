@@ -1,4 +1,4 @@
-package frc.robot.commands.auto;
+package frc.robot.commands.vision;
 
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
@@ -13,7 +13,6 @@ public class Align extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("Estimated TX: " + LimelightHelpers.getTX("limelight"));
         return Math.abs(LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1)) < 2.5;
     }
 
