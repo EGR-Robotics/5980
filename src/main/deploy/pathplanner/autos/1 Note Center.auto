@@ -7,19 +7,31 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New Path"
+            "pathName": "Center to Center Reef"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "level4"
+            "name": "align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "slightLower"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Center",
   "choreoAuto": false
 }

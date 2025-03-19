@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CurCageToReef"
+            "pathName": "Left to Left Reef"
           }
         },
         {
-          "type": "named",
+          "type": "wait",
           "data": {
-            "name": "align"
+            "waitTime": 1.0
           }
         },
         {
@@ -25,7 +25,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "LeftFrontSideToHuman"
+            "pathName": "Left Reef to Left Human"
           }
         },
         {
@@ -43,19 +43,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "HumanRightToReef"
+            "pathName": "Left Human to Back Left Reef"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "align"
+            "name": "slightLower"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Left",
   "choreoAuto": false
 }

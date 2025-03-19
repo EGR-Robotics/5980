@@ -7,19 +7,25 @@
         {
           "type": "path",
           "data": {
-            "pathName": "OpponentCageToHumanLeft"
+            "pathName": "Center to Center Reef"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "New New Path"
+            "pathName": "Center Reef to Human Right"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Center",
   "choreoAuto": false
 }

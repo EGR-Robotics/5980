@@ -7,7 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "CenterToReef"
+            "pathName": "Left to Left Reef"
           }
         },
         {
@@ -17,15 +17,21 @@
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "CenterReefToHumanLeft"
+            "name": "align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "slightLower"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Left",
   "choreoAuto": false
 }

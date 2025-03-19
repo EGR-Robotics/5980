@@ -5,15 +5,21 @@
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "level4"
+            "pathName": "Right to Reef Right"
           }
         },
         {
-          "type": "path",
+          "type": "wait",
           "data": {
-            "pathName": "CenterToReef"
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "align"
           }
         },
         {
@@ -25,13 +31,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "New New New New Path"
+            "pathName": "Right Reef to Right Human"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "Right",
   "choreoAuto": false
 }

@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.25,
-        "y": 5.0
+        "x": 5.0,
+        "y": 2.8322349638777395
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.535163934426244,
-        "y": 7.199538934426231
+        "x": 6.25,
+        "y": 0.6671714544166427
       },
       "isLocked": false,
-      "linkedName": "Front Coral Zone"
+      "linkedName": "Right Reef"
     },
     {
       "anchor": {
-        "x": 1.00425,
-        "y": 7.301
+        "x": 1.2508223684210527,
+        "y": 0.9364309210526313
       },
       "prevControl": {
-        "x": 1.2291976657399566,
-        "y": 7.188674389884763
+        "x": 1.475770034161009,
+        "y": 0.8241053109373945
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "RightSideHuman"
+      "linkedName": "Right Human"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "trough",
-      "waypointRelativePos": 0.06438848920863283,
+      "waypointRelativePos": 0.12962962962962749,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -54.63753811293097
+    "rotation": -127.00000000000001
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -119.99999999999999
+    "rotation": 119.99999999999999
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

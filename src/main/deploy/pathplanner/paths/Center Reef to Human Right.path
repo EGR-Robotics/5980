@@ -12,20 +12,20 @@
         "y": 3.8102459016393437
       },
       "isLocked": false,
-      "linkedName": "CenterReef"
+      "linkedName": "Center Reef"
     },
     {
       "anchor": {
-        "x": 1.750204918032787,
-        "y": 0.8662397540983602
+        "x": 1.2508223684210527,
+        "y": 0.9364309210526313
       },
       "prevControl": {
-        "x": 1.5342601928081778,
-        "y": 0.74027199771734
+        "x": 1.0348776431964435,
+        "y": 0.8104631646716111
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "LeftSideHuman"
+      "linkedName": "Right Human"
     }
   ],
   "rotationTargets": [],
@@ -49,7 +49,7 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -125.39479584498712
+    "rotation": -127.00000000000001
   },
   "reversed": false,
   "folder": null,
