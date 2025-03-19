@@ -5,24 +5,21 @@ import com.ctre.phoenix6.swerve.SwerveRequest;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
-import edu.wpi.first.math.controller.PIDController;
 
 // Constants
 import frc.robot.generated.TunerConstants;
 import frc.robot.Constants.ARM;
 import frc.robot.Constants.DRIVE;
 import frc.robot.Constants.ELEVATOR;
-import frc.robot.Constants.LIMELIGHT;
+
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.commands.actuator.Drop;
 import frc.robot.commands.actuator.PushOut;
 import frc.robot.commands.actuator.StopServo;
 import frc.robot.commands.algae.HoldAlgaeArm;
@@ -31,7 +28,7 @@ import frc.robot.commands.algae.MoveIntake;
 import frc.robot.commands.arm.MoveArm;
 import frc.robot.commands.arm.StopArm;
 import frc.robot.commands.elevator.StopElevator;
-// import frc.robot.commands.scoring.L1;
+
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
@@ -60,7 +57,6 @@ public class RobotContainer {
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
 
     private final SwerveRequest.SwerveDriveBrake brake = new SwerveRequest.SwerveDriveBrake();
-    private final SwerveRequest.PointWheelsAt point = new SwerveRequest.PointWheelsAt();
 
     private final Telemetry logger = new Telemetry(DRIVE.MAX_SPEED);
 
@@ -149,18 +145,6 @@ public class RobotContainer {
         controllerJoystick.leftBumper().whileTrue(new MoveIntake(false));
         controllerJoystick.rightBumper().whileTrue(new MoveIntake(true));
 
-        // controllerJoystick.leftTrigger().whileTrue(algae.moveElevatorDownCommand());
-        // controllerJoystick.leftTrigger().onFalse(algae.holdElevatorPositionCommand());
-
-        // controllerJoystick.rightTrigger().whileTrue(algae.moveElevatorUpCommand());
-        // controllerJoystick.rightTrigger().onFalse(algae.holdElevatorPositionCommand());
-
-        // controllerJoystick.leftBumper().whileTrue(algae.dropAlgaeCommand());
-        // controllerJoystick.leftBumper().onFalse(algae.stopArm());
-
-        // controllerJoystick.rightBumper().whileTrue(algae.moveArmCommand());
-        // controllerJoystick.rightBumper().onFalse(algae.stopArm());
-
         // Drive Commands
 
         // Note that X is defined as forward according to WPILib convention,
@@ -183,19 +167,6 @@ public class RobotContainer {
                         targetAngularRate *= DRIVE.SLOW_DOWN_RATE;
                     }
 
-                    // if (driverJoystick.getLeftTriggerAxis() == 1) {
-                    // double kp_aim = 0.02;
-
-                    // double tx = (LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1) + 1);
-                    // double rotationSpeed = -tx * kp_aim;
-
-                    // SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
-                    // .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
-
-                    // return
-                    // limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
-                    // }
-
                     return drive
                             // Drive forward with negative Y forward
                             .withVelocityX(-driverJoystick.getLeftY() * targetDriveSpeed)
@@ -208,7 +179,7 @@ public class RobotContainer {
         driverJoystick.leftTrigger().onTrue(new Align());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
-        
+
         // Run SysId routines when holding back/start and X/Y.
         // Note that each routine should be run exactly once in a single log.
         driverJoystick.back().and(driverJoystick.y()).whileTrue(drivetrain.sysIdDynamic(Direction.kForward));
