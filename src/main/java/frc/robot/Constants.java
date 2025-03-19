@@ -15,6 +15,16 @@ import edu.wpi.first.units.measure.Distance;
 import frc.robot.generated.TunerConstants;
 
 public class Constants {
+    public class CANDLE {
+        public static int CAN_ID = 0;
+        
+        public final static int kLED_COLUMNS = 33;
+        public final static int kLED_ROWS = 8;
+        public final static int kSTRIP_START = kLED_COLUMNS * kLED_ROWS;
+        public final static int kSTRIP_LENGTH = 48;
+        public final static int kLED_TOTAL = kLED_COLUMNS * kLED_ROWS + kSTRIP_LENGTH;
+    }
+
     public class LIMELIGHT {
         public static final String LIMELIGHT_NAME_1 = "limelight";
     }
