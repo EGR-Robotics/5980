@@ -32,7 +32,9 @@ import frc.robot.commands.elevator.StopElevator;
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
-import frc.robot.commands.vision.Align;
+import frc.robot.commands.vision.AlignLR;
+import frc.robot.commands.vision.AlignTA;
+import frc.robot.commands.auto.L4Auto;
 import frc.robot.commands.auto.L4LowerCoral;
 import frc.robot.commands.auto.Pickup;
 import frc.robot.commands.auto.ResetForPickup;
@@ -45,6 +47,8 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Actuator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Algae;
+
+import frc.robot.commands.elevator.SetElevatorDistance;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -81,12 +85,12 @@ public class RobotContainer {
     public RobotContainer() {
         // Register named commands for auto
         NamedCommands.registerCommand("L4LowerCoral", new L4LowerCoral());
-        NamedCommands.registerCommand("L4", new L4());
+        NamedCommands.registerCommand("L4", new L4Auto());
 
         NamedCommands.registerCommand("ResetForPickup", new ResetForPickup());
         NamedCommands.registerCommand("Pickup", new Pickup());
 
-        NamedCommands.registerCommand("Align", new Align());
+        NamedCommands.registerCommand("Align", new AlignLR());
 
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
@@ -115,8 +119,10 @@ public class RobotContainer {
         controllerJoystick.b().whileTrue(new L3());
         controllerJoystick.y().whileTrue(new L2());
 
-        controllerJoystick.x().whileTrue(new PushOut());
-        controllerJoystick.x().onFalse(new StopServo());
+        controllerJoystick.x().whileTrue(new SetElevatorDistance(0));
+
+        // controllerJoystick.x().whileTrue(new PushOut());
+        // controllerJoystick.x().onFalse(new StopServo());
 
         // Arm commands
 
@@ -173,7 +179,8 @@ public class RobotContainer {
                             .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
                 }));
 
-        driverJoystick.leftTrigger().onTrue(new AlignLR());
+        // driverJoystick.leftTrigger().onTrue(new AlignLR());
+        driverJoystick.leftTrigger().onTrue(new AlignTA());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
 

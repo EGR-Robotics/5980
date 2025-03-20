@@ -20,7 +20,7 @@ public class Constants {
                 public static final double MAX_MOTION_ALLOWED_ERROR_PERCENT = 0.03;
 
                 public static final double MOTOR_P = 1.5;
-                public static final double MOTOR_I = 0.1;
+                public static final double MOTOR_I = 0;
                 public static final double MOTOR_D = 1;
                 public static final double MOTOR_F = 0;
 
@@ -37,8 +37,8 @@ public class Constants {
 
                 public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
-                                .maxAcceleration(2600)
-                                .maxVelocity(1300);
+                                .maxAcceleration(2680)
+                                .maxVelocity(5600);
 
                 public static final double ENCODER_UPPER_LIMIT = -18; // TODO: Update
                 public static final double ENCODER_LOWER_LIMIT = 0.6; // TODO: Update
@@ -52,9 +52,9 @@ public class Constants {
                 public static final double MOTOR_ARB_F = 0.1;
                 public static final double MAX_MOTION_ALLOWED_ERROR_PERCENT = 0.03;
 
-                public static final double MOTOR_P = 0.01;
+                public static final double MOTOR_P = 1.75;
                 public static final double MOTOR_I = 0;
-                public static final double MOTOR_D = 0;
+                public static final double MOTOR_D = 2.75;
                 public static final double MOTOR_F = 0;
 
                 public static final SparkBaseConfig MOTOR_CONFIG = new SparkMaxConfig()
@@ -70,8 +70,8 @@ public class Constants {
 
                 public static final MAXMotionConfig MAX_MOTION_CONFIG = CLOSED_LOOP_CONFIG.maxMotion
                                 .allowedClosedLoopError(MAX_MOTION_ALLOWED_ERROR_PERCENT)
-                                .maxAcceleration(60000)
-                                .maxVelocity(30000);
+                                .maxAcceleration(6000)
+                                .maxVelocity(5600);
 
                 public static final double ELEVATOR_UPPER_LIMIT = -184;
                 public static final double ELEVATOR_LOWER_LIMIT = 1;
@@ -122,7 +122,7 @@ public class Constants {
         }
 
         public class ACTUATOR {
-                public static final int PWM_PORT = 9;
+                public static final int PWM_PORT = -1;
         }
 
         public class CLIMBER {

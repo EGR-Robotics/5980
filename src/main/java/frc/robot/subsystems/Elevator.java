@@ -74,7 +74,7 @@ public class Elevator extends SubsystemBase {
     }
 
     public boolean isAtTarget() {
-        return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT > Helpers.percentError(targetEncoderPos,
+        return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(targetEncoderPos,
                 m_encoder.getPosition());
     }
 

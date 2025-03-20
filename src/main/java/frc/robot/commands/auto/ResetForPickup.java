@@ -1,14 +1,18 @@
 package frc.robot.commands.auto;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.commands.arm.SetArmDistance;
 import frc.robot.commands.elevator.SetElevatorDistance;
 
-public class ResetForPickup extends ParallelCommandGroup {
+import frc.robot.commands.arm.AutoResetArm;
+import frc.robot.commands.elevator.AutoResetElevator;
+
+public class ResetForPickup extends SequentialCommandGroup {
     public ResetForPickup() {
         super(
-            new SetArmDistance(0),
-            new SetElevatorDistance(0)
+            new AutoResetArm(),
+            new AutoResetElevator()
         );
     }
 }

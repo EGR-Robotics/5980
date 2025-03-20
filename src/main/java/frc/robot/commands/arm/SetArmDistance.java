@@ -18,7 +18,8 @@ public class SetArmDistance extends Command {
 
     @Override
     public boolean isFinished() {
-        System.out.println("Current arm position: " + RobotContainer.arm.getPosition());
+        System.out.println("Current arm position: " + RobotContainer.arm.getPosition() + " and is at target? "
+                + RobotContainer.arm.isAtTarget());
         return RobotContainer.arm.isAtTarget();
     }
 

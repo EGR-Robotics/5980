@@ -14,7 +14,7 @@ public class MoveElevator extends Command {
 
     @Override
     public void execute() {
-        System.out.println("Elevator Position" + RobotContainer.elevator.getEncoderPosition());
+        System.out.println("Elevator Position: " + RobotContainer.elevator.getEncoderPosition());
         RobotContainer.elevator.setSpeed(m_direction ? SCORING.ELEVATOR_SPEED : -SCORING.ELEVATOR_SPEED);
     }
 

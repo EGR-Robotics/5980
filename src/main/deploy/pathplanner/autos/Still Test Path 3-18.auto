@@ -9,6 +9,36 @@
           "data": {
             "pathName": "Still Test 3-18"
           }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "ResetForPickup"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 5.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pickup"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4"
+          }
         }
       ]
     }

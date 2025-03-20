@@ -34,7 +34,9 @@ public class Vision extends SubsystemBase {
 
         double tA = (LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1));
 
-        double distanceSpeed = -ta * kp_distance;
+        if(tA > 15.5) tA = 0;
+
+        double distanceSpeed = tA * kp_distance;
 
         SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
                 .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
