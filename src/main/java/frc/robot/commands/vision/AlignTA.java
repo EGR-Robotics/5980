@@ -13,7 +13,7 @@ public class AlignTA extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1)) > 15.5;
+        return Math.abs(LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1)) > LIMELIGHT.TA_TARGET_DISTANCE;
     }
 
     @Override

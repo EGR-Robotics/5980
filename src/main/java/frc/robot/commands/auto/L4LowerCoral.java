@@ -7,6 +7,6 @@ import frc.robot.commands.arm.SetArmDistance;
 public class L4LowerCoral extends ParallelCommandGroup {
     public L4LowerCoral() {
         super(
-                new SetArmDistance(SCORING.L4_ARM_POSITION + 8));
+                new SetArmDistance(SCORING.L4_ARM_POSITION + SCORING.L4_ARM_LOWER_AMOUNT));
     }
 }

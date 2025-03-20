@@ -76,7 +76,7 @@ public class Constants {
                 public static final double ELEVATOR_UPPER_LIMIT = -184;
                 public static final double ELEVATOR_LOWER_LIMIT = 1;
 
-                public static final double ELEVATOR_SAFE_POS = -4;
+                public static final double ELEVATOR_SAFE_POS = 8;
 
                 public static final double DEADBAND = 0.1;
 
@@ -152,6 +152,8 @@ public class Constants {
 
         public class LIMELIGHT {
                 public static final String LIMELIGHT_NAME_1 = "limelight";
+
+                public static final double TA_TARGET_DISTANCE = 15.5;
         }
 
         public class SCORING {
@@ -160,6 +162,7 @@ public class Constants {
 
                 public static final double L4_ELEVATOR_POSITION = -44;
                 public static final double L4_ARM_POSITION = -22;
+                public static final double L4_ARM_LOWER_AMOUNT = 8;
 
                 public static final double L3_ELEVATOR_POSITION = 0;
                 public static final double L3_ARM_POSITION = -21.5;
@@ -169,6 +172,9 @@ public class Constants {
 
                 public static final double L1_ELEVATOR_POSITION = 0;
                 public static final double L1_ARM_POSITION = -12;
+
+                public static final double ELEVATOR_PICKUP_POSITION = 22;
+
         }
 
         public class DRIVE {

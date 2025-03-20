@@ -30,11 +30,9 @@ public class Vision extends SubsystemBase {
     }
 
     public SwerveRequest alignTA() {
-        double kp_distance = 0.1;
+        double kp_distance = 0.015;
 
         double tA = (LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1));
-
-        if(tA > 15.5) tA = 0;
 
         double distanceSpeed = tA * kp_distance;
 
