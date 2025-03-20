@@ -26,6 +26,5 @@ public class MoveElevator extends Command {
     @Override
     public void end(boolean interrupted) {
         RobotContainer.elevator.stop();
-        RobotContainer.elevator.postMove();
     }
 }

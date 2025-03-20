@@ -10,15 +10,12 @@ import com.revrobotics.spark.SparkClosedLoopController.ArbFFUnits;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ELEVATOR;
-import frc.robot.Helpers;
+import frc.robot.library.Helpers;
 
 public class Elevator extends SubsystemBase {
-    double curEncoderValue;
-
     double targetEncoderPos;
 
     private SparkMax m_motor;
@@ -58,15 +55,14 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setSpeed(double percentOutput) {
-        if (ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
-                ELEVATOR.ELEVATOR_UPPER_LIMIT) && percentOutput < 0)
-            return;
-        else if (ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
-                ELEVATOR.ELEVATOR_LOWER_LIMIT) && percentOutput > 0)
-            return;
+        // if (ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
+        //         ELEVATOR.ELEVATOR_UPPER_LIMIT) && percentOutput < 0)
+        //     return;
+        // else if (ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(m_encoder.getPosition(),
+        //         ELEVATOR.ELEVATOR_LOWER_LIMIT) && percentOutput > 0)
+        //     return;
 
         m_motor.set(percentOutput);
-        // System.out.println("Elevator encoder position: " + m_encoder.getPosition());
     }
 
     public void stop() {
@@ -76,22 +72,5 @@ public class Elevator extends SubsystemBase {
     public boolean isAtTarget() {
         return ELEVATOR.MAX_MOTION_ALLOWED_ERROR_PERCENT >= Helpers.percentError(targetEncoderPos,
                 m_encoder.getPosition());
-    }
-
-    public void postMove() {
-
-    }
-
-    public void holdPosition() {
-        // setSpeed(-.5);
-    }
-
-    public Command holdPositionCommand() {
-        return run(() -> holdPosition());
-    }
-
-    @Override
-    public void periodic() {
-
     }
 }

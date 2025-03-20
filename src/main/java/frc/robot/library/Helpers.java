@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.library;
 
 public class Helpers {
     /**
@@ -8,6 +8,8 @@ public class Helpers {
      * @param v2 Current value
      */
     public static double percentError(double v1, double v2) {
+        if(v1 == 0) return v2;
+
         return Math.abs(
                 (v2 - v1) / (v1));
     }

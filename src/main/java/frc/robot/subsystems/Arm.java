@@ -14,7 +14,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ARM;
 import frc.robot.Constants.ELEVATOR;
-import frc.robot.Helpers;
+import frc.robot.library.Helpers;
 
 public class Arm extends SubsystemBase {
     private SparkMax m_motor;

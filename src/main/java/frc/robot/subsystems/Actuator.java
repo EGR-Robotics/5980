@@ -1,14 +1,14 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.PWM;
-import edu.wpi.first.wpilibj.Servo;
+// import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.ACTUATOR;
+// import frc.robot.Constants.ACTUATOR;
 
 public class Actuator extends SubsystemBase {
     private PWM m_servo;
 
-    private Servo servo;
+    // private Servo servo;
     
     public Actuator() {
         // servo = new Servo(ACTUATOR.PWM_PORT);

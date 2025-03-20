@@ -1,7 +1,10 @@
 package frc.robot;
 
+// Swerve
 import com.ctre.phoenix6.swerve.SwerveModule.DriveRequestType;
 import com.ctre.phoenix6.swerve.SwerveRequest;
+
+// Pathplanner 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -20,15 +23,17 @@ import frc.robot.Constants.ELEVATOR;
 
 // Commands
 import frc.robot.commands.elevator.MoveElevator;
-import frc.robot.commands.actuator.PushOut;
-import frc.robot.commands.actuator.StopServo;
+import frc.robot.commands.elevator.StopElevator;
+// import frc.robot.commands.elevator.SetElevatorDistance;
+
+// import frc.robot.commands.actuator.PushOut;
+// import frc.robot.commands.actuator.StopServo;
 import frc.robot.commands.algae.HoldAlgaeArm;
 import frc.robot.commands.algae.MoveAlgaeArm;
 import frc.robot.commands.algae.MoveIntake;
 import frc.robot.commands.arm.MoveArm;
 import frc.robot.commands.arm.StopArm;
-import frc.robot.commands.elevator.StopElevator;
-
+import frc.robot.commands.scoring.L1;
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
@@ -47,8 +52,6 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Actuator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Algae;
-
-import frc.robot.commands.elevator.SetElevatorDistance;
 
 import frc.robot.subsystems.CommandSwerveDrivetrain;
 
@@ -103,40 +106,42 @@ public class RobotContainer {
         // Elevator Commands
 
         elevator.setDefaultCommand(
-                new InstantCommand(
-                        () -> {
-                            if (controllerJoystick.getLeftY() > ELEVATOR.DEADBAND) {
-                                (new MoveElevator(true)).execute();
-                            } else if (controllerJoystick.getLeftY() < -ELEVATOR.DEADBAND) {
-                                (new MoveElevator(false)).execute();
-                            } else {
-                                (new StopElevator()).execute();
-                                elevator.holdPosition();
-                            }
-                        }, elevator));
+            new InstantCommand(
+                () -> {
+                    if (controllerJoystick.getLeftY() > ELEVATOR.DEADBAND)
+                        (new MoveElevator(true)).execute();
+                    else if (controllerJoystick.getLeftY() < -ELEVATOR.DEADBAND)
+                        (new MoveElevator(false)).execute();
+                    else
+                        (new StopElevator()).execute();
+                }, elevator
+            )
+        );
 
-        controllerJoystick.a().whileTrue(new L4());
-        controllerJoystick.b().whileTrue(new L3());
+        controllerJoystick.x().whileTrue(new L1());
         controllerJoystick.y().whileTrue(new L2());
-
-        controllerJoystick.x().whileTrue(new SetElevatorDistance(0));
+        controllerJoystick.b().whileTrue(new L3());
+        controllerJoystick.a().whileTrue(new L4());
 
         // controllerJoystick.x().whileTrue(new PushOut());
         // controllerJoystick.x().onFalse(new StopServo());
 
+        // controllerJoystick.x().whileTrue(new SetElevatorDistance(0));
+
         // Arm commands
 
         arm.setDefaultCommand(
-                new InstantCommand(
-                        () -> {
-                            if (controllerJoystick.getRightY() > ARM.DEADBAND) {
-                                (new MoveArm(true)).execute();
-                            } else if (controllerJoystick.getRightY() < -ARM.DEADBAND) {
-                                (new MoveArm(false)).execute();
-                            } else {
-                                (new StopArm()).execute();
-                            }
-                        }, arm));
+            new InstantCommand(
+                () -> {
+                    if (controllerJoystick.getRightY() > ARM.DEADBAND)
+                        (new MoveArm(true)).execute();
+                    else if (controllerJoystick.getRightY() < -ARM.DEADBAND)
+                        (new MoveArm(false)).execute();
+                    else
+                        (new StopArm()).execute();
+                }, arm
+            )
+        );
 
         // Algae Bar Commands
 
