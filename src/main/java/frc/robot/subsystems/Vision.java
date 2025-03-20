@@ -28,4 +28,17 @@ public class Vision extends SubsystemBase {
 
         return limelightRotate.withVelocityX(0).withVelocityY(rotationSpeed).withRotationalRate(0);
     }
+
+    public SwerveRequest alignTA() {
+        double kp_distance = 0.1;
+
+        double tA = (LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1));
+
+        double distanceSpeed = -ta * kp_distance;
+
+        SwerveRequest.RobotCentric limelightRotate = new SwerveRequest.RobotCentric()
+                .withDriveRequestType(DriveRequestType.OpenLoopVoltage);
+
+        return limelightRotate.withVelocityX(distanceSpeed).withVelocityY(0).withRotationalRate(0);
+    }
 }
