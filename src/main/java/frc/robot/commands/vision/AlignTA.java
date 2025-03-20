@@ -1,6 +1,7 @@
 package frc.robot.commands.vision;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Helpers;
 import frc.robot.LimelightHelpers;
 import frc.robot.RobotContainer;
 
@@ -13,7 +14,8 @@ public class AlignTA extends Command {
 
     @Override
     public boolean isFinished() {
-        return Math.abs(LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1)) > LIMELIGHT.TA_TARGET_DISTANCE;
+        return LIMELIGHT.TA_TARGET_DISTANCE_ALLOWED_ERROR >= Helpers
+                .percentError(LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1), LIMELIGHT.TA_TARGET_DISTANCE);
     }
 
     @Override
