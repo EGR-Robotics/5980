@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.342622950819672,
-        "y": 7.339600409836065
+        "x": 1.0146827387257493,
+        "y": 7.624089330557111
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.131906486914276,
-        "y": 6.519898479079159
+        "x": 1.97635532210233,
+        "y": 6.7214710568596265
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Left Human"
     },
     {
       "anchor": {
-        "x": 3.6202868852459016,
-        "y": 5.181813524590163
+        "x": 3.65,
+        "y": 5.13
       },
       "prevControl": {
-        "x": 2.869320065747318,
-        "y": 6.0038202769308
+        "x": 2.6771867268273835,
+        "y": 6.057595337095526
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "Back Left Reef"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "L4",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.13342830009496637,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -60,7 +60,7 @@
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": -54.638
+    "rotation": -54.0
   },
   "useDefaultConstraints": false
 }

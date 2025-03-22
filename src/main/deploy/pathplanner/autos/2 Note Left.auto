@@ -13,7 +13,13 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align"
           }
         },
         {
@@ -31,7 +37,7 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 5.0
+            "waitTime": 4.0
           }
         },
         {
@@ -49,7 +55,55 @@
         {
           "type": "wait",
           "data": {
-            "waitTime": 1.0
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4LowerCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Back Left Reef to Left Human"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Human to Back Center Reef"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.5
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Align"
           }
         },
         {

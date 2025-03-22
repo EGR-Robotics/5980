@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.02,
-        "y": 2.8
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 6.27,
-        "y": 0.634936490538903
-      },
-      "isLocked": false,
-      "linkedName": "Right Reef"
-    },
-    {
-      "anchor": {
         "x": 1.04325,
         "y": 0.7489999999999998
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 1.6598662711001673,
+        "y": 1.2363545126226794
+      },
+      "isLocked": false,
+      "linkedName": "Right Human"
+    },
+    {
+      "anchor": {
+        "x": 3.6660000000000004,
+        "y": 2.9232499999999995
+      },
       "prevControl": {
-        "x": 1.2681976657399563,
-        "y": 0.636674389884763
+        "x": 3.1286666307021305,
+        "y": 2.4431638672404667
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right Human"
+      "linkedName": "Back Right Reef"
     }
   ],
   "rotationTargets": [],
@@ -33,19 +33,19 @@
   "pointTowardsZones": [],
   "eventMarkers": [
     {
-      "name": "ResetForPickup",
-      "waypointRelativePos": 0.12962962962962749,
+      "name": "L4",
+      "waypointRelativePos": 0.09604316546762585,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
         "data": {
-          "name": "ResetForPickup"
+          "name": "L4"
         }
       }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 1.5,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0,
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 54.0
+    "rotation": 59.99999999999999
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": 54.0
   },
   "useDefaultConstraints": false
 }

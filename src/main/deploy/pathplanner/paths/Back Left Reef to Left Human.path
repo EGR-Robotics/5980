@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 5.02,
-        "y": 2.8
+        "x": 3.65,
+        "y": 5.13
       },
       "prevControl": null,
       "nextControl": {
-        "x": 6.27,
-        "y": 0.634936490538903
+        "x": 4.038628642905263,
+        "y": 4.773246013290431
       },
       "isLocked": false,
-      "linkedName": "Right Reef"
+      "linkedName": "Back Left Reef"
     },
     {
       "anchor": {
-        "x": 1.04325,
-        "y": 0.7489999999999998
+        "x": 1.0146827387257493,
+        "y": 7.624089330557111
       },
       "prevControl": {
-        "x": 1.2681976657399563,
-        "y": 0.636674389884763
+        "x": 0.7553951500665443,
+        "y": 7.872774500769521
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "Right Human"
+      "linkedName": "Left Human"
     }
   ],
   "rotationTargets": [],
@@ -34,7 +34,7 @@
   "eventMarkers": [
     {
       "name": "ResetForPickup",
-      "waypointRelativePos": 0.12962962962962749,
+      "waypointRelativePos": 0.30436847103514186,
       "endWaypointRelativePos": null,
       "command": {
         "type": "named",
@@ -54,13 +54,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 54.0
+    "rotation": -54.0
   },
   "reversed": false,
   "folder": null,
   "idealStartingState": {
     "velocity": 0,
-    "rotation": 119.99999999999999
+    "rotation": -59.99999999999999
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

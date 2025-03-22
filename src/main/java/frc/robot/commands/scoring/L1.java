@@ -14,7 +14,7 @@ public class L1 extends ParallelCommandGroup {
         super(
                 new SetElevatorDistance(SCORING.L1_ELEVATOR_POSITION),
                 new SequentialCommandGroup(
-                        new WaitCommand(0.5).unless(() -> RobotContainer.elevator.getEncoderPosition() < ELEVATOR.ELEVATOR_SAFE_POS),
+                        new WaitCommand(0.5).unless(() -> RobotContainer.elevator.getEncoderPosition() > ELEVATOR.ELEVATOR_SAFE_POS),
                         new HoldArmDistance(SCORING.L1_ARM_POSITION)));
     }
 }

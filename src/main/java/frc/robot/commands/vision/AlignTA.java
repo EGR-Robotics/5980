@@ -14,8 +14,13 @@ public class AlignTA extends Command {
 
     @Override
     public boolean isFinished() {
+        double ta = LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1);
+
+        if (ta == 0)
+            return true;
+
         return LIMELIGHT.TA_TARGET_DISTANCE_ALLOWED_ERROR >= Helpers
-                .percentError(LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1), LIMELIGHT.TA_TARGET_DISTANCE);
+                .percentError(ta, LIMELIGHT.TA_TARGET_DISTANCE);
     }
 
     @Override

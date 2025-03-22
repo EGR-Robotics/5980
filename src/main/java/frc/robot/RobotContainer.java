@@ -39,6 +39,7 @@ import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
 import frc.robot.commands.vision.AlignLR;
 import frc.robot.commands.vision.AlignTA;
+import frc.robot.commands.auto.AutoAlign;
 import frc.robot.commands.auto.L4Auto;
 import frc.robot.commands.auto.L4LowerCoral;
 import frc.robot.commands.auto.Pickup;
@@ -89,6 +90,8 @@ public class RobotContainer {
         // Register named commands for auto
         NamedCommands.registerCommand("L4LowerCoral", new L4LowerCoral());
         NamedCommands.registerCommand("L4", new L4Auto());
+
+        NamedCommands.registerCommand("FullAlign", new AutoAlign());
 
         NamedCommands.registerCommand("ResetForPickup", new ResetForPickup());
         NamedCommands.registerCommand("Pickup", new Pickup());
@@ -185,7 +188,7 @@ public class RobotContainer {
                 }));
 
         // driverJoystick.leftTrigger().onTrue(new AlignLR());
-        driverJoystick.leftTrigger().onTrue(new AlignTA());
+        driverJoystick.leftTrigger().onTrue(new AutoAlign());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
 

@@ -19,7 +19,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Align"
+            "name": "FullAlign"
           }
         },
         {
@@ -32,6 +32,48 @@
           "type": "path",
           "data": {
             "pathName": "Right Reef to Right Human"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Pickup"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Right Human to Back Right Reef"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 1.0
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "FullAlign"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "L4LowerCoral"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Back Right Reef to Right Human"
           }
         }
       ]
