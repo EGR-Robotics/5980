@@ -79,6 +79,46 @@ public class Vision extends SubsystemBase {
      * @return SwerveRequest to apply to swerve subsystem
      */
     public SwerveRequest alignMegatag2() {
-        return m_robotCentricRequest;
+        RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
+            .withDeadband(MaxSpeed * 0.01).withRotationalDeadband(MaxAngularRate * 0.01) // Add a 10% deadband
+            .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors
+
+        double tx = LimelightHelpers.getTX(LIMELIGHT.LIMELIGHT_NAME_1);
+        double ty = LimelightHelpers.getTY(LIMELIGHT.LIMELIGHT_NAME_1);
+
+        return drivetrain.applyRequest(
+            () -> {
+                // LEFT
+                var goalX = .38;
+                var goalY = .145;
+
+                if(side == ReefSides.RIGHT) {
+                    goalX = .38;
+                    goalY = -.145;    
+                }
+                
+                var xError = goalX - tx;
+                var yError = goalY - ty;
+
+                xError *= 2.0;
+                yError *= 6.0;
+
+                double yVel = MathUtil.clamp(yError, -1, 1);
+                double xVel = MathUtil.clamp(xError, -1, 1);
+                
+                SmartDashboard.putNumber("Align/xVel", xVel);
+                SmartDashboard.putNumber("Align/yVel", yVel);
+                SignalLogger.writeDouble("Align/xVel", xVel);
+                SignalLogger.writeDouble("Align/yVel", yVel);
+
+                return driveRobotCentric
+                    // TX = Front/Back
+                    .withVelocityX(-xVel * (MaxSpeed/6.0))
+                    // TY = Left/Right
+                    .withVelocityY(yVel * (MaxSpeed/6.0))
+                    // .withTargetDirection(Rotation2d.fromDegrees(angle))
+                ;
+            }
+        ).withTimeout(1.5);
     }
 }
