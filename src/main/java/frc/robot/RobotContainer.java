@@ -40,6 +40,7 @@ import frc.robot.commands.scoring.L4;
 import frc.robot.commands.vision.AlignLR;
 import frc.robot.commands.vision.AlignTA;
 import frc.robot.commands.auto.AutoAlign;
+import frc.robot.commands.auto.Brake;
 import frc.robot.commands.auto.L4Auto;
 import frc.robot.commands.auto.L4LowerCoral;
 import frc.robot.commands.auto.Pickup;
@@ -98,6 +99,8 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Align", new AlignLR());
 
+        NamedCommands.registerCommand("Brake", new Brake());
+
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -128,8 +131,6 @@ public class RobotContainer {
 
         // controllerJoystick.x().whileTrue(new PushOut());
         // controllerJoystick.x().onFalse(new StopServo());
-
-        // controllerJoystick.x().whileTrue(new SetElevatorDistance(0));
 
         // Arm commands
 

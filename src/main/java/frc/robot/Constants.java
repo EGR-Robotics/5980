@@ -153,8 +153,8 @@ public class Constants {
         public class LIMELIGHT {
                 public static final String LIMELIGHT_NAME_1 = "limelight";
 
-                public static final double TA_TARGET_DISTANCE = 20;
-                public static final double TA_TARGET_DISTANCE_ALLOWED_ERROR = 0.04;
+                public static final double TA_TARGET_DISTANCE = 15;
+                public static final double TA_TARGET_DISTANCE_ALLOWED_ERROR = 0.15;
         }
 
          

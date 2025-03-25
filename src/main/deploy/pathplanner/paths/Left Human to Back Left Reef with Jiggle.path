@@ -1,0 +1,95 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 1.0146827387257493,
+        "y": 7.624089330557111
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.001946721311475,
+        "y": 6.464497950819672
+      },
+      "isLocked": false,
+      "linkedName": "Left Human"
+    },
+    {
+      "anchor": {
+        "x": 1.9899590163934429,
+        "y": 6.572387295081967
+      },
+      "prevControl": {
+        "x": 1.5077978105576133,
+        "y": 6.29686660603292
+      },
+      "nextControl": {
+        "x": 2.241700819672131,
+        "y": 6.7162397540983605
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.65,
+        "y": 5.13
+      },
+      "prevControl": {
+        "x": 2.6771867268273835,
+        "y": 6.057595337095526
+      },
+      "nextControl": null,
+      "isLocked": true,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "L4",
+      "waypointRelativePos": 1.5128205128205106,
+      "endWaypointRelativePos": null,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Pickup"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "L4"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 1.5,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -59.99999999999999
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -54.0
+  },
+  "useDefaultConstraints": false
+}

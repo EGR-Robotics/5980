@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.604539916393829,
-        "y": 3.9222384909232453
+        "x": 5.595513990458206,
+        "y": 3.867201914178963
       },
       "isLocked": false,
       "linkedName": "Center Reef"
@@ -20,8 +20,8 @@
         "y": 3.85
       },
       "prevControl": {
-        "x": 6.004755634908718,
-        "y": 3.85
+        "x": 6.088496925826625,
+        "y": 3.827695985737792
       },
       "nextControl": null,
       "isLocked": false,

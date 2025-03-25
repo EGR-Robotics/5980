@@ -19,8 +19,12 @@ public class AlignTA extends Command {
         if (ta == 0)
             return true;
 
-        return LIMELIGHT.TA_TARGET_DISTANCE_ALLOWED_ERROR >= Helpers
-                .percentError(ta, LIMELIGHT.TA_TARGET_DISTANCE);
+        double percentError = Helpers
+        .percentError(LIMELIGHT.TA_TARGET_DISTANCE, ta);
+
+        System.out.println("Cur tA: " + ta + " with error " + percentError);
+
+        return LIMELIGHT.TA_TARGET_DISTANCE_ALLOWED_ERROR >= percentError;
     }
 
     @Override

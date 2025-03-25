@@ -34,17 +34,15 @@ public class Vision extends SubsystemBase {
      * @return SwerveRequest to apply to swerve subsystem
      */
     public SwerveRequest alignTA() {
-        double kp_distance = 0.018;
+        double kp_distance = 0.02 * 0.01;
 
         double tA = (LimelightHelpers.getTA(LIMELIGHT.LIMELIGHT_NAME_1));
 
         if (tA > LIMELIGHT.TA_TARGET_DISTANCE) {
             tA = -tA;
 
-            // kp_distance = 0.0075;
+            kp_distance = 0.01 * 0.01;
         }
-        
-        System.out.println(tA);
 
         double distanceSpeed = tA * kp_distance;
 

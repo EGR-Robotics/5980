@@ -5,39 +5,33 @@
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "Center to Center Reef"
+            "name": "ResetForPickup"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 4.0
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Brake"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "Align"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L4LowerCoral"
+            "name": "Pickup"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Center Slight Back"
+            "pathName": "Left Human to Back Left Reef"
           }
         }
       ]
     }
   },
   "resetOdom": true,
-  "folder": "Center",
+  "folder": null,
   "choreoAuto": false
 }
