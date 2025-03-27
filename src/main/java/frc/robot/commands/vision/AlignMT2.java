@@ -16,6 +16,6 @@ public class AlignMT2 extends Command {
     @Override
     public void execute() {
         RobotContainer.drivetrain.setControl(
-                RobotContainer.vision.alignMegatag2());
+                RobotContainer.vision.alignMT2());
     }
 }

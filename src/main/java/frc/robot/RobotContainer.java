@@ -51,6 +51,7 @@ import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Vision;
 
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.CANRange;
 import frc.robot.subsystems.Actuator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Algae;
@@ -77,12 +78,14 @@ public class RobotContainer {
     public static final CommandSwerveDrivetrain drivetrain = TunerConstants.createDrivetrain();
     public static final Vision vision = new Vision();
 
-    public final Climber climber = new Climber();
+    public static final Climber climber = new Climber();
     public static final Actuator actuator = new Actuator();
 
     public static final Elevator elevator = new Elevator();
     public static final Arm arm = new Arm();
     public static final Algae algae = new Algae();
+
+    public static final CANRange canRange = new CANRange();
 
     // Initialize auto chooser
     private final SendableChooser<Command> autoChooser;
@@ -128,9 +131,6 @@ public class RobotContainer {
         controllerJoystick.y().whileTrue(new L2());
         controllerJoystick.b().whileTrue(new L3());
         controllerJoystick.a().whileTrue(new L4());
-
-        // controllerJoystick.x().whileTrue(new PushOut());
-        // controllerJoystick.x().onFalse(new StopServo());
 
         // Arm commands
 

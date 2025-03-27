@@ -23,7 +23,6 @@ public class Candle {
         m_candle.configAllSettings(candleConfig, 100);
     }
 
-    
     public void EGR(){
         LarsonAnimation strobe = new LarsonAnimation(0, 255,0 );
 

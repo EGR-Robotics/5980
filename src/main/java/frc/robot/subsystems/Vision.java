@@ -79,7 +79,7 @@ public class Vision extends SubsystemBase {
      * 
      * @return SwerveRequest to apply to swerve subsystem
      */
-    public SwerveRequest alignMegatag2() {
+    public SwerveRequest alignMT2() {
         RobotCentric driveRobotCentric = new SwerveRequest.RobotCentric()
             .withDeadband(DRIVE.MAX_SPEED * 0.01).withRotationalDeadband(DRIVE.MAX_ANGULAR_RATE * 0.01) // Add a 10% deadband
             .withDriveRequestType(DriveRequestType.OpenLoopVoltage); // Use open-loop control for drive motors

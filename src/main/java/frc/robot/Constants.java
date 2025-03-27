@@ -4,6 +4,7 @@ import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix6.configs.CANrangeConfiguration;
 import com.revrobotics.spark.config.ClosedLoopConfig;
 import com.revrobotics.spark.config.MAXMotionConfig;
 import com.revrobotics.spark.config.SparkBaseConfig;
@@ -187,6 +188,14 @@ public class Constants {
                 public static final double ROTATION_DEADBAND = 0.05;
 
                 public static final double SLOW_DOWN_RATE = 0.2;
+        }
 
+        public class CAN_RANGE {
+                public static final int CAN_ID = -1;
+                public static final String CAN_BUS = "canivore";
+
+                public static final CANrangeConfiguration CONFIG = new CANrangeConfiguration();
+
+                public static final double TARGET_DISTANCE = 3; // distance from sensor to coral in meters
         }
 }
