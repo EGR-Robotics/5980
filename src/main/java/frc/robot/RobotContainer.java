@@ -38,7 +38,7 @@ import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
 import frc.robot.commands.vision.AlignLR;
-import frc.robot.commands.vision.AlignTA;
+import frc.robot.commands.vision.AlignMT2Timeout;
 import frc.robot.commands.auto.AutoAlign;
 import frc.robot.commands.auto.Brake;
 import frc.robot.commands.auto.L4Auto;
@@ -188,8 +188,7 @@ public class RobotContainer {
                             .withRotationalRate(-driverJoystick.getRightX() * targetAngularRate);
                 }));
 
-        // driverJoystick.leftTrigger().onTrue(new AlignLR());
-        driverJoystick.leftTrigger().onTrue(new AutoAlign());
+        driverJoystick.leftTrigger().onTrue(new AlignMT2Timeout());
 
         driverJoystick.a().whileTrue(drivetrain.applyRequest(() -> brake));
 
