@@ -37,6 +37,8 @@ import frc.robot.commands.scoring.L1;
 import frc.robot.commands.scoring.L2;
 import frc.robot.commands.scoring.L3;
 import frc.robot.commands.scoring.L4;
+import frc.robot.commands.sensor.DetectCoral;
+import frc.robot.commands.sensor.GetDistance;
 import frc.robot.commands.vision.AlignLR;
 import frc.robot.commands.vision.AlignMT2Timeout;
 import frc.robot.commands.auto.AutoAlign;
@@ -52,6 +54,7 @@ import frc.robot.subsystems.Vision;
 
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.CANRange;
+import frc.robot.subsystems.Candle;
 import frc.robot.subsystems.Actuator;
 import frc.robot.subsystems.Elevator;
 import frc.robot.subsystems.Algae;
@@ -86,6 +89,8 @@ public class RobotContainer {
     public static final Algae algae = new Algae();
 
     public static final CANRange canRange = new CANRange();
+
+    public static final Candle candle = new Candle();
 
     // Initialize auto chooser
     private final SendableChooser<Command> autoChooser;
@@ -146,6 +151,10 @@ public class RobotContainer {
                 }, arm
             )
         );
+
+        // CANRange commands
+
+        canRange.setDefaultCommand(new DetectCoral());
 
         // Algae Bar Commands
 

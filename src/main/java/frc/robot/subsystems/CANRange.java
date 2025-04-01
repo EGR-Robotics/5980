@@ -16,10 +16,15 @@ public class CANRange extends SubsystemBase {
     }
 
     public double getDistance() {
-        return m_sensor.getDistance().refresh().getValueAsDouble();
+        double distance = m_sensor.getDistance().refresh().getValueAsDouble();
+        System.out.println(distance);
+        return distance;
     }
 
     public boolean isAtTarget() {
-        return getDistance() == CAN_RANGE.TARGET_DISTANCE;
+        // return CAN_RANGE.MAX_MOTION_ALLOWED_ERROR_PERCENT > Helpers.percentError(getDistance(),
+        // CAN_RANGE.TARGET_DISTANCE);
+        
+        return getDistance() <= CAN_RANGE.TARGET_DISTANCE;
     }
 }

@@ -143,12 +143,7 @@ public class Constants {
         public class CANDLE {
                 public static int CAN_ID = 23;
 
-                public final static int LED_COLUMNS = 33;
-                public final static int LED_ROWS = 8;
-                public final static int STRIP_START = LED_COLUMNS * LED_ROWS;
-                public final static int STRIP_LENGTH = 48;
-
-                public final static int LED_TOTAL = LED_COLUMNS * LED_ROWS + STRIP_LENGTH;
+                public final static int LED_TOTAL = 175; //167
         }
 
         public class LIMELIGHT {
@@ -191,11 +186,13 @@ public class Constants {
         }
 
         public class CAN_RANGE {
-                public static final int CAN_ID = -1;
-                public static final String CAN_BUS = "canivore";
+                public static final int CAN_ID = 24;
+                public static final String CAN_BUS = "rio";
 
                 public static final CANrangeConfiguration CONFIG = new CANrangeConfiguration();
 
-                public static final double TARGET_DISTANCE = 3; // distance from sensor to coral in meters
+                // public static final double MAX_MOTION_ALLOWED_ERROR_PERCENT = 0.3;
+
+                public static final double TARGET_DISTANCE = 0.2; // distance from sensor to coral in meters
         }
 }
