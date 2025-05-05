@@ -5,9 +5,8 @@ import com.ctre.phoenix.led.CANdle.LEDStripType;
 import com.ctre.phoenix.led.LarsonAnimation.BounceMode;
 import com.ctre.phoenix.led.CANdleConfiguration;
 
-// import com.ctre.phoenix.led.;
 import com.ctre.phoenix.led.LarsonAnimation;
-import com.ctre.phoenix.led.RgbFadeAnimation;
+import com.ctre.phoenix.led.StrobeAnimation;
 
 import frc.robot.Constants.CANDLE;
 
@@ -36,7 +35,7 @@ public class Candle {
         LarsonAnimation larson2 = new LarsonAnimation(0, 0,255, 0, 0.75, CANDLE.LED_TOTAL, BounceMode.Center, 7,7);
         LarsonAnimation larson3 = new LarsonAnimation(0, 0, 255, 0, 0.75, CANDLE.LED_TOTAL, BounceMode.Center, 7, 14);
         LarsonAnimation larson4 = new LarsonAnimation(0, 0, 255, 0, 0.75, CANDLE.LED_TOTAL, BounceMode.Center, 7, 21);
-        
+
         LarsonAnimation larson6 = new LarsonAnimation(255, 255,0, 0, 0.75, CANDLE.LED_TOTAL, BounceMode.Center, 7,49);
         LarsonAnimation larson7 = new LarsonAnimation(255, 255, 0, 0, 0.75, CANDLE.LED_TOTAL, BounceMode.Center, 7, 56);
         LarsonAnimation larson8 = new LarsonAnimation(255, 255, 0, 0, 0.75, CANDLE.LED_TOTAL, BounceMode.Center, 7, 63);
@@ -51,7 +50,13 @@ public class Candle {
         m_candle.animate(larson7, 6);
         m_candle.animate(larson8, 7);
     }
+    
+    public void GetCoral(){
+        StrobeAnimation strobe1 = new StrobeAnimation(0, 0, 255);
 
+        m_candle.animate(strobe1, 0);
+    }
+    
     public void stopAnimations(){
         m_candle.clearAnimation(0);
         m_candle.clearAnimation(1);
@@ -62,7 +67,6 @@ public class Candle {
         m_candle.clearAnimation(6);
         m_candle.clearAnimation(7);
     }
-    
     
     public void off(){
         stopAnimations();
@@ -75,4 +79,5 @@ public class Candle {
 
         m_candle.setLEDs(0, 255, 0);
     }
+    
 }

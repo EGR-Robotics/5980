@@ -154,7 +154,8 @@ public class RobotContainer {
 
         // CANRange commands
 
-        canRange.setDefaultCommand(new DetectCoral());
+        driverJoystick.b().onTrue(new DetectCoral());
+        // canRange.setDefaultCommand(new DetectCoral());
 
         // Algae Bar Commands
 

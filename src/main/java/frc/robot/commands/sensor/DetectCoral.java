@@ -1,9 +1,12 @@
 package frc.robot.commands.sensor;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 
 public class DetectCoral extends Command{
+    private final Timer timer = new Timer();
+
     public DetectCoral(){
         addRequirements(RobotContainer.canRange);
     }
@@ -12,14 +15,23 @@ public class DetectCoral extends Command{
     public void execute() {
         if (RobotContainer.canRange.isAtTarget()){
             RobotContainer.candle.green();
+
+            timer.start();
         }
         else{
-            RobotContainer.candle.EGR();
+            RobotContainer.candle.GetCoral();
         }
     }
-
+    
     @Override
     public boolean isFinished() {
+        if (timer.hasElapsed(2) && RobotContainer.canRange.isAtTarget()){
+            timer.stop();
+            RobotContainer.candle.EGR();
+            
+            return true;
+        }
+
         return false;
     }
 }

@@ -143,7 +143,7 @@ public class Constants {
         public class CANDLE {
                 public static int CAN_ID = 23;
 
-                public final static int LED_TOTAL = 175; //167
+                public final static int LED_TOTAL = 167; //167
         }
 
         public class LIMELIGHT {
