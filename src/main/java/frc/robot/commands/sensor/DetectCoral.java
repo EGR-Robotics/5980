@@ -15,17 +15,20 @@ public class DetectCoral extends Command{
     public void execute() {
         if (RobotContainer.canRange.isAtTarget()){
             RobotContainer.candle.green();
-
+            
             timer.start();
         }
         else{
             RobotContainer.candle.GetCoral();
+
+            timer.reset();
+            timer.stop();
         }
     }
     
     @Override
     public boolean isFinished() {
-        if (timer.hasElapsed(2) && RobotContainer.canRange.isAtTarget()){
+        if (timer.get() >= 1){
             timer.stop();
             RobotContainer.candle.EGR();
             

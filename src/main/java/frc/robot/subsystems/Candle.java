@@ -52,7 +52,7 @@ public class Candle {
     }
     
     public void GetCoral(){
-        StrobeAnimation strobe1 = new StrobeAnimation(0, 0, 255);
+        StrobeAnimation strobe1 = new StrobeAnimation(255, 0, 0);
 
         m_candle.animate(strobe1, 0);
     }
